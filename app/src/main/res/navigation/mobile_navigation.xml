@@ -9,5 +9,14 @@
         android:id="@+id/nav_home"
         android:name="com.symplified.ordertaker.ui.main.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_menuAndCartFragment"
+            app:destination="@id/menuAndCartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/menuAndCartFragment"
+        android:name="com.symplified.ordertaker.ui.main.menuandcart.MenuAndCartFragment"
+        android:label="fragment_menu_and_cart"
+        tools:layout="@layout/fragment_menu_and_cart" />
 </navigation>

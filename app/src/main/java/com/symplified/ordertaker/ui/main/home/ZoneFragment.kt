@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentZoneBinding
@@ -39,10 +40,9 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
     }
 
     override fun onTableClicked(tableNo: Int) {
-        activity?.supportFragmentManager?.commit {
-            setReorderingAllowed(true)
-            addToBackStack(null)
-            replace<MenuAndCartFragment>(R.id.nav_host_fragment_content_main)
-        }
+        val action =
+            HomeFragmentDirections
+                .actionNavHomeToMenuAndCartFragment()
+        findNavController().navigate(action)
     }
 }

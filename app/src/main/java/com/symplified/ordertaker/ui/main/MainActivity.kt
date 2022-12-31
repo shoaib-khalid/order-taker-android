@@ -9,6 +9,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.ui.login.LoginActivity
@@ -21,7 +25,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val isLoggedIn = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val isLoggedIn =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
             .getBoolean(getString(R.string.is_logged_in), false)
         if (!isLoggedIn) {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -34,11 +39,18 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
+        val navView: NavigationView = binding.navView
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
+                    as NavHostFragment
+        val navController = navHostFragment.navController
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.nav_home), drawerLayout
         )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
