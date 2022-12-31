@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.home
+package com.symplified.ordertaker.ui.main.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.fragment.app.replace
 import androidx.recyclerview.widget.GridLayoutManager
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentZoneBinding
-import com.symplified.ordertaker.ui.menuandcart.MenuAndCartFragment
+import com.symplified.ordertaker.ui.main.menuandcart.MenuAndCartFragment
 
 class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
 

@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Order Taker</string>
+
+    <!-- Shared Preference keys -->
+    <string name="preference_file_key">Symplified Order Taker Shared Preferences File</string>
+    <string name="is_logged_in">Is User Logged In</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -10,6 +15,12 @@
     <string name="menu_home">Order for Customer</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_message">Welcome to Symplified Order Taker</string>
+    <string name="hint_email">Email or Username</string>
+    <string name="hint_password">Password</string>
+    <string name="login_text">Login</string>
+    <string name="production_mode_text">Switch to Production</string>
+
 </resources>

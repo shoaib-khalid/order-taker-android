@@ -1,17 +1,17 @@
-package com.symplified.ordertaker
+package com.symplified.ordertaker.ui.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityMainBinding
+import com.symplified.ordertaker.ui.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +20,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val isLoggedIn = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+            .getBoolean(getString(R.string.is_logged_in), false)
+        if (!isLoggedIn) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

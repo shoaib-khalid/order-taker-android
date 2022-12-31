@@ -1,14 +1,11 @@
-package com.symplified.ordertaker.ui.home
+package com.symplified.ordertaker.ui.main.home
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentHomeBinding

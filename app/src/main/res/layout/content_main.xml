@@ -9,7 +9,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_content_main"
-        android:name="com.symplified.ordertaker.ui.home.HomeFragment"
+        android:name="com.symplified.ordertaker.ui.main.home.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintLeft_toLeftOf="parent"

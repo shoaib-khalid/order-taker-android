@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.symplified.ordertaker.ui.home.HomeFragment"
+        android:name="com.symplified.ordertaker.ui.main.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 </navigation>

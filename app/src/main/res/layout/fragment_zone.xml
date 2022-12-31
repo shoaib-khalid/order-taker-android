@@ -9,7 +9,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
-    tools:context=".ui.home.ZoneFragment">
+    tools:context=".ui.main.home.ZoneFragment">
 
     <TextView
         android:id="@+id/table_select_instruction"

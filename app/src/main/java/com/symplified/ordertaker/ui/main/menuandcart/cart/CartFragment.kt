@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.menuandcart.cart
+package com.symplified.ordertaker.ui.main.menuandcart.cart
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.symplified.ordertaker.R
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCartBinding
-import com.symplified.ordertaker.databinding.FragmentCategoryBinding
-import com.symplified.ordertaker.ui.menuandcart.categories.CategoriesAdapter
 
 class CartFragment : Fragment() {
     private var _binding: FragmentCartBinding? = null

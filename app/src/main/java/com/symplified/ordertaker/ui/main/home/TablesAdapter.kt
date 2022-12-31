@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.home
+package com.symplified.ordertaker.ui.main.home
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 
 class TablesAdapter(private val tables: IntArray,
-                    private val onTableClickListener: OnTableClickListener) :
+                    private val onTableClickListener: OnTableClickListener
+) :
     RecyclerView.Adapter<TablesAdapter.ViewHolder>() {
 
     interface OnTableClickListener {

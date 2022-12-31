@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.menuandcart.menu
+package com.symplified.ordertaker.ui.main.menuandcart.menu
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,8 @@ import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.Item
 
 class MenuAdapter(private val items: List<Item>,
-                  private val onMenuItemClickListener: OnMenuItemClickedListener) :
+                  private val onMenuItemClickListener: OnMenuItemClickedListener
+) :
 RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
 
     interface OnMenuItemClickedListener {

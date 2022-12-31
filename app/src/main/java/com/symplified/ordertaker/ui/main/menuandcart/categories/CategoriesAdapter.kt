@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.menuandcart.categories
+package com.symplified.ordertaker.ui.main.menuandcart.categories
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 
 class CategoriesAdapter(private val categories: List<String>,
-                        private val onCategoryClickListener: OnCategoryClickListener)
+                        private val onCategoryClickListener: OnCategoryClickListener
+)
     : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
 
     interface OnCategoryClickListener {

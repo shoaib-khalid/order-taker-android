@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.menuandcart.MenuAndCartFragment">
+    tools:context=".ui.main.menuandcart.MenuAndCartFragment">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_category"
-        android:name="com.symplified.ordertaker.ui.menuandcart.categories.CategoryFragment"
+        android:name="com.symplified.ordertaker.ui.main.menuandcart.categories.CategoryFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintWidth_percent="0.10"
@@ -18,7 +18,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_menu"
-        android:name="com.symplified.ordertaker.ui.menuandcart.menu.MenuFragment"
+        android:name="com.symplified.ordertaker.ui.main.menuandcart.menu.MenuFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintWidth_percent="0.30"
@@ -29,7 +29,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_cart"
-        android:name="com.symplified.ordertaker.ui.menuandcart.cart.CartFragment"
+        android:name="com.symplified.ordertaker.ui.main.menuandcart.cart.CartFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintWidth_percent="0.60"

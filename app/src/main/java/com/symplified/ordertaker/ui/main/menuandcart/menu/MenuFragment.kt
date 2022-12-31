@@ -1,17 +1,18 @@
-package com.symplified.ordertaker.ui.menuandcart.categories
+package com.symplified.ordertaker.ui.main.menuandcart.menu
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.symplified.ordertaker.SampleData
-import com.symplified.ordertaker.databinding.FragmentCategoryBinding
+import com.symplified.ordertaker.databinding.FragmentMenuBinding
+import com.symplified.ordertaker.models.Item
 
-class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
+class MenuFragment : Fragment(), MenuAdapter.OnMenuItemClickedListener {
 
-    private var _binding: FragmentCategoryBinding? = null
+    private var _binding: FragmentMenuBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -21,7 +22,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCategoryBinding.inflate(inflater, container, false)
+        _binding = FragmentMenuBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -29,8 +30,8 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 //        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
 //            binding.textView.text = getString("ZONE_NAME")
 //        }
-        binding.categoryList.layoutManager = LinearLayoutManager(context);
-        binding.categoryList.adapter = CategoriesAdapter(SampleData.categories(), this)
+        binding.itemList.layoutManager = GridLayoutManager(context, 3);
+        binding.itemList.adapter = MenuAdapter(SampleData.items(), this)
     }
 
     override fun onDestroyView() {
@@ -38,6 +39,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         _binding = null
     }
 
-    override fun onCategoryClicked(category: String) {
+    override fun onItemClicked(item: Item) {
+
     }
 }

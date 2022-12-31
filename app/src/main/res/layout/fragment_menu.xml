@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.menuandcart.menu.MenuFragment">
+    tools:context=".ui.main.menuandcart.menu.MenuFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"

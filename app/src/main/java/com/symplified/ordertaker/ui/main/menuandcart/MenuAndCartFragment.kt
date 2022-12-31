@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.menuandcart
+package com.symplified.ordertaker.ui.main.menuandcart
 
 import android.content.Context
 import android.content.pm.ActivityInfo

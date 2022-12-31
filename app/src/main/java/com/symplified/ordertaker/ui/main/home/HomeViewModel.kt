@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.home
+package com.symplified.ordertaker.ui.main.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
