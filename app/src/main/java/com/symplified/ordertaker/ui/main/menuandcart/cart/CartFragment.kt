@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.symplified.ordertaker.R
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCartBinding
 
@@ -26,11 +28,18 @@ class CartFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
-//            binding.textView.text = getString("ZONE_NAME")
-//        }
-        binding.cartItemsList.layoutManager = LinearLayoutManager(context);
+        binding.cartItemsList.layoutManager = LinearLayoutManager(view.context);
         binding.cartItemsList.adapter = CartItemsAdapter(SampleData.cartItems())
+
+        val spinner = binding.paymentTypeSpinner
+        ArrayAdapter.createFromResource(
+            view.context,
+            R.array.payment_options_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
     }
 
     override fun onDestroyView() {
