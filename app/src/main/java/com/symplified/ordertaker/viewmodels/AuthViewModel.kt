@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.login
+package com.symplified.ordertaker.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import com.symplified.ordertaker.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LoginViewModel: ViewModel() {
+class AuthViewModel: ViewModel() {
 
     val isLoading: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)

@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/welcome_message"
-            android:textColor="@color/sf_primary"
+            android:textColor="@color/blue_200"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +86,7 @@
             app:layout_constraintTop_toBottomOf="@+id/welcome"
             app:layout_constraintWidth_percent="0.65"
             app:startIconDrawable="@drawable/ic_baseline_person_24"
-            app:startIconTint="@color/sf_primary">
+            app:startIconTint="@color/blue_200">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -111,7 +111,7 @@
             app:layout_constraintWidth_percent="0.65"
             app:passwordToggleEnabled="true"
             app:startIconDrawable="@drawable/ic_baseline_lock_24"
-            app:startIconTint="@color/sf_primary">
+            app:startIconTint="@color/blue_200">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -126,7 +126,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:backgroundTint="@color/sf_primary"
+            android:backgroundTint="@color/blue_200"
             android:paddingVertical="16dp"
             android:text="@string/login_text"
             app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +138,7 @@
             android:id="@+id/btn_production"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/sf_primary"
+            android:backgroundTint="@color/blue_200"
             android:paddingVertical="16dp"
             android:text="@string/production_mode_text"
             android:visibility="gone"

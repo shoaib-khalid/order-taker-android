@@ -50,19 +50,19 @@ class SampleData {
             )
         }
 
-        fun cartItems(): List<CartItem> {
-            val items = items()
-            return listOf(
-                CartItem(items[0], 1),
-                CartItem(items[1], 2),
-                CartItem(items[2], 3),
-                CartItem(items[3], 4),
-                CartItem(items[4], 5),
-                CartItem(items[5], 6),
-                CartItem(items[6], 7),
-                CartItem(items[7], 8),
-                CartItem(items[8], 9)
-            )
-        }
+//        fun cartItems(): List<CartItem> {
+//            val items = items()
+//            return listOf(
+//                CartItem(items[0], 1),
+//                CartItem(items[1], 2),
+//                CartItem(items[2], 3),
+//                CartItem(items[3], 4),
+//                CartItem(items[4], 5),
+//                CartItem(items[5], 6),
+//                CartItem(items[6], 7),
+//                CartItem(items[7], 8),
+//                CartItem(items[8], 9)
+//            )
+//        }
     }
 }
