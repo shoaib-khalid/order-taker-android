@@ -2,16 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<!--    android:backgroundTint="@drawable/selector_row_category"-->
-<!--    android:clickable="true"-->
-<!--    android:focusable="true">-->
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    android:background="@drawable/selector_row_category_bg"
+    android:clickable="true"
+    android:focusable="true">
 
     <TextView
         android:id="@+id/category_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Noodles"
+        android:textColor="@drawable/selector_row_category_text"
         android:padding="20dp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
