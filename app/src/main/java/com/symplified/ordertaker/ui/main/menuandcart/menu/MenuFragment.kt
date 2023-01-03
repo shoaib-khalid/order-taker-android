@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
@@ -30,7 +29,7 @@ class MenuFragment : Fragment(),
     private val binding get() = _binding!!
 
     private val cartViewModel: CartViewModel by viewModels {
-        CartViewModelFactory(OrderTakerApplication.repository)
+        CartViewModelFactory(OrderTakerApplication.cartItemRepository)
     }
 
     override fun onCreateView(

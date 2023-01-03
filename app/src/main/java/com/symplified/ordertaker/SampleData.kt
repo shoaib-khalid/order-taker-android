@@ -1,6 +1,7 @@
 package com.symplified.ordertaker
 
 import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.Category
 import com.symplified.ordertaker.models.Item
 import com.symplified.ordertaker.models.Zone
 
@@ -15,18 +16,18 @@ class SampleData {
             )
         }
 
-        fun categories(): List<String> {
+        fun categories(): List<Category> {
             return listOf(
-                "Best Seller",
-                "Appetizer",
-                "Main Course",
-                "Soup",
-                "Drinks",
-                "BBQ",
-                "Dessert",
-                "Salad",
-                "Pasta",
-                "Noodles"
+                Category(0, "Best Seller"),
+                Category(0, "Appetizer"),
+                Category(0, "Main Course"),
+                Category(0, "Soup"),
+                Category(0, "Drinks"),
+                Category(0, "BBQ"),
+                Category(0, "Dessert"),
+                Category(0, "Salad"),
+                Category(0, "Pasta"),
+                Category(0, "Noodles")
             )
         }
 

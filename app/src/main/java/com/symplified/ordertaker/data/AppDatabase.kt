@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.Category
 
-@Database(entities = [CartItem::class], version = 1, exportSchema = false)
+@Database(entities = [CartItem::class, Category::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun categoryDao(): CategoryDao
     abstract fun cartItemDao(): CartItemDao
 
     companion object {

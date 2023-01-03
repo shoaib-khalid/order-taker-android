@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.R
@@ -15,7 +14,6 @@ import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.Item
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.CartViewModelFactory
-import kotlinx.coroutines.launch
 
 class MenuItemSelectionBottomSheet(
     private val menuItem: Item,
@@ -28,7 +26,7 @@ class MenuItemSelectionBottomSheet(
 
     private var quantity = 1
     private val cartViewModel: CartViewModel by viewModels {
-        CartViewModelFactory(OrderTakerApplication.repository)
+        CartViewModelFactory(OrderTakerApplication.cartItemRepository)
     }
 
     override fun onCreateView(

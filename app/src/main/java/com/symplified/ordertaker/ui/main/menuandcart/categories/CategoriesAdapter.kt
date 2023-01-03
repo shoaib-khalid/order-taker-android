@@ -10,11 +10,12 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
+import com.symplified.ordertaker.models.Category
 
-class CategoriesAdapter(private val categories: List<String>,
-                        private val onCategoryClickListener: OnCategoryClickListener
-)
-    : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
+class CategoriesAdapter(
+    private var categories: List<Category> = mutableListOf(),
+    private val onCategoryClickListener: OnCategoryClickListener
+) : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
 
     private var selectedPosition = RecyclerView.NO_POSITION
 
@@ -42,15 +43,20 @@ class CategoriesAdapter(private val categories: List<String>,
 //        viewHolder.textView.isSelected = isSelected
         viewHolder.textView.setTextColor(Color.parseColor(if (isSelected) "#FFFFFFFF" else "#FF000000"))
 
-        viewHolder.textView.text = categories[position]
+        viewHolder.textView.text = categories[position].name
         viewHolder.itemView.setOnClickListener {
-            Log.d("category", "onClicked ${categories[position]}")
+            Log.d("category", "onClicked ${categories[position].name}")
             notifyItemChanged(selectedPosition)
             notifyItemChanged(viewHolder.adapterPosition)
             selectedPosition = viewHolder.adapterPosition
-            onCategoryClickListener.onCategoryClicked(categories[selectedPosition])
+            onCategoryClickListener.onCategoryClicked(categories[selectedPosition].name)
         }
     }
 
     override fun getItemCount() = categories.size
+
+    fun updateItems(updatedCategories: List<Category>) {
+        categories = updatedCategories
+        notifyDataSetChanged()
+    }
 }

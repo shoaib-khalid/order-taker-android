@@ -1,13 +1,18 @@
 package com.symplified.ordertaker.ui.main.menuandcart.categories
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
+import com.symplified.ordertaker.viewmodels.MenuViewModel
+import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
 
 class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 
@@ -16,6 +21,10 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private val menuViewModel: MenuViewModel by viewModels {
+        MenuViewModelFactory(OrderTakerApplication.categoryRepository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,8 +38,21 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 //        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
 //            binding.textView.text = getString("ZONE_NAME")
 //        }
-        binding.categoryList.layoutManager = LinearLayoutManager(context);
-        binding.categoryList.adapter = CategoriesAdapter(SampleData.categories(), this)
+        val categoriesAdapter = CategoriesAdapter( onCategoryClickListener = this)
+        val categoryList = binding.categoryList
+        categoryList.layoutManager = LinearLayoutManager(view.context)
+        categoryList.adapter = categoriesAdapter
+
+        menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
+            Log.d("categories", "No. of categories: ${categories.size}")
+            categoriesAdapter.updateItems(categories)
+
+            if (categories.isEmpty()) {
+                SampleData.categories().forEach { category ->
+                    menuViewModel.insert(category)
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

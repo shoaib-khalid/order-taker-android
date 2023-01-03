@@ -1,11 +1,9 @@
 package com.symplified.ordertaker.viewmodels
 
-import android.content.Context
-import android.util.Log
-import androidx.lifecycle.*
-import androidx.room.Room
-import com.symplified.ordertaker.R
-import com.symplified.ordertaker.data.AppDatabase
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import com.symplified.ordertaker.data.repository.CartItemRepository
 import com.symplified.ordertaker.models.CartItem
 import kotlinx.coroutines.CoroutineScope

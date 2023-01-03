@@ -15,9 +15,6 @@ import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.CartViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
     private var _binding: FragmentCartBinding? = null
@@ -27,7 +24,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
     private val binding get() = _binding!!
 
     private val cartViewModel: CartViewModel by viewModels {
-        CartViewModelFactory(OrderTakerApplication.repository)
+        CartViewModelFactory(OrderTakerApplication.cartItemRepository)
     }
 
     override fun onCreateView(
@@ -46,7 +43,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         cartItemsList.adapter = cartItemsAdapter
 
         cartViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
-            Log.d("add-to-cart", "CartItems Updated. Size: ${cartItems.size}")
             cartItemsAdapter.updateItems(cartItems)
         }
 
