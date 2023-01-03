@@ -1,12 +1,14 @@
 package com.symplified.ordertaker.ui.main.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.symplified.ordertaker.R
@@ -40,9 +42,8 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
     }
 
     override fun onTableClicked(tableNo: Int) {
-        val action =
-            HomeFragmentDirections
-                .actionNavHomeToMenuAndCartFragment()
-        findNavController().navigate(action)
+        Log.d("nav-controller", "onTableClicked $tableNo")
+        findNavController().navigate(HomeFragmentDirections
+            .actionNavHomeToMenuAndCartFragment())
     }
 }

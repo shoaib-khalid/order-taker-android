@@ -1,8 +1,10 @@
 package com.symplified.ordertaker.ui.main.menuandcart.categories
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
@@ -11,6 +13,8 @@ class CategoriesAdapter(private val categories: List<String>,
                         private val onCategoryClickListener: OnCategoryClickListener
 )
     : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
+
+    private var selectedPosition = RecyclerView.NO_POSITION
 
     interface OnCategoryClickListener {
         fun onCategoryClicked(category: String)
@@ -31,9 +35,15 @@ class CategoriesAdapter(private val categories: List<String>,
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+//        viewHolder.itemView.isSelected = (selectedPosition == position)
+
         viewHolder.textView.text = categories[position]
         viewHolder.itemView.setOnClickListener {
-            onCategoryClickListener.onCategoryClicked(categories[position])
+            Log.d("category", "onClicked ${categories[position]}")
+        //            notifyItemChanged(selectedPosition)
+//            notifyItemChanged(viewHolder.adapterPosition)
+//            selectedPosition = viewHolder.adapterPosition
+//            onCategoryClickListener.onCategoryClicked(categories[selectedPosition])
         }
     }
 
