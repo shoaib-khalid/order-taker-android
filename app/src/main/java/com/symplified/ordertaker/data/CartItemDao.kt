@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.symplified.ordertaker.models.CartItem
@@ -14,6 +15,9 @@ interface CartItemDao {
 
     @Insert
     fun insert(cartItem: CartItem)
+
+    @Delete
+    fun delete(cartItem: CartItem)
 
     @Query("DELETE FROM cart_items")
     fun clear()

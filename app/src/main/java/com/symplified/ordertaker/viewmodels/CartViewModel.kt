@@ -15,11 +15,15 @@ import kotlinx.coroutines.launch
 class CartViewModel(private val repository: CartItemRepository): ViewModel() {
     val cartItems: LiveData<List<CartItem>> = repository.allItems.asLiveData()
 
-    suspend fun insert(cartItem: CartItem) = CoroutineScope(Dispatchers.IO).launch {
+    fun insert(cartItem: CartItem) = CoroutineScope(Dispatchers.IO).launch {
         repository.insert(cartItem)
     }
 
-    suspend fun clearAll() = CoroutineScope(Dispatchers.IO).launch {
+    fun delete(cartItem: CartItem) = CoroutineScope(Dispatchers.IO).launch {
+        repository.delete(cartItem)
+    }
+
+    fun clearAll() = CoroutineScope(Dispatchers.IO).launch {
         repository.clear()
     }
 }

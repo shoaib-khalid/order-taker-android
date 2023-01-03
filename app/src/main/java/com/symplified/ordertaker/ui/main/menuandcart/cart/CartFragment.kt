@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCartBinding
+import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.CartViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CartFragment : Fragment() {
+class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
     private var _binding: FragmentCartBinding? = null
 
     // This property is only valid between onCreateView and
@@ -39,7 +40,7 @@ class CartFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val cartItemsAdapter = CartItemsAdapter()
+        val cartItemsAdapter = CartItemsAdapter(onRemoveFromCartListener = this)
         val cartItemsList = binding.cartItemsList
         cartItemsList.layoutManager = LinearLayoutManager(view.context);
         cartItemsList.adapter = cartItemsAdapter
@@ -59,15 +60,16 @@ class CartFragment : Fragment() {
             spinner.adapter = spinnerAdapter
         }
 
-        binding.clearCartButton.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                cartViewModel.clearAll()
-            }
-        }
+        binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
+        binding.placeOrderButton.setOnClickListener { cartViewModel.clearAll() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onItemRemoved(cartItem: CartItem) {
+        cartViewModel.delete(cartItem)
     }
 }

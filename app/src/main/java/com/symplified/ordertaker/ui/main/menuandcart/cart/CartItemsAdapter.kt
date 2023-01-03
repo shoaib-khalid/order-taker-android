@@ -11,8 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.CartItem
 
-class CartItemsAdapter(private val cartItems : MutableList<CartItem> = mutableListOf())
-    : RecyclerView.Adapter<CartItemsAdapter.ViewHolder>() {
+class CartItemsAdapter(
+    private val cartItems: MutableList<CartItem> = mutableListOf(),
+    private val onRemoveFromCartListener: OnRemoveFromCartListener
+) : RecyclerView.Adapter<CartItemsAdapter.ViewHolder>() {
+
+    interface OnRemoveFromCartListener {
+        fun onItemRemoved(cartItem: CartItem)
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemNumber: TextView
@@ -44,6 +50,10 @@ class CartItemsAdapter(private val cartItems : MutableList<CartItem> = mutableLi
         val price = cartItems[position].itemPrice
         viewHolder.itemQuantity.text = quantity.toString()
         viewHolder.itemPrice.text = "RM " + (price * quantity)
+
+        viewHolder.deleteBtn.setOnClickListener {
+            onRemoveFromCartListener.onItemRemoved(cartItems[position])
+        }
     }
 
     override fun getItemCount() = cartItems.size
@@ -55,17 +65,10 @@ class CartItemsAdapter(private val cartItems : MutableList<CartItem> = mutableLi
     fun updateItems(cartItemsToAdd: List<CartItem>) {
         if (cartItemsToAdd.isEmpty()) {
             cartItems.clear()
-            notifyDataSetChanged()
         } else {
-            cartItemsToAdd.forEach { cartItem ->
-                if (!cartItems.contains(cartItem)) {
-                    cartItems.add(cartItem)
-                    Log.d("add-to-cart", "${cartItem.itemName} added.")
-                } else {
-                    Log.d("add-to-cart", "${cartItem.itemName} not added.")
-                }
-                notifyDataSetChanged()
-            }
+            cartItems.clear()
+            cartItems.addAll(cartItemsToAdd)
         }
+        notifyDataSetChanged()
     }
 }
