@@ -36,7 +36,7 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
 //        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
 //            binding.textView.text = getString("ZONE_NAME")
 //        }
-        binding.tablesList.layoutManager = GridLayoutManager(context, 8);
+        binding.tablesList.layoutManager = GridLayoutManager(context, 6);
         val tables = IntArray(50) { i -> i + 1 }
         binding.tablesList.adapter = TablesAdapter(tables, this)
     }

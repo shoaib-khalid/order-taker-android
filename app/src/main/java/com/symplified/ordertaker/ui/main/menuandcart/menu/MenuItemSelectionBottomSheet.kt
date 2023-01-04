@@ -11,12 +11,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.CartItem
-import com.symplified.ordertaker.models.Item
+import com.symplified.ordertaker.models.MenuItem
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.CartViewModelFactory
 
 class MenuItemSelectionBottomSheet(
-    private val menuItem: Item,
+    private val menuItem: MenuItem,
     private val onAddToCartListener: OnAddToCartListener
 ) : BottomSheetDialogFragment() {
 

@@ -5,7 +5,7 @@ import com.symplified.ordertaker.models.Category
 import kotlinx.coroutines.flow.Flow
 
 class CategoryRepository(private val categoryDao: CategoryDao) {
-    val allItems:  Flow<List<Category>> = categoryDao.getAll()
+    val allItems: Flow<List<Category>> = categoryDao.getAll()
 
     fun insert(category: Category) = categoryDao.insert(category)
 

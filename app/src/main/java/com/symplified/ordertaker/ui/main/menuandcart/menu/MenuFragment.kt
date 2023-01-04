@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,16 +12,17 @@ import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.CartItem
-import com.symplified.ordertaker.models.Item
-import com.symplified.ordertaker.viewmodels.CartViewModel
-import com.symplified.ordertaker.viewmodels.CartViewModelFactory
+import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.viewmodels.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MenuFragment : Fragment(),
     MenuAdapter.OnMenuItemClickedListener,
-    MenuItemSelectionBottomSheet.OnAddToCartListener {
+    MenuItemSelectionBottomSheet.OnAddToCartListener,
+    MenuViewModel.CurrentCategoryObserver {
 
     private var _binding: FragmentMenuBinding? = null
 
@@ -31,6 +33,14 @@ class MenuFragment : Fragment(),
     private val cartViewModel: CartViewModel by viewModels {
         CartViewModelFactory(OrderTakerApplication.cartItemRepository)
     }
+    private val menuViewModel: MenuViewModel by viewModels {
+        MenuViewModelFactory(
+            OrderTakerApplication.categoryRepository,
+            OrderTakerApplication.menuItemRepository
+        )
+    }
+
+    private val exampleViewModel: ExampleViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +54,14 @@ class MenuFragment : Fragment(),
 //        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
 //            binding.textView.text = getString("ZONE_NAME")
 //        }
-        binding.itemList.layoutManager = GridLayoutManager(context, 3);
-        binding.itemList.adapter = MenuAdapter(SampleData.items(), this)
+        val menuAdapter = MenuAdapter(SampleData.items(), this)
+        val itemList = binding.itemList
+        itemList.layoutManager = GridLayoutManager(context, 3);
+        itemList.adapter = menuAdapter
+
+        menuViewModel.currentCategory.observe(viewLifecycleOwner) { category ->
+            Log.d("categories", "MenuFragment: ${category.name} selected")
+        }
     }
 
     override fun onDestroyView() {
@@ -53,7 +69,7 @@ class MenuFragment : Fragment(),
         _binding = null
     }
 
-    override fun onItemClicked(item: Item) {
+    override fun onItemClicked(item: MenuItem) {
         MenuItemSelectionBottomSheet(item, this).show(
             childFragmentManager, "MenuItemSelectionBottomSheet"
         )
@@ -61,5 +77,9 @@ class MenuFragment : Fragment(),
 
     override fun onItemAdded(cartItem: CartItem) {
         CoroutineScope(Dispatchers.IO).launch { cartViewModel.insert(cartItem) }
+    }
+
+    override fun onCurrentCategoryChanged(category: Category) {
+        Log.d("categories", "MenuFragment onCurrentCategoryChanged to ${category.name}")
     }
 }

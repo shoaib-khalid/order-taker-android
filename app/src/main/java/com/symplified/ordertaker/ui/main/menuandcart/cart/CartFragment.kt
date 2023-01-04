@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCartBinding
@@ -57,7 +58,10 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
-        binding.placeOrderButton.setOnClickListener { cartViewModel.clearAll() }
+        binding.placeOrderButton.setOnClickListener {
+            cartViewModel.clearAll()
+            Snackbar.make(view, "Order placed", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {

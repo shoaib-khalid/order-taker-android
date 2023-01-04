@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
+import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.viewmodels.ExampleViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
 
@@ -23,7 +25,10 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     private val binding get() = _binding!!
 
     private val menuViewModel: MenuViewModel by viewModels {
-        MenuViewModelFactory(OrderTakerApplication.categoryRepository)
+        MenuViewModelFactory(
+            OrderTakerApplication.categoryRepository,
+            OrderTakerApplication.menuItemRepository
+        )
     }
 
     override fun onCreateView(
@@ -38,13 +43,12 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 //        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
 //            binding.textView.text = getString("ZONE_NAME")
 //        }
-        val categoriesAdapter = CategoriesAdapter( onCategoryClickListener = this)
+        val categoriesAdapter = CategoriesAdapter(onCategoryClickListener = this)
         val categoryList = binding.categoryList
         categoryList.layoutManager = LinearLayoutManager(view.context)
         categoryList.adapter = categoriesAdapter
 
         menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
-            Log.d("categories", "No. of categories: ${categories.size}")
             categoriesAdapter.updateItems(categories)
 
             if (categories.isEmpty()) {
@@ -60,6 +64,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         _binding = null
     }
 
-    override fun onCategoryClicked(category: String) {
+    override fun onCategoryClicked(category: Category) {
+        menuViewModel.setCurrentCategory(category)
     }
 }

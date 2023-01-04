@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.models.Item
+import com.symplified.ordertaker.models.MenuItem
 
-class MenuAdapter(private val items: List<Item>,
+class MenuAdapter(private val items: List<MenuItem>,
                   private val onMenuItemClickListener: OnMenuItemClickedListener
 ) :
 RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
 
     interface OnMenuItemClickedListener {
-        fun onItemClicked(item: Item)
+        fun onItemClicked(item: MenuItem)
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {

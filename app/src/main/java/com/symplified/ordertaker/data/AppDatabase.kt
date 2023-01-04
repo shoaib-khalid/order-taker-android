@@ -6,10 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.MenuItem
 
-@Database(entities = [CartItem::class, Category::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        Category::class,
+        MenuItem::class,
+        CartItem::class
+    ], version = 1, exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
+    abstract fun menuItemDao(): MenuItemDao
     abstract fun cartItemDao(): CartItemDao
 
     companion object {
@@ -19,8 +27,7 @@ abstract class AppDatabase : RoomDatabase() {
         fun getDatabase(context: Context): AppDatabase {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
-            return INSTANCE ?:
-            synchronized(this) {
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,

@@ -17,6 +17,6 @@
     <fragment
         android:id="@+id/menuAndCartFragment"
         android:name="com.symplified.ordertaker.ui.main.menuandcart.MenuAndCartFragment"
-        android:label="fragment_menu_and_cart"
+        android:label="Order For Table"
         tools:layout="@layout/fragment_menu_and_cart" />
 </navigation>

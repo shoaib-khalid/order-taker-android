@@ -5,6 +5,7 @@ import android.content.Context
 import com.symplified.ordertaker.data.AppDatabase
 import com.symplified.ordertaker.data.repository.CartItemRepository
 import com.symplified.ordertaker.data.repository.CategoryRepository
+import com.symplified.ordertaker.data.repository.MenuItemRepository
 
 class OrderTakerApplication : Application() {
 
@@ -18,8 +19,9 @@ class OrderTakerApplication : Application() {
         val database by lazy { AppDatabase.getDatabase(applicationContext()) }
         val cartItemRepository by lazy { CartItemRepository(database.cartItemDao()) }
         val categoryRepository by lazy { CategoryRepository(database.categoryDao()) }
+        val menuItemRepository by lazy { MenuItemRepository(database.menuItemDao()) }
 
-        fun applicationContext() : Context {
+        fun applicationContext(): Context {
             return instance!!.applicationContext
         }
     }

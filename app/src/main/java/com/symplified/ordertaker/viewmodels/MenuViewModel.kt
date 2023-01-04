@@ -1,32 +1,64 @@
 package com.symplified.ordertaker.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
+import android.util.Log
+import androidx.lifecycle.*
 import com.symplified.ordertaker.data.repository.CategoryRepository
+import com.symplified.ordertaker.data.repository.MenuItemRepository
 import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.MenuItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MenuViewModel(private val repository: CategoryRepository): ViewModel() {
-    val categories: LiveData<List<Category>> = repository.allItems.asLiveData()
+class MenuViewModel(
+    private val categoryRepository: CategoryRepository,
+    private val menuItemRepository: MenuItemRepository
+) : ViewModel() {
+    val categories: LiveData<List<Category>> = categoryRepository.allItems.asLiveData()
+    val menuItems: LiveData<List<MenuItem>> = menuItemRepository.allItems.asLiveData()
 
-    fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
-        repository.insert(category)
+    interface CurrentCategoryObserver {
+        fun onCurrentCategoryChanged(category: Category)
     }
 
-    fun clearAll() = CoroutineScope(Dispatchers.IO).launch {
-        repository.clear()
+    val currentCategory: MutableLiveData<Category> by lazy {
+        MutableLiveData<Category>()
+    }
+
+    //    var currentCategory: Category = Category(name = "")
+    fun setCurrentCategory(category: Category) {
+//        currentCategory.value = category
+        viewModelScope.launch {
+            currentCategory.value = category
+        }
+
+        Log.d(
+            "categories",
+            "ViewModel: New Category set. Current Category has observers: ${currentCategory.hasObservers()}" +
+                    "Current Category has active observers: ${currentCategory.hasActiveObservers()}"
+        )
+    }
+
+    fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
+        categoryRepository.insert(category)
+    }
+
+    fun insert(menuItem: MenuItem) = CoroutineScope(Dispatchers.IO).launch {
+        menuItemRepository.insert(menuItem)
+    }
+
+    fun clearAllCategories() = CoroutineScope(Dispatchers.IO).launch {
+        categoryRepository.clear()
     }
 }
 
-class MenuViewModelFactory(private val repository: CategoryRepository)
-    : ViewModelProvider.Factory {
+class MenuViewModelFactory(
+    private val categoryRepository: CategoryRepository,
+    private val menuItemRepository: MenuItemRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MenuViewModel::class.java)) {
-            return MenuViewModel(repository) as T
+            return MenuViewModel(categoryRepository, menuItemRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

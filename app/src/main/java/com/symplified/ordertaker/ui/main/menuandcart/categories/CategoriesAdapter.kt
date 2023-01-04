@@ -20,7 +20,7 @@ class CategoriesAdapter(
     private var selectedPosition = RecyclerView.NO_POSITION
 
     interface OnCategoryClickListener {
-        fun onCategoryClicked(category: String)
+        fun onCategoryClicked(category: Category)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -49,7 +49,7 @@ class CategoriesAdapter(
             notifyItemChanged(selectedPosition)
             notifyItemChanged(viewHolder.adapterPosition)
             selectedPosition = viewHolder.adapterPosition
-            onCategoryClickListener.onCategoryClicked(categories[selectedPosition].name)
+            onCategoryClickListener.onCategoryClicked(categories[selectedPosition])
         }
     }
 

@@ -1,8 +1,7 @@
 package com.symplified.ordertaker
 
-import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.Category
-import com.symplified.ordertaker.models.Item
+import com.symplified.ordertaker.models.MenuItem
 import com.symplified.ordertaker.models.Zone
 
 class SampleData {
@@ -18,36 +17,36 @@ class SampleData {
 
         fun categories(): List<Category> {
             return listOf(
-                Category(0, "Best Seller"),
-                Category(0, "Appetizer"),
-                Category(0, "Main Course"),
-                Category(0, "Soup"),
-                Category(0, "Drinks"),
-                Category(0, "BBQ"),
-                Category(0, "Dessert"),
-                Category(0, "Salad"),
-                Category(0, "Pasta"),
-                Category(0, "Noodles")
+                Category(name = "Best Seller"),
+                Category(name = "Appetizer"),
+                Category(name = "Main Course"),
+                Category(name = "Soup"),
+                Category(name = "Drinks"),
+                Category(name = "BBQ"),
+                Category(name = "Dessert"),
+                Category(name = "Salad"),
+                Category(name = "Pasta"),
+                Category(name = "Noodles")
             )
         }
 
-        fun items(): List<Item> {
+        fun items(): List<MenuItem> {
             return listOf(
-                Item("Hawaiian Pizza", 17.00),
-                Item("Seafood Onion Pizza", 27.00),
-                Item("Beef Lasagna", 23.00),
-                Item("Aglio Oglio with Prawns", 29.00),
-                Item("Beef Bolognese Pasta", 29.00),
-                Item("Chicken Hotdog", 29.00),
-                Item("Latte", 9.00),
-                Item("Fruit Juice", 9.00),
-                Item("Black Forest Cake", 9.00),
-                Item("Earl Grey Tea", 9.00),
-                Item("Green Tea", 9.00),
-                Item("Fruits Platter", 9.00),
-                Item("Jasmine Tea", 9.00),
-                Item("Lotus Tea", 9.00),
-                Item("Pu Er Tea", 9.00)
+                MenuItem(name = "Hawaiian Pizza", price = 17.00),
+                MenuItem(name = "Seafood Onion Pizza", price = 27.00),
+                MenuItem(name = "Beef Lasagna", price = 23.00),
+                MenuItem(name = "Aglio Oglio with Prawns", price = 29.00),
+                MenuItem(name = "Beef Bolognese Pasta", price = 29.00),
+                MenuItem(name = "Chicken Hotdog", price = 29.00),
+                MenuItem(name = "Latte", price = 9.00),
+                MenuItem(name = "Fruit Juice", price = 9.00),
+                MenuItem(name = "Black Forest Cake", price = 9.00),
+                MenuItem(name = "Earl Grey Tea", price = 9.00),
+                MenuItem(name = "Green Tea", price = 9.00),
+                MenuItem(name = "Fruits Platter", price = 9.00),
+                MenuItem(name = "Jasmine Tea", price = 9.00),
+                MenuItem(name = "Lotus Tea", price = 9.00),
+                MenuItem(name = "Pu Er Tea", price = 9.00)
             )
         }
 
