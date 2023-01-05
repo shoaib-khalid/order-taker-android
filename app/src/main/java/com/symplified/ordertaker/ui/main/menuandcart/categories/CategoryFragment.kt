@@ -65,6 +65,5 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     }
 
     override fun onCategoryClicked(category: Category) {
-        menuViewModel.setCurrentCategory(category)
     }
 }

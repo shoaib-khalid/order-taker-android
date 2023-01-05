@@ -17,38 +17,16 @@ class MenuViewModel(
     val categories: LiveData<List<Category>> = categoryRepository.allItems.asLiveData()
     val menuItems: LiveData<List<MenuItem>> = menuItemRepository.allItems.asLiveData()
 
-    interface CurrentCategoryObserver {
-        fun onCurrentCategoryChanged(category: Category)
-    }
-
-    val currentCategory: MutableLiveData<Category> by lazy {
-        MutableLiveData<Category>()
-    }
-
-    //    var currentCategory: Category = Category(name = "")
-    fun setCurrentCategory(category: Category) {
-//        currentCategory.value = category
-        viewModelScope.launch {
-            currentCategory.value = category
-        }
-
-        Log.d(
-            "categories",
-            "ViewModel: New Category set. Current Category has observers: ${currentCategory.hasObservers()}" +
-                    "Current Category has active observers: ${currentCategory.hasActiveObservers()}"
-        )
-    }
-
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
         categoryRepository.insert(category)
     }
 
-    fun insert(menuItem: MenuItem) = CoroutineScope(Dispatchers.IO).launch {
-        menuItemRepository.insert(menuItem)
-    }
-
     fun clearAllCategories() = CoroutineScope(Dispatchers.IO).launch {
         categoryRepository.clear()
+    }
+
+    fun insert(menuItem: MenuItem) = CoroutineScope(Dispatchers.IO).launch {
+        menuItemRepository.insert(menuItem)
     }
 }
 
