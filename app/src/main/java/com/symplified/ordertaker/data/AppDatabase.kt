@@ -7,15 +7,21 @@ import androidx.room.RoomDatabase
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.Category
 import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.zones.Zone
+import com.symplified.ordertaker.models.zones.Table
 
 @Database(
     entities = [
+        Table::class,
+        Zone::class,
         Category::class,
         MenuItem::class,
-        CartItem::class
+        CartItem::class,
     ], version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun tableDao(): TableDao
+    abstract fun zoneDao(): ZoneDao
     abstract fun categoryDao(): CategoryDao
     abstract fun menuItemDao(): MenuItemDao
     abstract fun cartItemDao(): CartItemDao

@@ -3,9 +3,7 @@ package com.symplified.ordertaker
 import android.app.Application
 import android.content.Context
 import com.symplified.ordertaker.data.AppDatabase
-import com.symplified.ordertaker.data.repository.CartItemRepository
-import com.symplified.ordertaker.data.repository.CategoryRepository
-import com.symplified.ordertaker.data.repository.MenuItemRepository
+import com.symplified.ordertaker.data.repository.*
 
 class OrderTakerApplication : Application() {
 
@@ -14,9 +12,13 @@ class OrderTakerApplication : Application() {
     }
 
     companion object {
+        const val testStoreId = "c9315221-a003-4830-9e28-c26c3d044dff"
+
         private var instance: OrderTakerApplication? = null
 
         val database by lazy { AppDatabase.getDatabase(applicationContext()) }
+        val tableRepository by lazy { TableRepository(database.tableDao()) }
+        val zoneRepository by lazy { ZoneRepository(database.zoneDao()) }
         val cartItemRepository by lazy { CartItemRepository(database.cartItemDao()) }
         val categoryRepository by lazy { CategoryRepository(database.categoryDao()) }
         val menuItemRepository by lazy { MenuItemRepository(database.menuItemDao()) }

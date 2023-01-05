@@ -6,12 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.FtsOptions.Order
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
 import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.networking.ServiceGenerator
+import com.symplified.ordertaker.ui.main.MainActivity
 import com.symplified.ordertaker.viewmodels.ExampleViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
@@ -26,6 +30,8 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 
     private val menuViewModel: MenuViewModel by viewModels {
         MenuViewModelFactory(
+            OrderTakerApplication.tableRepository,
+            OrderTakerApplication.zoneRepository,
             OrderTakerApplication.categoryRepository,
             OrderTakerApplication.menuItemRepository
         )
@@ -40,9 +46,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
-//            binding.textView.text = getString("ZONE_NAME")
-//        }
         val categoriesAdapter = CategoriesAdapter(onCategoryClickListener = this)
         val categoryList = binding.categoryList
         categoryList.layoutManager = LinearLayoutManager(view.context)
@@ -57,6 +60,16 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
                 }
             }
         }
+
+        menuViewModel.currentCategory.observe(viewLifecycleOwner) { newCategory ->
+            Log.d("categories", "CategoryFragment: New category set: ${newCategory.name}")
+            Toast.makeText(
+                context,
+                "CategoryFragment: New category set: ${newCategory.name}",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        }
     }
 
     override fun onDestroyView() {
@@ -65,5 +78,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     }
 
     override fun onCategoryClicked(category: Category) {
+        menuViewModel.setCurrentCategory(category)
     }
 }

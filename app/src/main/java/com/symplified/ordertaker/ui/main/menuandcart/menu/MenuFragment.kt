@@ -14,6 +14,7 @@ import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.Category
 import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.ui.main.menuandcart.categories.CategoriesAdapter
 import com.symplified.ordertaker.viewmodels.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +23,9 @@ import kotlinx.coroutines.launch
 class MenuFragment : Fragment(),
     MenuAdapter.OnMenuItemClickedListener,
     MenuItemSelectionBottomSheet.OnAddToCartListener,
-    MenuViewModel.CurrentCategoryObserver {
+    CategoriesAdapter.OnCategoryClickListener {
 
     private var _binding: FragmentMenuBinding? = null
-
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -35,12 +35,12 @@ class MenuFragment : Fragment(),
     }
     private val menuViewModel: MenuViewModel by viewModels {
         MenuViewModelFactory(
+            OrderTakerApplication.tableRepository,
+            OrderTakerApplication.zoneRepository,
             OrderTakerApplication.categoryRepository,
             OrderTakerApplication.menuItemRepository
         )
     }
-
-    private val exampleViewModel: ExampleViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +51,6 @@ class MenuFragment : Fragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        arguments?.takeIf { it.containsKey("ZONE_NAME") }?.apply {
-//            binding.textView.text = getString("ZONE_NAME")
-//        }
         val menuAdapter = MenuAdapter(SampleData.items(), this)
         val itemList = binding.itemList
         itemList.layoutManager = GridLayoutManager(context, 3);
@@ -79,7 +76,7 @@ class MenuFragment : Fragment(),
         CoroutineScope(Dispatchers.IO).launch { cartViewModel.insert(cartItem) }
     }
 
-    override fun onCurrentCategoryChanged(category: Category) {
+    override fun onCategoryClicked(category: Category) {
         Log.d("categories", "MenuFragment onCurrentCategoryChanged to ${category.name}")
     }
 }
