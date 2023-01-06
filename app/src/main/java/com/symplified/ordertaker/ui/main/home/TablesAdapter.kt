@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
+import com.symplified.ordertaker.models.zones.Table
 
-class TablesAdapter(private val tables: IntArray,
+class TablesAdapter(private var tables: List<Table> = listOf(),
                     private val onTableClickListener: OnTableClickListener
 ) :
     RecyclerView.Adapter<TablesAdapter.ViewHolder>() {
@@ -31,11 +32,16 @@ class TablesAdapter(private val tables: IntArray,
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.textView.text = tables[position].toString()
+        viewHolder.textView.text = tables[position].combinationTableNumber
         viewHolder.textView.setOnClickListener {
             onTableClickListener.onTableClicked(position)
         }
     }
 
     override fun getItemCount() = tables.size
+
+    fun setTables(newTables: List<Table>) {
+        tables = newTables
+        notifyDataSetChanged()
+    }
 }

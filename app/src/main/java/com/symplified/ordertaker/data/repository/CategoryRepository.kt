@@ -1,7 +1,7 @@
 package com.symplified.ordertaker.data.repository
 
 import com.symplified.ordertaker.data.CategoryDao
-import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.categories.Category
 import kotlinx.coroutines.flow.Flow
 
 class CategoryRepository(private val categoryDao: CategoryDao) {

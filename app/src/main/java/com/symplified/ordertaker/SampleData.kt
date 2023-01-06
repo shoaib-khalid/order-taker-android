@@ -1,10 +1,19 @@
 package com.symplified.ordertaker
 
-import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.zones.Zone
+import com.symplified.ordertaker.models.zones.ZoneWithTables
 
 class SampleData {
     companion object {
+
+        fun zones(): List<ZoneWithTables> {
+            return listOf(
+                ZoneWithTables(Zone(1, 1, "Nigga1"), listOf()),
+                ZoneWithTables(Zone(2, 2, "Nigga2"), listOf())
+            )
+        }
 
         fun categories(): List<Category> {
             return listOf(

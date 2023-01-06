@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.models
+package com.symplified.ordertaker.models.categories
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

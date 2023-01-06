@@ -7,8 +7,9 @@ import com.symplified.ordertaker.data.repository.CategoryRepository
 import com.symplified.ordertaker.data.repository.MenuItemRepository
 import com.symplified.ordertaker.data.repository.TableRepository
 import com.symplified.ordertaker.data.repository.ZoneRepository
-import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.models.zones.ZonesResponseBody
@@ -26,7 +27,8 @@ class MenuViewModel(
     private val categoryRepository: CategoryRepository,
     private val menuItemRepository: MenuItemRepository,
 ) : ViewModel() {
-    val zones: LiveData<List<ZoneWithTables>> = zoneRepository.allZones.asLiveData()
+    val zonesWithTables: LiveData<List<ZoneWithTables>> = zoneRepository.allZones.asLiveData()
+    val tables: LiveData<List<Table>> = tableRepository.allTables.asLiveData()
     val categories: LiveData<List<Category>> = categoryRepository.allItems.asLiveData()
     val menuItems: LiveData<List<MenuItem>> = menuItemRepository.allItems.asLiveData()
 
@@ -65,7 +67,10 @@ class MenuViewModel(
         _currentCategory.value = category
     }
 
+    private val _isLoadingZonesAndTables = MutableLiveData<Boolean>().apply { value = false }
+    val isLoadingZonesAndTables : LiveData<Boolean> = _isLoadingZonesAndTables
     fun getZonesAndTables(locationApi: LocationApi) {
+        _isLoadingZonesAndTables.value = true
         locationApi
             .getZones(OrderTakerApplication.testStoreId)
             .clone()
@@ -75,6 +80,7 @@ class MenuViewModel(
                         call: Call<ZonesResponseBody>,
                         response: Response<ZonesResponseBody>
                     ) {
+                        _isLoadingZonesAndTables.value = false
                         Log.d("zones", "Raw response: ${response.raw()}")
                         if (response.isSuccessful) {
                             response.body()?.let { zoneData ->
@@ -84,6 +90,7 @@ class MenuViewModel(
                     }
 
                     override fun onFailure(call: Call<ZonesResponseBody>, t: Throwable) {
+                        _isLoadingZonesAndTables.value = false
                         Log.d("zones", "onFailure ${t.localizedMessage}")
                     }
                 }

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.categories.Category
 import kotlinx.coroutines.flow.Flow
 
 @Dao

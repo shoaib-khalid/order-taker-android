@@ -1,24 +1,29 @@
 package com.symplified.ordertaker.ui.main.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.symplified.ordertaker.models.zones.Zone
+import com.symplified.ordertaker.models.zones.ZoneWithTables
 
 class ZoneCollectionAdapter(
     fragment: Fragment,
-    private val zones: MutableList<Zone> = mutableListOf()
+    private var zones: List<ZoneWithTables>
 ) : FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int {
-        return zones.size
-    }
 
     override fun createFragment(position: Int): Fragment {
+        Log.d("zone-collection-adapter", "Creating zone fragment. Zonename: ${zones[position].zone.zoneName}")
         val fragment = ZoneFragment()
-//        fragment.arguments = Bundle().apply {
-//            putString("ZONE_NAME", zones[position].name)
-//        }
+        fragment.arguments = Bundle().apply {
+            putInt(ZoneFragment.ZONE_ID, zones[position].zone.id)
+        }
         return fragment
+    }
+
+    override fun getItemCount() = zones.size
+
+    fun setZones(newZones: List<ZoneWithTables>) {
+        zones = newZones
     }
 }

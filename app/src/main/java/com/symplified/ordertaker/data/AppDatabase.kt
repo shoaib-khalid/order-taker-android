@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.symplified.ordertaker.models.CartItem
-import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.MenuItem
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.Table

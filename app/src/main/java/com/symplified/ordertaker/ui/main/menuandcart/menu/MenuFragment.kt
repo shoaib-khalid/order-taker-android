@@ -12,7 +12,7 @@ import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.CartItem
-import com.symplified.ordertaker.models.Category
+import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.MenuItem
 import com.symplified.ordertaker.ui.main.menuandcart.categories.CategoriesAdapter
 import com.symplified.ordertaker.viewmodels.*

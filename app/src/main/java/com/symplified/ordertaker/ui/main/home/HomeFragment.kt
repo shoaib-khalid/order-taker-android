@@ -8,8 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.tabs.TabLayoutMediator
 import com.symplified.ordertaker.OrderTakerApplication
+import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentHomeBinding
+import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.networking.ServiceGenerator
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
@@ -38,11 +41,6 @@ class HomeFragment : Fragment() {
     ): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
 
-        menuViewModel.zones.observe(viewLifecycleOwner) { zones ->
-            Log.d("zones", "HomeFragment: Zones updated. Size: ${zones.size}.")
-
-        }
-
         activity?.let { activity ->
             menuViewModel.getZonesAndTables(
                 ServiceGenerator
@@ -54,13 +52,22 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    private var isZonesEmpty = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        val zones = SampleData.zones()
-        binding.pager.adapter = ZoneCollectionAdapter(this)
 
-//        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-//            tab.text = zones[position].name
-//        }.attach()
+        menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
+            isZonesEmpty = zonesWithTables.isEmpty()
+
+            binding.pager.adapter = ZoneCollectionAdapter(this, zonesWithTables)
+
+            TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
+                tab.text = zonesWithTables[position].zone.zoneName
+            }.attach()
+        }
+
+        menuViewModel.isLoadingZonesAndTables.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading && isZonesEmpty) View.VISIBLE else View.GONE
+        }
     }
 
     override fun onDestroyView() {

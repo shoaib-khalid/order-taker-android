@@ -9,14 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.FtsOptions.Order
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
-import com.symplified.ordertaker.models.Category
-import com.symplified.ordertaker.networking.ServiceGenerator
-import com.symplified.ordertaker.ui.main.MainActivity
-import com.symplified.ordertaker.viewmodels.ExampleViewModel
+import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
 
