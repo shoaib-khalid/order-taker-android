@@ -2,18 +2,23 @@ package com.symplified.ordertaker.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.data.repository.CategoryRepository
 import com.symplified.ordertaker.data.repository.MenuItemRepository
 import com.symplified.ordertaker.data.repository.TableRepository
 import com.symplified.ordertaker.data.repository.ZoneRepository
+import com.symplified.ordertaker.models.ErrorResponseBody
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.categories.CategoryResponseBody
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.models.zones.ZonesResponseBody
 import com.symplified.ordertaker.networking.apis.LocationApi
+import com.symplified.ordertaker.networking.apis.ProductApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,7 +86,6 @@ class MenuViewModel(
                         response: Response<ZonesResponseBody>
                     ) {
                         _isLoadingZonesAndTables.value = false
-                        Log.d("zones", "Raw response: ${response.raw()}")
                         if (response.isSuccessful) {
                             response.body()?.let { zoneData ->
                                 zoneData.data.forEach { zone -> insert(zone) }
@@ -92,6 +96,45 @@ class MenuViewModel(
                     override fun onFailure(call: Call<ZonesResponseBody>, t: Throwable) {
                         _isLoadingZonesAndTables.value = false
                         Log.d("zones", "onFailure ${t.localizedMessage}")
+                    }
+                }
+            )
+    }
+
+    private val _isLoadingCategories = MutableLiveData<Boolean>().apply { value = false }
+    val isLoadingCategories : LiveData<Boolean> = _isLoadingCategories
+    fun getCategories(productApi: ProductApi) {
+        _isLoadingCategories.value = true
+        productApi
+            .getCategories(OrderTakerApplication.testStoreId)
+            .clone()
+            .enqueue(
+                object : Callback<CategoryResponseBody> {
+                    override fun onResponse(
+                        call: Call<CategoryResponseBody>,
+                        response: Response<CategoryResponseBody>
+                    ) {
+                        Log.d("categories", "Category response raw: ${response.raw()}")
+                        _isLoadingCategories.value = false
+                        if (response.isSuccessful) {
+                            response.body()?.let { body ->
+                                Log.d("categories", "${body.data.content.toString()}")
+                                body.data.content.forEach { category ->
+                                    insert(category)
+                                }
+                            }
+                        } else {
+                            response.errorBody()?.let { errorBody ->
+                                val gson = Gson()
+                                val type = object : TypeToken<CategoryResponseBody>() {}.type
+                                val errorResponse: ErrorResponseBody? = gson.fromJson(errorBody.string(), ErrorResponseBody::class.java)
+                                Log.d("categories", "Error response: $errorResponse")
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<CategoryResponseBody>, t: Throwable) {
+                        _isLoadingCategories.value = false
                     }
                 }
             )

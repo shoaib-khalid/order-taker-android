@@ -17,16 +17,16 @@ class SampleData {
 
         fun categories(): List<Category> {
             return listOf(
-                Category(name = "Best Seller"),
-                Category(name = "Appetizer"),
-                Category(name = "Main Course"),
-                Category(name = "Soup"),
-                Category(name = "Drinks"),
-                Category(name = "BBQ"),
-                Category(name = "Dessert"),
-                Category(name = "Salad"),
-                Category(name = "Pasta"),
-                Category(name = "Noodles")
+//                Category(name = "Best Seller"),
+//                Category(name = "Appetizer"),
+//                Category(name = "Main Course"),
+//                Category(name = "Soup"),
+//                Category(name = "Drinks"),
+//                Category(name = "BBQ"),
+//                Category(name = "Dessert"),
+//                Category(name = "Salad"),
+//                Category(name = "Pasta"),
+//                Category(name = "Noodles")
             )
         }
 

@@ -66,7 +66,8 @@ class HomeFragment : Fragment() {
         }
 
         menuViewModel.isLoadingZonesAndTables.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading && isZonesEmpty) View.VISIBLE else View.GONE
+            binding.progressBar.visibility =
+                if (isLoading && isZonesEmpty) View.VISIBLE else View.GONE
         }
     }
 

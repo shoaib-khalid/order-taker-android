@@ -13,6 +13,7 @@ import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
 import com.symplified.ordertaker.models.categories.Category
+import com.symplified.ordertaker.networking.ServiceGenerator
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
 
@@ -37,10 +38,15 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        activity?.let { activity ->
+            menuViewModel.getCategories(ServiceGenerator.createProductService(activity.applicationContext))
+        }
+
         _binding = FragmentCategoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    private var isCategoriesEmpty = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val categoriesAdapter = CategoriesAdapter(onCategoryClickListener = this)
         val categoryList = binding.categoryList
@@ -48,13 +54,8 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         categoryList.adapter = categoriesAdapter
 
         menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
+            isCategoriesEmpty = categories.isEmpty()
             categoriesAdapter.updateItems(categories)
-
-            if (categories.isEmpty()) {
-                SampleData.categories().forEach { category ->
-                    menuViewModel.insert(category)
-                }
-            }
         }
 
         menuViewModel.currentCategory.observe(viewLifecycleOwner) { newCategory ->
@@ -65,6 +66,11 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
                 Toast.LENGTH_SHORT
             )
                 .show()
+        }
+
+        menuViewModel.isLoadingCategories.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility =
+                if (isLoading && isCategoriesEmpty) View.VISIBLE else View.GONE
         }
     }
 
