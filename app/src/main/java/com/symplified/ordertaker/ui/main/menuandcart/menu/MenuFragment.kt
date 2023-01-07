@@ -13,7 +13,7 @@ import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.ui.main.menuandcart.categories.CategoriesAdapter
 import com.symplified.ordertaker.viewmodels.*
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +38,7 @@ class MenuFragment : Fragment(),
             OrderTakerApplication.tableRepository,
             OrderTakerApplication.zoneRepository,
             OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.menuItemRepository
+            OrderTakerApplication.productRepository
         )
     }
 
@@ -51,10 +51,10 @@ class MenuFragment : Fragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val menuAdapter = MenuAdapter(SampleData.items(), this)
-        val itemList = binding.itemList
-        itemList.layoutManager = GridLayoutManager(context, 3);
-        itemList.adapter = menuAdapter
+//        val menuAdapter = MenuAdapter(SampleData.items(), this)
+//        val itemList = binding.itemList
+//        itemList.layoutManager = GridLayoutManager(context, 3);
+//        itemList.adapter = menuAdapter
 
         menuViewModel.currentCategory.observe(viewLifecycleOwner) { category ->
             Log.d("categories", "MenuFragment: ${category.name} selected")
@@ -66,7 +66,7 @@ class MenuFragment : Fragment(),
         _binding = null
     }
 
-    override fun onItemClicked(item: MenuItem) {
+    override fun onItemClicked(item: Product) {
         MenuItemSelectionBottomSheet(item, this).show(
             childFragmentManager, "MenuItemSelectionBottomSheet"
         )

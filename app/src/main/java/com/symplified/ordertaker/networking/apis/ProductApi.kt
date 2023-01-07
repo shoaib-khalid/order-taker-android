@@ -16,7 +16,7 @@ interface ProductApi {
 
     @Headers("Authorization: Bearer accessToken")
     @GET("stores/{storeId}/products?page=0&size=1000000&sortByCol=created&sortingOrder=DESC&status=ACTIVE,OUTOFSTOCK&platformType=dinein")
-    fun getAllProducts(
+    fun getProductsByCategoryId(
         @Path("storeId") storeId: String,
         @Query("categoryId") categoryId: String
     ): Call<HttpResponse>

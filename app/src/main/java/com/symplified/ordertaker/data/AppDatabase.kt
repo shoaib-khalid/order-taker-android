@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.models.MenuItem
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.Table
 
@@ -15,7 +14,7 @@ import com.symplified.ordertaker.models.zones.Table
         Table::class,
         Zone::class,
         Category::class,
-        MenuItem::class,
+//        Product::class,
         CartItem::class,
     ], version = 1, exportSchema = false
 )
@@ -23,7 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun tableDao(): TableDao
     abstract fun zoneDao(): ZoneDao
     abstract fun categoryDao(): CategoryDao
-    abstract fun menuItemDao(): MenuItemDao
+    abstract fun productDao(): ProductDao
     abstract fun cartItemDao(): CartItemDao
 
     companion object {

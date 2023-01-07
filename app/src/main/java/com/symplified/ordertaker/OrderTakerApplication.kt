@@ -21,7 +21,7 @@ class OrderTakerApplication : Application() {
         val zoneRepository by lazy { ZoneRepository(database.zoneDao()) }
         val cartItemRepository by lazy { CartItemRepository(database.cartItemDao()) }
         val categoryRepository by lazy { CategoryRepository(database.categoryDao()) }
-        val menuItemRepository by lazy { MenuItemRepository(database.menuItemDao()) }
+        val productRepository by lazy { ProductRepository(database.productDao()) }
 
         fun applicationContext(): Context {
             return instance!!.applicationContext

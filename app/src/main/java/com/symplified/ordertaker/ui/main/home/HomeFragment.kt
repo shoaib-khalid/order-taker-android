@@ -2,7 +2,6 @@ package com.symplified.ordertaker.ui.main.home
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import com.symplified.ordertaker.OrderTakerApplication
-import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentHomeBinding
-import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.networking.ServiceGenerator
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
@@ -30,7 +27,7 @@ class HomeFragment : Fragment() {
             OrderTakerApplication.tableRepository,
             OrderTakerApplication.zoneRepository,
             OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.menuItemRepository
+            OrderTakerApplication.productRepository
         )
     }
 

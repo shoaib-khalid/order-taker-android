@@ -11,12 +11,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.CartItem
-import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.CartViewModelFactory
 
 class MenuItemSelectionBottomSheet(
-    private val menuItem: MenuItem,
+    private val product: Product,
     private val onAddToCartListener: OnAddToCartListener
 ) : BottomSheetDialogFragment() {
 
@@ -25,9 +25,9 @@ class MenuItemSelectionBottomSheet(
     }
 
     private var quantity = 1
-    private val cartViewModel: CartViewModel by viewModels {
-        CartViewModelFactory(OrderTakerApplication.cartItemRepository)
-    }
+//    private val cartViewModel: CartViewModel by viewModels {
+//        CartViewModelFactory(OrderTakerApplication.cartItemRepository)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +40,7 @@ class MenuItemSelectionBottomSheet(
             false
         )
         val productNameView: TextView = view.findViewById(R.id.product_name)
-        productNameView.text = menuItem.name
+        productNameView.text = product.name
 
         val quantityCount: TextView = view.findViewById(R.id.quantity_count)
         quantityCount.text = quantity.toString()
@@ -48,21 +48,22 @@ class MenuItemSelectionBottomSheet(
         val subtractButton: TextView = view.findViewById(R.id.btn_subtract)
         subtractButton.setOnClickListener {
             quantityCount.text = (--quantity).toString()
+            if (quantity < 2)
+                subtractButton.isEnabled = false
         }
 
         val addButton: TextView = view.findViewById(R.id.btn_add)
         addButton.setOnClickListener {
             quantityCount.text = (++quantity).toString()
+            if (quantity > 1)
+                subtractButton.isEnabled = true
         }
 
         val addToCartButton: Button = view.findViewById(R.id.btn_add_to_cart)
         addToCartButton.setOnClickListener {
-//            cartViewModel.insert(
-//                CartItem(0, menuItem.name, menuItem.price, quantity)
+//            onAddToCartListener.onItemAdded(
+//                CartItem(0, product.name, product.price, quantity)
 //            )
-            onAddToCartListener.onItemAdded(
-                CartItem(0, menuItem.name, menuItem.price, quantity)
-            )
             dismiss()
         }
 

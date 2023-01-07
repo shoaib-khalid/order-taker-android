@@ -6,12 +6,12 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.data.repository.CategoryRepository
-import com.symplified.ordertaker.data.repository.MenuItemRepository
+import com.symplified.ordertaker.data.repository.ProductRepository
 import com.symplified.ordertaker.data.repository.TableRepository
 import com.symplified.ordertaker.data.repository.ZoneRepository
 import com.symplified.ordertaker.models.ErrorResponseBody
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.categories.CategoryResponseBody
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
@@ -30,12 +30,12 @@ class MenuViewModel(
     private val tableRepository: TableRepository,
     private val zoneRepository: ZoneRepository,
     private val categoryRepository: CategoryRepository,
-    private val menuItemRepository: MenuItemRepository,
+    private val productRepository: ProductRepository,
 ) : ViewModel() {
     val zonesWithTables: LiveData<List<ZoneWithTables>> = zoneRepository.allZones.asLiveData()
     val tables: LiveData<List<Table>> = tableRepository.allTables.asLiveData()
     val categories: LiveData<List<Category>> = categoryRepository.allItems.asLiveData()
-    val menuItems: LiveData<List<MenuItem>> = menuItemRepository.allItems.asLiveData()
+//    val menuItems: LiveData<List<Product>> = productRepository.allItems.asLiveData()
 
     private val _currentCategory: MutableLiveData<Category> by lazy {
         MutableLiveData<Category>()
@@ -48,10 +48,6 @@ class MenuViewModel(
 
     fun clearAllCategories() = CoroutineScope(Dispatchers.IO).launch {
         categoryRepository.clear()
-    }
-
-    fun insert(menuItem: MenuItem) = CoroutineScope(Dispatchers.IO).launch {
-        menuItemRepository.insert(menuItem)
     }
 
     fun insert(zoneWithTables: ZoneWithTables) = CoroutineScope(Dispatchers.IO).launch {
@@ -145,7 +141,7 @@ class MenuViewModelFactory(
     private val tableRepository: TableRepository,
     private val zoneRepository: ZoneRepository,
     private val categoryRepository: CategoryRepository,
-    private val menuItemRepository: MenuItemRepository
+    private val productRepository: ProductRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MenuViewModel::class.java)) {
@@ -153,7 +149,7 @@ class MenuViewModelFactory(
                 tableRepository,
                 zoneRepository,
                 categoryRepository,
-                menuItemRepository
+                productRepository
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

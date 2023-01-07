@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.symplified.ordertaker.OrderTakerApplication
-import com.symplified.ordertaker.SampleData
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.networking.ServiceGenerator
@@ -30,7 +29,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
             OrderTakerApplication.tableRepository,
             OrderTakerApplication.zoneRepository,
             OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.menuItemRepository
+            OrderTakerApplication.productRepository
         )
     }
 

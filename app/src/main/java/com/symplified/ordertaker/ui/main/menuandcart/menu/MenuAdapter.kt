@@ -6,15 +6,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.models.MenuItem
+import com.symplified.ordertaker.models.products.Product
 
-class MenuAdapter(private val items: List<MenuItem>,
+class MenuAdapter(private val items: List<Product>,
                   private val onMenuItemClickListener: OnMenuItemClickedListener
 ) :
 RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
 
     interface OnMenuItemClickedListener {
-        fun onItemClicked(item: MenuItem)
+        fun onItemClicked(item: Product)
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -35,7 +35,7 @@ RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemName.text = items[position].name
-        viewHolder.itemPrice.text = "RM " + items[position].price
+//        viewHolder.itemPrice.text = "RM " + items[position].price
         viewHolder.itemView.setOnClickListener {
             onMenuItemClickListener.onItemClicked(items[position])
         }

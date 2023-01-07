@@ -33,7 +33,7 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
             OrderTakerApplication.tableRepository,
             OrderTakerApplication.zoneRepository,
             OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.menuItemRepository
+            OrderTakerApplication.productRepository
         )
     }
 
