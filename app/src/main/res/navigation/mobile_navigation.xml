@@ -19,4 +19,9 @@
         android:name="com.symplified.ordertaker.ui.main.menuandcart.MenuAndCartFragment"
         android:label="Order For Table"
         tools:layout="@layout/fragment_menu_and_cart" />
+    <activity
+        android:id="@+id/nav_logout"
+        android:name="com.symplified.ordertaker.ui.login.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
 </navigation>

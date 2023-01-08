@@ -2,5 +2,6 @@ package com.symplified.ordertaker.models.products
 
 data class ProductResponseBody (
     val status: Int,
-    val message: String
+    val message: String,
+    val data: ProductResponseBodyList
 )

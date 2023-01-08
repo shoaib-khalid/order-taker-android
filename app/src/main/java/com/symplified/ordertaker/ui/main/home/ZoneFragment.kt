@@ -6,14 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.databinding.FragmentZoneBinding
 import com.symplified.ordertaker.viewmodels.MenuViewModel
-import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
 
 class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
 
@@ -28,14 +26,7 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
     private val binding get() = _binding!!
     private lateinit var tablesRecyclerView: RecyclerView
 
-    private val menuViewModel: MenuViewModel by viewModels {
-        MenuViewModelFactory(
-            OrderTakerApplication.tableRepository,
-            OrderTakerApplication.zoneRepository,
-            OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.productRepository
-        )
-    }
+    private val menuViewModel: MenuViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

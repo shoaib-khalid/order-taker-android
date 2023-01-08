@@ -6,14 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.products.Product
-import com.symplified.ordertaker.viewmodels.CartViewModel
-import com.symplified.ordertaker.viewmodels.CartViewModelFactory
 
 class MenuItemSelectionBottomSheet(
     private val product: Product,

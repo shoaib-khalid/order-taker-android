@@ -6,13 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayoutMediator
-import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.databinding.FragmentHomeBinding
-import com.symplified.ordertaker.networking.ServiceGenerator
 import com.symplified.ordertaker.viewmodels.MenuViewModel
-import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
 
 class HomeFragment : Fragment() {
 
@@ -22,14 +19,15 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val menuViewModel: MenuViewModel by viewModels {
-        MenuViewModelFactory(
-            OrderTakerApplication.tableRepository,
-            OrderTakerApplication.zoneRepository,
-            OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.productRepository
-        )
-    }
+    private val menuViewModel: MenuViewModel by activityViewModels()
+//    {
+//        MenuViewModelFactory(
+//            OrderTakerApplication.tableRepository,
+//            OrderTakerApplication.zoneRepository,
+//            OrderTakerApplication.categoryRepository,
+//            OrderTakerApplication.productRepository
+//        )
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,12 +36,7 @@ class HomeFragment : Fragment() {
     ): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
 
-        activity?.let { activity ->
-            menuViewModel.getZonesAndTables(
-                ServiceGenerator
-                    .createLocationService(activity.applicationContext)
-            )
-        }
+        menuViewModel.getZonesAndTables()
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root

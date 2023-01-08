@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.symplified.ordertaker.OrderTakerApplication
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.networking.ServiceGenerator
+import com.symplified.ordertaker.viewmodels.ProductViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
-import com.symplified.ordertaker.viewmodels.MenuViewModelFactory
 
 class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 
@@ -24,22 +22,22 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val menuViewModel: MenuViewModel by viewModels {
-        MenuViewModelFactory(
-            OrderTakerApplication.tableRepository,
-            OrderTakerApplication.zoneRepository,
-            OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.productRepository
-        )
-    }
+    private val menuViewModel: MenuViewModel by activityViewModels()
+//    {
+//        MenuViewModelFactory(
+//            OrderTakerApplication.tableRepository,
+//            OrderTakerApplication.zoneRepository,
+//            OrderTakerApplication.categoryRepository,
+//            OrderTakerApplication.productRepository
+//        )
+//    }
+    private val productViewModel: ProductViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.let { activity ->
-            menuViewModel.getCategories(ServiceGenerator.createProductService(activity.applicationContext))
-        }
+        menuViewModel.getCategories()
 
         _binding = FragmentCategoryBinding.inflate(inflater, container, false)
         return binding.root
@@ -79,6 +77,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     }
 
     override fun onCategoryClicked(category: Category) {
-        menuViewModel.setCurrentCategory(category)
+        productViewModel.setCurrentCategory(category)
     }
 }

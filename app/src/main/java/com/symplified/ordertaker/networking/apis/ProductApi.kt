@@ -2,6 +2,7 @@ package com.symplified.ordertaker.networking.apis
 
 import com.symplified.ordertaker.models.HttpResponse
 import com.symplified.ordertaker.models.categories.CategoryResponseBody
+import com.symplified.ordertaker.models.products.ProductResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -19,5 +20,5 @@ interface ProductApi {
     fun getProductsByCategoryId(
         @Path("storeId") storeId: String,
         @Query("categoryId") categoryId: String
-    ): Call<HttpResponse>
+    ): Call<ProductResponseBody>
 }

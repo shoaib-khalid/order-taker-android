@@ -6,10 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.symplified.ordertaker.OrderTakerApplication
-import com.symplified.ordertaker.SampleData
+import com.symplified.ordertaker.App
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.CartItem
 import com.symplified.ordertaker.models.categories.Category
@@ -31,16 +31,9 @@ class MenuFragment : Fragment(),
     private val binding get() = _binding!!
 
     private val cartViewModel: CartViewModel by viewModels {
-        CartViewModelFactory(OrderTakerApplication.cartItemRepository)
+        CartViewModelFactory(App.cartItemRepository)
     }
-    private val menuViewModel: MenuViewModel by viewModels {
-        MenuViewModelFactory(
-            OrderTakerApplication.tableRepository,
-            OrderTakerApplication.zoneRepository,
-            OrderTakerApplication.categoryRepository,
-            OrderTakerApplication.productRepository
-        )
-    }
+    private val productViewModel: ProductViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,8 +49,9 @@ class MenuFragment : Fragment(),
 //        itemList.layoutManager = GridLayoutManager(context, 3);
 //        itemList.adapter = menuAdapter
 
-        menuViewModel.currentCategory.observe(viewLifecycleOwner) { category ->
-            Log.d("categories", "MenuFragment: ${category.name} selected")
+        productViewModel.products.observe(viewLifecycleOwner) { products ->
+            binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
+            binding.itemList.adapter = MenuAdapter(products, this)
         }
     }
 
