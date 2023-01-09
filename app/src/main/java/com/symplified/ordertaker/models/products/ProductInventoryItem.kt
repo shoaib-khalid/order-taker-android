@@ -4,5 +4,5 @@ data class ProductInventoryItem(
     val itemCode: String,
     val productVariantAvailableId: String,
     val productId: String,
-    val productVariantAvailable: List<ProductVariantAvailable>
+    val productVariantAvailable: ProductVariantAvailable
 )

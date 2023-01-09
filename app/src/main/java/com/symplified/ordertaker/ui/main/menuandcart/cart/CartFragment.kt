@@ -8,15 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
+import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.FragmentCartBinding
-import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
 import com.symplified.ordertaker.viewmodels.CartViewModel
-import com.symplified.ordertaker.viewmodels.CartViewModelFactory
+import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
     private var _binding: FragmentCartBinding? = null
@@ -25,6 +26,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val menuViewModel: MenuViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -43,8 +45,15 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         cartItemsList.adapter = cartItemsAdapter
 
         cartViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
-            Log.d("cart-items", "CartItems updated. Size ${cartItems.size}")
+            binding.placeOrderButton.isEnabled = cartItems.isNotEmpty()
+
             cartItemsAdapter.updateItems(cartItems)
+
+            var totalPrice = 0.0
+            cartItems.forEach { cartItem ->
+                totalPrice += (cartItem.cartItem.itemPrice * cartItem.cartItem.quantity)
+            }
+            binding.totalPriceCount.text = "RM ${String.format("%.2f", totalPrice)}"
         }
 
         val spinner = binding.paymentTypeSpinner
@@ -62,6 +71,11 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             cartViewModel.clearAll()
             Snackbar.make(view, "Order placed", Snackbar.LENGTH_SHORT).show()
         }
+
+        binding.zoneNo.text = "Zone: ${menuViewModel.selectedZone}"
+        binding.tableNo.text = "Table No.: ${menuViewModel.selectedTable}"
+        binding.serverName.text =
+            "Served by: ${App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")}"
     }
 
     override fun onDestroyView() {
@@ -69,7 +83,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         _binding = null
     }
 
-    override fun onItemRemoved(cartItem: CartItem) {
+    override fun onItemRemoved(cartItem: CartItemWithSubItems) {
         cartViewModel.delete(cartItem)
     }
 }

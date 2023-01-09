@@ -35,9 +35,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-
-        menuViewModel.getZonesAndTables()
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -47,6 +44,9 @@ class HomeFragment : Fragment() {
 
         menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
             isZonesEmpty = zonesWithTables.isEmpty()
+            if (isZonesEmpty) {
+                menuViewModel.getZonesAndTables()
+            }
 
             binding.pager.adapter = ZoneCollectionAdapter(this, zonesWithTables)
 
@@ -58,6 +58,13 @@ class HomeFragment : Fragment() {
         menuViewModel.isLoadingZonesAndTables.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility =
                 if (isLoading && isZonesEmpty) View.VISIBLE else View.GONE
+            if (!isLoading) {
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            menuViewModel.getZonesAndTables()
         }
     }
 

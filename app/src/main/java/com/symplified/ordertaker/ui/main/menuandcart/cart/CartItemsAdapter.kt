@@ -1,23 +1,22 @@
 package com.symplified.ordertaker.ui.main.menuandcart.cart
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
 
 class CartItemsAdapter(
-    private val cartItems: MutableList<CartItem> = mutableListOf(),
+    private val cartItems: MutableList<CartItemWithSubItems> = mutableListOf(),
     private val onRemoveFromCartListener: OnRemoveFromCartListener
 ) : RecyclerView.Adapter<CartItemsAdapter.ViewHolder>() {
 
     interface OnRemoveFromCartListener {
-        fun onItemRemoved(cartItem: CartItem)
+        fun onItemRemoved(cartItem: CartItemWithSubItems)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -44,12 +43,12 @@ class CartItemsAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemNumber.text = position.toString()
-        viewHolder.itemName.text = cartItems[position].itemName
+        viewHolder.itemName.text = cartItems[position].cartItem.itemName
 
-        val quantity = cartItems[position].quantity
-        val price = cartItems[position].itemPrice
+        val quantity = cartItems[position].cartItem.quantity
+        val price = cartItems[position].cartItem.itemPrice
         viewHolder.itemQuantity.text = quantity.toString()
-        viewHolder.itemPrice.text = "RM " + (price * quantity)
+        viewHolder.itemPrice.text = "RM ${String.format("%.2f", price * quantity)}"
 
         viewHolder.deleteBtn.setOnClickListener {
             onRemoveFromCartListener.onItemRemoved(cartItems[position])
@@ -58,11 +57,11 @@ class CartItemsAdapter(
 
     override fun getItemCount() = cartItems.size
 
-    fun addItem(cartItem: CartItem) = cartItems.add(cartItem)
+//    fun addItem(cartItem: CartItem) = cartItems.add(cartItem)
 
     fun clearCart() = cartItems.clear()
 
-    fun updateItems(cartItemsToAdd: List<CartItem>) {
+    fun updateItems(cartItemsToAdd: List<CartItemWithSubItems>) {
         if (cartItemsToAdd.isEmpty()) {
             cartItems.clear()
         } else {

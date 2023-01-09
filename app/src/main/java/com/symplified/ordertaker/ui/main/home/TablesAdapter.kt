@@ -14,7 +14,7 @@ class TablesAdapter(private var tables: List<Table> = listOf(),
     RecyclerView.Adapter<TablesAdapter.ViewHolder>() {
 
     interface OnTableClickListener {
-        fun onTableClicked(tableNo: Int)
+        fun onTableClicked(tableNo: String)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -34,7 +34,7 @@ class TablesAdapter(private var tables: List<Table> = listOf(),
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.textView.text = tables[position].combinationTableNumber
         viewHolder.textView.setOnClickListener {
-            onTableClickListener.onTableClicked(position)
+            onTableClickListener.onTableClicked(tables[position].combinationTableNumber)
         }
     }
 

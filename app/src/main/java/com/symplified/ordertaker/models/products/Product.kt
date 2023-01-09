@@ -10,5 +10,6 @@ data class Product(
     val name: String,
     val categoryId: String,
     val status: ProductStatus,
-    val productInventories: List<ProductInventory>
+    val productInventories: List<ProductInventory>,
+    val productVariants: List<ProductVariant>
 )

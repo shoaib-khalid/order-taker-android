@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.models
+package com.symplified.ordertaker.models.cartitems
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,7 @@ data class CartItem(
     val id: Int = 0,
     val itemName: String,
     val itemPrice: Double,
+    val itemCode: String,
+    val productId: String,
     var quantity: Int
 )

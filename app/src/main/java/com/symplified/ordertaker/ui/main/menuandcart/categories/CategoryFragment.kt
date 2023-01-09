@@ -37,37 +37,46 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        menuViewModel.getCategories()
-
         _binding = FragmentCategoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     private var isCategoriesEmpty = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val categoriesAdapter = CategoriesAdapter(onCategoryClickListener = this)
-        val categoryList = binding.categoryList
-        categoryList.layoutManager = LinearLayoutManager(view.context)
-        categoryList.adapter = categoriesAdapter
+        binding.categoryList.layoutManager = LinearLayoutManager(view.context)
+        binding.categoryList.adapter = CategoriesAdapter(onCategoryClickListener = this)
 
         menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
+            Log.d("categories", "categories size: ${categories.size}")
             isCategoriesEmpty = categories.isEmpty()
-            categoriesAdapter.updateItems(categories)
+            if (isCategoriesEmpty) {
+                menuViewModel.getCategories()
+            } else {
+                binding.categoryList.adapter = CategoriesAdapter(categories, this)
+            }
         }
 
-        menuViewModel.currentCategory.observe(viewLifecycleOwner) { newCategory ->
-            Log.d("categories", "CategoryFragment: New category set: ${newCategory.name}")
-            Toast.makeText(
-                context,
-                "CategoryFragment: New category set: ${newCategory.name}",
-                Toast.LENGTH_SHORT
-            )
-                .show()
-        }
+//        menuViewModel.currentCategory.observe(viewLifecycleOwner) { newCategory ->
+//            Log.d("categories", "CategoryFragment: New category set: ${newCategory.name}")
+//            Toast.makeText(
+//                context,
+//                "CategoryFragment: New category set: ${newCategory.name}",
+//                Toast.LENGTH_SHORT
+//            )
+//                .show()
+//        }
 
         menuViewModel.isLoadingCategories.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility =
                 if (isLoading && isCategoriesEmpty) View.VISIBLE else View.GONE
+            if (!isLoading) {
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            menuViewModel.getCategories()
+            productViewModel.clearProducts()
         }
     }
 
@@ -78,5 +87,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 
     override fun onCategoryClicked(category: Category) {
         productViewModel.setCurrentCategory(category)
+        Log.d("product-fragment", "onClickedCategory: ${category}")
     }
 }

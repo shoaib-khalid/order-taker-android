@@ -8,12 +8,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.symplified.ordertaker.databinding.FragmentMenuAndCartBinding
+import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class MenuAndCartFragment : Fragment() {
 
     private var _binding: FragmentMenuAndCartBinding? = null
     private val binding get() = _binding!!
+
+    private val menuViewModel: MenuViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -32,4 +36,9 @@ class MenuAndCartFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        activity?.actionBar?.title = "Order for nigga"
+    }
 }

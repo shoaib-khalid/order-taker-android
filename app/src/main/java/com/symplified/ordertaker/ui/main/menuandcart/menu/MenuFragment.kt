@@ -7,18 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.symplified.ordertaker.App
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
-import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.ui.main.menuandcart.categories.CategoriesAdapter
 import com.symplified.ordertaker.viewmodels.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MenuFragment : Fragment(),
     MenuAdapter.OnMenuItemClickedListener,
@@ -46,10 +41,14 @@ class MenuFragment : Fragment(),
 //        val itemList = binding.itemList
 //        itemList.layoutManager = GridLayoutManager(context, 3);
 //        itemList.adapter = menuAdapter
+        binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
 
         productViewModel.products.observe(viewLifecycleOwner) { products ->
-            binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
             binding.itemList.adapter = MenuAdapter(products, this)
+        }
+
+        productViewModel.isLoadingProducts.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 

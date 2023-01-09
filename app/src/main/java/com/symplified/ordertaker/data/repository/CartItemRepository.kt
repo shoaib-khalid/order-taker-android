@@ -1,12 +1,12 @@
 package com.symplified.ordertaker.data.repository
 
-import androidx.annotation.WorkerThread
 import com.symplified.ordertaker.data.CartItemDao
-import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
 import kotlinx.coroutines.flow.Flow
 
 class CartItemRepository(private val cartItemDao: CartItemDao) {
-    val allItems: Flow<List<CartItem>> =
+    val allItems: Flow<List<CartItemWithSubItems>> =
         cartItemDao.getAll()
 
     fun insert(cartItem: CartItem) {

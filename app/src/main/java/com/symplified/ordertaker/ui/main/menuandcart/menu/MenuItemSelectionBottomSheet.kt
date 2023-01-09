@@ -5,11 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItem
+import com.symplified.ordertaker.models.cartitems.CartSubItem
 import com.symplified.ordertaker.models.products.Product
+import com.symplified.ordertaker.viewmodels.CartViewModel
 
 class MenuItemSelectionBottomSheet(
     private val product: Product,
@@ -21,9 +28,7 @@ class MenuItemSelectionBottomSheet(
     }
 
     private var quantity = 1
-//    private val cartViewModel: CartViewModel by viewModels {
-//        CartViewModelFactory(OrderTakerApplication.cartItemRepository)
-//    }
+    private val cartViewModel: CartViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,10 +62,49 @@ class MenuItemSelectionBottomSheet(
 
         val addToCartButton: Button = view.findViewById(R.id.btn_add_to_cart)
         addToCartButton.setOnClickListener {
-//            onAddToCartListener.onItemAdded(
-//                CartItem(0, product.name, product.price, quantity)
-//            )
+            cartViewModel.insert(
+                CartItem(
+                    itemName = product.name,
+                    itemPrice = product.productInventories[0].dineInPrice,
+                    itemCode = product.productInventories[0].itemCode,
+                    productId = product.id,
+                    quantity = quantity
+                )
+            )
             dismiss()
+        }
+
+        if (product.productVariants.isNotEmpty()) {
+            val variantsLayout: LinearLayout = view.findViewById(R.id.product_variant_layout)
+            variantsLayout.visibility = View.VISIBLE
+            val radioGroupLayout: View =
+                inflater.inflate(R.layout.group_radio_product_variants, container, false)
+            val radioGroup: RadioGroup = radioGroupLayout.findViewById(R.id.radio_group)
+            val groupTitle: TextView =
+                radioGroupLayout.findViewById(R.id.product_variant_group_title)
+            product.productInventories.forEachIndexed { inventoryIndex, inventory ->
+
+                if (inventoryIndex in 0..product.productVariants.lastIndex) {
+                    groupTitle.text = "${product.productVariants[inventoryIndex].name}:"
+                }
+
+                inventory.productInventoryItems.firstOrNull()?.let { item ->
+                    val radioButton = RadioButton(view.context)
+                    radioButton.text = "${item.productVariantAvailable.value}...RM${
+                        String.format("%.2f", inventory.dineInPrice)
+                    }"
+                    radioButton.id = inventoryIndex
+                    radioGroup.addView(radioButton)
+                    if (inventoryIndex == 0) {
+                        radioGroup.check(inventoryIndex)
+                    }
+                    radioGroup.setOnCheckedChangeListener { group, checkedId ->
+                        // TODO: Create CartSubItem
+                    }
+                }
+
+            }
+            variantsLayout.addView(radioGroupLayout)
         }
 
         return view

@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.symplified.ordertaker.models.CartItem
+import com.symplified.ordertaker.models.cartitems.CartItem
+import com.symplified.ordertaker.models.cartitems.CartSubItem
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.Table
@@ -16,14 +17,16 @@ import com.symplified.ordertaker.models.zones.Table
         Category::class,
 //        Product::class,
         CartItem::class,
+        CartSubItem::class
     ], version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun tableDao(): TableDao
     abstract fun zoneDao(): ZoneDao
     abstract fun categoryDao(): CategoryDao
-    abstract fun productDao(): ProductDao
     abstract fun cartItemDao(): CartItemDao
+    abstract fun cartSubItemDao(): CartSubItemDao
+    //    abstract fun productDao(): ProductDao
 
     companion object {
         @Volatile

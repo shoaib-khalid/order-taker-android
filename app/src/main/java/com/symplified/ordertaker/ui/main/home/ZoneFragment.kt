@@ -25,6 +25,7 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var tablesRecyclerView: RecyclerView
+    private lateinit var zoneName: String
 
     private val menuViewModel: MenuViewModel by activityViewModels()
 
@@ -47,9 +48,9 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
         arguments?.takeIf { it.containsKey(ZONE_ID) }?.apply {
             val zoneId = getInt(ZONE_ID)
             menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zone ->
-                Log.d("zone-fragment", "zonesWithTables updated: ${zone.size}")
-                val newTables = zone.first { zoneWithTables -> zoneWithTables.zone.id == zoneId }
-                    .tables
+                val currentZone = zone.first { zoneWithTables -> zoneWithTables.zone.id == zoneId }
+                zoneName = currentZone.zone.zoneName
+                val newTables = currentZone.tables
                 adapter.setTables(newTables)
             }
         }
@@ -57,8 +58,9 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
 
     }
 
-    override fun onTableClicked(tableNo: Int) {
-        Log.d("nav-controller", "onTableClicked $tableNo")
+    override fun onTableClicked(tableNo: String) {
+        menuViewModel.selectedTable = tableNo
+        menuViewModel.selectedZone = zoneName
         findNavController().navigate(HomeFragmentDirections
             .actionNavHomeToMenuAndCartFragment())
     }

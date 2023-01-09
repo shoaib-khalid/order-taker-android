@@ -13,9 +13,10 @@ class App : Application() {
     }
 
     companion object {
-        const val testStoreId = "c9315221-a003-4830-9e28-c26c3d044dff"
+
+        // Shared Preferences key names
+//        const val testStoreId = "c9315221-a003-4830-9e28-c26c3d044dff"
         const val SHARED_PREFS_FILENAME = "Symplified Order Taker Shared Preferences File"
-        const val IS_LOGGED_IN = "is_logged_in"
 
         private var instance: App? = null
 
@@ -23,15 +24,19 @@ class App : Application() {
         val tableRepository by lazy { TableRepository(database.tableDao()) }
         val zoneRepository by lazy { ZoneRepository(database.zoneDao()) }
         val cartItemRepository by lazy { CartItemRepository(database.cartItemDao()) }
+        val cartSubItemRepository by lazy { CartSubItemRepository(database.cartSubItemDao()) }
         val categoryRepository by lazy { CategoryRepository(database.categoryDao()) }
-        val productRepository by lazy { ProductRepository(database.productDao()) }
+//        val productRepository by lazy { ProductRepository(database.productDao()) }
 
         fun applicationContext(): Context {
             return instance!!.applicationContext
         }
 
         fun sharedPreferences(): SharedPreferences {
-            return applicationContext().getSharedPreferences(SHARED_PREFS_FILENAME, Context.MODE_PRIVATE)
+            return applicationContext().getSharedPreferences(
+                SHARED_PREFS_FILENAME,
+                Context.MODE_PRIVATE
+            )
         }
     }
 
