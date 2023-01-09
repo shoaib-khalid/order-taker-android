@@ -30,9 +30,7 @@ class MenuFragment : Fragment(),
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val cartViewModel: CartViewModel by viewModels {
-        CartViewModelFactory(App.cartItemRepository)
-    }
+    private val cartViewModel: CartViewModel by activityViewModels()
     private val productViewModel: ProductViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -67,7 +65,7 @@ class MenuFragment : Fragment(),
     }
 
     override fun onItemAdded(cartItem: CartItem) {
-        CoroutineScope(Dispatchers.IO).launch { cartViewModel.insert(cartItem) }
+        cartViewModel.insert(cartItem)
     }
 
     override fun onCategoryClicked(category: Category) {

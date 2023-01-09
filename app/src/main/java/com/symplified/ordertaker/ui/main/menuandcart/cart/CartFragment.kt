@@ -1,11 +1,13 @@
 package com.symplified.ordertaker.ui.main.menuandcart.cart
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -23,9 +25,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val cartViewModel: CartViewModel by viewModels {
-        CartViewModelFactory(App.cartItemRepository)
-    }
+    private val cartViewModel: CartViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +43,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         cartItemsList.adapter = cartItemsAdapter
 
         cartViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
+            Log.d("cart-items", "CartItems updated. Size ${cartItems.size}")
             cartItemsAdapter.updateItems(cartItems)
         }
 
