@@ -3,6 +3,8 @@ package com.symplified.ordertaker.networking.apis
 import com.symplified.ordertaker.models.HttpResponse
 import com.symplified.ordertaker.models.categories.CategoryResponseBody
 import com.symplified.ordertaker.models.products.ProductResponseBody
+import com.symplified.ordertaker.models.products.addons.ProductAddOnResponseBody
+import com.symplified.ordertaker.models.products.options.ProductPackageResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -21,4 +23,15 @@ interface ProductApi {
         @Path("storeId") storeId: String,
         @Query("categoryId") categoryId: String
     ): Call<ProductResponseBody>
+
+    @Headers("Authorization: Bearer accessToken")
+    @GET("stores/{storeId}/package/{productId}/options")
+    fun getProductOptions(
+        @Path("storeId") storeId: String,
+        @Path("productId") productId: String
+    ): Call<ProductPackageResponseBody>
+
+    @Headers("Authorization: Bearer accessToken")
+    @GET("product-addon")
+    fun getProductAddOns(@Query("productId") productId: String): Call<ProductAddOnResponseBody>
 }
