@@ -49,6 +49,12 @@ class CartViewModel : ViewModel() {
         App.cartSubItemRepository.clear()
     }
 
+    private val _selectedPaymentType = MutableLiveData<String>().apply { value = "CASH" }
+    val selectedPaymentType: LiveData<String> = _selectedPaymentType
+    fun setCurrentPaymentType(paymentType: String) {
+        _selectedPaymentType.value = paymentType
+    }
+
     private val _isPlacingOrder = MutableLiveData<Boolean>().apply { value = false }
     val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
     private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
@@ -82,10 +88,9 @@ class CartViewModel : ViewModel() {
             OrderRequest(
                 cartItemsWithSubItemsRequest,
                 storeId,
-                OrderPaymentDetails("CASH")
+                OrderPaymentDetails(_selectedPaymentType.value!!)
             )
         )
-
 
         ServiceGenerator
             .createOrderService()

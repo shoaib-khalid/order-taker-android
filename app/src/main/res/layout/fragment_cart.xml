@@ -48,25 +48,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/payment_type_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:text="Payment Type:"
-            app:layout_constraintBottom_toTopOf="@id/cart_header"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cart_title" />
-
-        <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/payment_type_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            app:layout_constraintBottom_toBottomOf="@id/payment_type_label"
-            app:layout_constraintLeft_toRightOf="@id/payment_type_label"
-            app:layout_constraintTop_toTopOf="@id/payment_type_label" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cart_header"
             android:layout_width="match_parent"
@@ -74,7 +55,7 @@
             android:background="@color/light_grey"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/payment_type_label">
+            app:layout_constraintTop_toBottomOf="@id/cart_title">
 
             <TextView
                 android:id="@+id/product_name_title"
@@ -139,8 +120,68 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="RM 67.50"
-            app:layout_constraintBottom_toTopOf="@id/zone_no"
+            app:layout_constraintBottom_toTopOf="@id/payment_type_label"
             app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/payment_type_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Payment Type:"
+            app:layout_constraintBottom_toTopOf="@id/button_payment_type_cash"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <Button
+            android:id="@+id/button_payment_type_cash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CASH"
+            android:minWidth="120dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/button_payment_type_grabpay"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/button_payment_type_touch_n_go" />
+
+        <Button
+            android:id="@+id/button_payment_type_touch_n_go"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Touch N Go"
+            android:minWidth="120dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="@id/button_payment_type_cash"
+            app:layout_constraintBottom_toTopOf="@id/button_payment_type_others"
+            app:layout_constraintLeft_toRightOf="@id/button_payment_type_cash"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <Button
+            android:id="@+id/button_payment_type_grabpay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GrabPay"
+            android:minWidth="120dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/zone_no"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/button_payment_type_others"/>
+
+        <Button
+            android:id="@+id/button_payment_type_others"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Others"
+            android:minWidth="120dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/zone_no"
+            app:layout_constraintLeft_toRightOf="@id/button_payment_type_grabpay"
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <TextView
             android:id="@+id/zone_no"

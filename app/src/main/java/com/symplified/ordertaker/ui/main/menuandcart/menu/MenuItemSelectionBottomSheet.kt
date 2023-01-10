@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItem
@@ -32,6 +35,13 @@ class MenuItemSelectionBottomSheet(
     private var itemCode = product.productInventories.firstOrNull()?.itemCode ?: ""
     private var itemPrice: Double = product.productInventories.minOf { it.dineInPrice }
     private val cartViewModel: CartViewModel by activityViewModels()
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return BottomSheetDialog(requireContext(), theme).apply {
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.peekHeight = 1000
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,13 +113,14 @@ class MenuItemSelectionBottomSheet(
                         itemCode = product.productInventories[inventoryIndex].itemCode
                         productId = product.productInventories[inventoryIndex].productId
                         fullProductName = "${product.name} - ${item.productVariantAvailable.value}"
-                        itemPrice = product.productInventories[inventoryIndex].price
+                        itemPrice = product.productInventories[inventoryIndex].dineInPrice
                     }
                     radioGroup.setOnCheckedChangeListener { group, checkedId ->
+                        Log.d("bottom-sheet", "onCheckedChanged")
                         itemCode = product.productInventories[checkedId].itemCode
                         productId = product.productInventories[checkedId].productId
                         fullProductName = "${product.name} - ${item.productVariantAvailable.value}"
-                        itemPrice = product.productInventories[checkedId].price
+                        itemPrice = product.productInventories[checkedId].dineInPrice
                     }
                 }
 

@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 
 data class ProductInventory(
     val itemCode: String,
-    val price: Double,
     val dineInPrice: Double,
     val productId: String,
     val status: ProductStatus,

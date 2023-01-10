@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.symplified.ordertaker.databinding.FragmentMenuAndCartBinding
+import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class MenuAndCartFragment : Fragment() {
@@ -36,9 +37,4 @@ class MenuAndCartFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        activity?.actionBar?.title = "Order for nigga"
-    }
 }

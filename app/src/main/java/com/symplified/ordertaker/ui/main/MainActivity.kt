@@ -1,8 +1,10 @@
 package com.symplified.ordertaker.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,7 +15,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
+import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.ui.login.LoginActivity
 import com.symplified.ordertaker.viewmodels.AuthViewModel
@@ -53,6 +57,11 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val navHeaderTitle: TextView = navView.getHeaderView(0)
+            .findViewById(R.id.nav_header_title)
+        navHeaderTitle.text = getSharedPreferences(App.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE)
+            .getString(SharedPrefsKey.USERNAME, "")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

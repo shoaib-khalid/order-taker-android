@@ -58,7 +58,8 @@ class MenuFragment : Fragment(),
     }
 
     override fun onItemClicked(item: Product) {
-        MenuItemSelectionBottomSheet(item, this).show(
+        val menuItemSelectionBottomSheet = MenuItemSelectionBottomSheet(item, this)
+            .show(
             childFragmentManager, "MenuItemSelectionBottomSheet"
         )
     }

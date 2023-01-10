@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.ui.main.menuandcart.cart
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -70,15 +73,25 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
         }
 
-        val spinner = binding.paymentTypeSpinner
-        ArrayAdapter.createFromResource(
-            view.context,
-            R.array.payment_options_array,
-            android.R.layout.simple_spinner_item
-        ).also { spinnerAdapter ->
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = spinnerAdapter
+        val paymentButtonsMap: Map<String, Button> = mapOf(
+            "CASH" to binding.buttonPaymentTypeCash,
+            "TNG" to binding.buttonPaymentTypeTouchNGo,
+            "GRABPAY" to binding.buttonPaymentTypeGrabpay,
+            "OTHERS" to binding.buttonPaymentTypeOthers
+        )
+        cartViewModel.selectedPaymentType.observe(viewLifecycleOwner) { selectedPaymentType ->
+            for ((paymentType, button) in paymentButtonsMap) {
+                val isSelectedPaymentType = (paymentType == selectedPaymentType)
+                button.isSelected = isSelectedPaymentType
+                button.setBackgroundColor(Color.parseColor(if (isSelectedPaymentType) "#FF03DAC5" else "#FFFFFFFF"))
+                button.setTextColor(Color.parseColor(if (isSelectedPaymentType) "#FFFFFFFF" else "#FF000000"))
+            }
         }
+
+        binding.buttonPaymentTypeCash.setOnClickListener { cartViewModel.setCurrentPaymentType("CASH") }
+        binding.buttonPaymentTypeTouchNGo.setOnClickListener { cartViewModel.setCurrentPaymentType("TNG") }
+        binding.buttonPaymentTypeGrabpay.setOnClickListener { cartViewModel.setCurrentPaymentType("GRABPAY") }
+        binding.buttonPaymentTypeOthers.setOnClickListener { cartViewModel.setCurrentPaymentType("OTHERS") }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
         binding.placeOrderButton.setOnClickListener {
