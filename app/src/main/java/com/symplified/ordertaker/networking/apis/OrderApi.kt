@@ -1,6 +1,8 @@
 package com.symplified.ordertaker.networking.apis
 
 import com.symplified.ordertaker.models.cartitems.OrderRequest
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -14,6 +16,6 @@ interface OrderApi {
         @Query("zone") zoneName: String,
         @Query("tableNo") tableNo: String,
         @Query("staffId") staffId: String,
-        @Body requestBody: OrderRequest
-    )
+        @Body requestBody: List<OrderRequest>
+    ) : Call<ResponseBody>
 }

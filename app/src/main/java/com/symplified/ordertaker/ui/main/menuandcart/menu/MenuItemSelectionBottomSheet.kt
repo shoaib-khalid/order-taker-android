@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,10 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItem
-import com.symplified.ordertaker.models.cartitems.CartSubItem
 import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.viewmodels.CartViewModel
 
@@ -28,6 +27,10 @@ class MenuItemSelectionBottomSheet(
     }
 
     private var quantity = 1
+    private var productId = product.id
+    private var fullProductName = product.name
+    private var itemCode = product.productInventories.firstOrNull()?.itemCode ?: ""
+    private var itemPrice: Double = product.productInventories.minOf { it.dineInPrice }
     private val cartViewModel: CartViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -64,10 +67,10 @@ class MenuItemSelectionBottomSheet(
         addToCartButton.setOnClickListener {
             cartViewModel.insert(
                 CartItem(
-                    itemName = product.name,
-                    itemPrice = product.productInventories[0].dineInPrice,
-                    itemCode = product.productInventories[0].itemCode,
-                    productId = product.id,
+                    itemName = fullProductName,
+                    itemPrice = itemPrice,
+                    itemCode = itemCode,
+                    productId = productId,
                     quantity = quantity
                 )
             )
@@ -97,9 +100,16 @@ class MenuItemSelectionBottomSheet(
                     radioGroup.addView(radioButton)
                     if (inventoryIndex == 0) {
                         radioGroup.check(inventoryIndex)
+                        itemCode = product.productInventories[inventoryIndex].itemCode
+                        productId = product.productInventories[inventoryIndex].productId
+                        fullProductName = "${product.name} - ${item.productVariantAvailable.value}"
+                        itemPrice = product.productInventories[inventoryIndex].price
                     }
                     radioGroup.setOnCheckedChangeListener { group, checkedId ->
-                        // TODO: Create CartSubItem
+                        itemCode = product.productInventories[checkedId].itemCode
+                        productId = product.productInventories[checkedId].productId
+                        fullProductName = "${product.name} - ${item.productVariantAvailable.value}"
+                        itemPrice = product.productInventories[checkedId].price
                     }
                 }
 

@@ -14,7 +14,7 @@ interface CartItemDao {
 
     @Transaction
     @Query("SELECT * FROM cart_items")
-    fun getAll(): Flow<List<CartItemWithSubItems>>
+    fun getAll(): Flow<List<CartItem>>
 
     @Insert
     fun insert(cartItem: CartItem)

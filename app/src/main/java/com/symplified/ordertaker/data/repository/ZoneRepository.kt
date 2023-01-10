@@ -12,4 +12,8 @@ class ZoneRepository(private val zoneDao: ZoneDao) {
     suspend fun insert(zone: Zone) {
         zoneDao.insert(zone)
     }
+
+    suspend fun clear() {
+        zoneDao.deleteAll()
+    }
 }

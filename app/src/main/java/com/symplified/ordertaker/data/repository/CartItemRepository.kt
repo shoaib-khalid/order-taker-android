@@ -6,7 +6,7 @@ import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
 import kotlinx.coroutines.flow.Flow
 
 class CartItemRepository(private val cartItemDao: CartItemDao) {
-    val allItems: Flow<List<CartItemWithSubItems>> =
+    val allItems: Flow<List<CartItem>> =
         cartItemDao.getAll()
 
     fun insert(cartItem: CartItem) {

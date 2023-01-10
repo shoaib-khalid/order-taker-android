@@ -51,9 +51,23 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
 
             var totalPrice = 0.0
             cartItems.forEach { cartItem ->
-                totalPrice += (cartItem.cartItem.itemPrice * cartItem.cartItem.quantity)
+                totalPrice += (cartItem.itemPrice * cartItem.quantity)
             }
             binding.totalPriceCount.text = "RM ${String.format("%.2f", totalPrice)}"
+        }
+
+        cartViewModel.isPlacingOrder.observe(viewLifecycleOwner) { isPlacingOrder ->
+            if (isPlacingOrder) {
+                binding.mainLayout.visibility = View.GONE
+                binding.progressBarLayout.visibility = View.VISIBLE
+            } else {
+                binding.mainLayout.visibility = View.VISIBLE
+                binding.progressBarLayout.visibility = View.GONE
+            }
+        }
+
+        cartViewModel.orderResultMessage.observe(viewLifecycleOwner) { message ->
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
         }
 
         val spinner = binding.paymentTypeSpinner
@@ -68,8 +82,10 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
         binding.placeOrderButton.setOnClickListener {
-            cartViewModel.clearAll()
-            Snackbar.make(view, "Order placed", Snackbar.LENGTH_SHORT).show()
+            cartViewModel.placeOrder(
+                menuViewModel.selectedZone!!,
+                menuViewModel.selectedTable!!
+            )
         }
 
         binding.zoneNo.text = "Zone: ${menuViewModel.selectedZone}"
@@ -83,7 +99,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         _binding = null
     }
 
-    override fun onItemRemoved(cartItem: CartItemWithSubItems) {
+    override fun onItemRemoved(cartItem: CartItem) {
         cartViewModel.delete(cartItem)
     }
 }

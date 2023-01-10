@@ -39,7 +39,7 @@ class MenuAdapter(
 //        viewHolder.itemPrice.text = "RM " + items[position].price
         val minimumDineInPrice = String.format(
             "%.2f",
-            items[position].productInventories.minBy { it.dineInPrice }.dineInPrice
+            items[position].productInventories.minOf { it.dineInPrice }
         )
         viewHolder.itemPrice.text = "RM $minimumDineInPrice"
         viewHolder.itemView.setOnClickListener {

@@ -12,6 +12,8 @@ import com.symplified.ordertaker.models.auth.AuthResponseBody
 import com.symplified.ordertaker.models.auth.AuthSessionData
 import com.symplified.ordertaker.models.users.UserResponseBody
 import com.symplified.ordertaker.networking.ServiceGenerator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -122,7 +124,14 @@ class AuthViewModel : ViewModel() {
     }
 
     fun logout() {
-        App.sharedPreferences().edit().clear().apply()
         _isAuthenticated.value = false
+        CoroutineScope(Dispatchers.IO).launch {
+            App.sharedPreferences().edit().clear().apply()
+            App.categoryRepository.clear()
+            App.cartSubItemRepository.clear()
+            App.cartItemRepository.clear()
+            App.tableRepository.clear()
+            App.zoneRepository.clear()
+        }
     }
 }

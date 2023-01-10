@@ -11,12 +11,12 @@ import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
 
 class CartItemsAdapter(
-    private val cartItems: MutableList<CartItemWithSubItems> = mutableListOf(),
+    private val cartItems: MutableList<CartItem> = mutableListOf(),
     private val onRemoveFromCartListener: OnRemoveFromCartListener
 ) : RecyclerView.Adapter<CartItemsAdapter.ViewHolder>() {
 
     interface OnRemoveFromCartListener {
-        fun onItemRemoved(cartItem: CartItemWithSubItems)
+        fun onItemRemoved(cartItem: CartItem)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -43,10 +43,10 @@ class CartItemsAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemNumber.text = position.toString()
-        viewHolder.itemName.text = cartItems[position].cartItem.itemName
+        viewHolder.itemName.text = cartItems[position].itemName
 
-        val quantity = cartItems[position].cartItem.quantity
-        val price = cartItems[position].cartItem.itemPrice
+        val quantity = cartItems[position].quantity
+        val price = cartItems[position].itemPrice
         viewHolder.itemQuantity.text = quantity.toString()
         viewHolder.itemPrice.text = "RM ${String.format("%.2f", price * quantity)}"
 
@@ -61,7 +61,7 @@ class CartItemsAdapter(
 
     fun clearCart() = cartItems.clear()
 
-    fun updateItems(cartItemsToAdd: List<CartItemWithSubItems>) {
+    fun updateItems(cartItemsToAdd: List<CartItem>) {
         if (cartItemsToAdd.isEmpty()) {
             cartItems.clear()
         } else {

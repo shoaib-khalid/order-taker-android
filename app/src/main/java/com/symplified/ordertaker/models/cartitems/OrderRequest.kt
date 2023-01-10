@@ -14,7 +14,12 @@ data class OrderRequest(
         storeId: String,
         orderPaymentDetails: OrderPaymentDetails,
     ) : this(
-        cartItems, null, storeId, "Self Collect", "DINEIN", orderPaymentDetails,
+        cartItems,
+        null,
+        storeId,
+        "Self Collect",
+        "DINEIN",
+        orderPaymentDetails,
         OrderShipmentDetails(
             "", "", "", "", true, "", ""
         )

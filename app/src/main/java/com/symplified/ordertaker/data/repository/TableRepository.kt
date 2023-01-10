@@ -10,4 +10,8 @@ class TableRepository(private val tableDao: TableDao) {
     suspend fun insert(table: Table) {
         tableDao.insert(table)
     }
+
+    suspend fun clear() {
+        tableDao.deleteAll()
+    }
 }

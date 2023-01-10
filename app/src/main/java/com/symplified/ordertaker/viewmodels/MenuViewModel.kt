@@ -131,9 +131,7 @@ class MenuViewModel : ViewModel() {
             )
     }
 
-    private val _products: MutableLiveData<Product> by lazy {
-        MutableLiveData<Product>()
-    }
+    private val _products: MutableLiveData<Product> by lazy { MutableLiveData<Product>() }
     val products: LiveData<Product> = _products
 
     private val _isLoadingProducts = MutableLiveData<Boolean>().apply { value = false }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Order Taker</string>
+    <string name="app_name">Symplified Order Taker</string>
 
     <!-- Shared Preference keys -->
     <string name="preference_file_key">Symplified Order Taker Shared Preferences File</string>
