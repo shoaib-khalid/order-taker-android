@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.databinding.FragmentZoneBinding
+import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
@@ -61,9 +62,8 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
 
     }
 
-    override fun onTableClicked(tableNo: String) {
-        menuViewModel.selectedTable = tableNo
-        menuViewModel.selectedZone = zoneName
+    override fun onTableClicked(table: Table) {
+        menuViewModel.selectedTable = table
         findNavController().navigate(
             HomeFragmentDirections
                 .actionNavHomeToMenuAndCartFragment()

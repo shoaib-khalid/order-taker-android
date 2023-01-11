@@ -7,6 +7,7 @@ import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.data.repository.CartItemRepository
 import com.symplified.ordertaker.models.cartitems.*
 import com.symplified.ordertaker.models.products.Product
+import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,10 +60,7 @@ class CartViewModel : ViewModel() {
     val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
     private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val orderResultMessage: LiveData<String> = _orderResultMessage
-    fun placeOrder(
-        zoneName: String,
-        tableNo: String
-    ) {
+    fun placeOrder(table: Table) {
         val sharedPrefs = App.sharedPreferences()
         val staffId = sharedPrefs.getString(SharedPrefsKey.USER_ID, "")!!
         val storeId = sharedPrefs.getString(SharedPrefsKey.STORE_ID, "")!!
@@ -97,8 +95,8 @@ class CartViewModel : ViewModel() {
         ServiceGenerator
             .createOrderService()
             .placeOrder(
-                zoneName,
-                tableNo,
+                table.zoneId,
+                table.id,
                 staffId,
                 orderRequest
             ).clone()

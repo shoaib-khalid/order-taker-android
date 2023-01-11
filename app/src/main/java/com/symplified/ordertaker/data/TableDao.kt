@@ -13,8 +13,8 @@ interface TableDao {
     fun getAllTables(): Flow<List<Table>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(table: Table)
+    fun insert(table: Table)
 
     @Query("DELETE FROM tables")
-    suspend fun deleteAll()
+    fun deleteAll()
 }

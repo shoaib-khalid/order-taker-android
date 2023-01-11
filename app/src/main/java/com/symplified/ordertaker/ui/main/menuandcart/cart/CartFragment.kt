@@ -94,23 +94,31 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             }
         }
 
+        menuViewModel.selectedTable?.let { selectedTable ->
+            binding.placeOrderButton.setOnClickListener {
+                cartViewModel.placeOrder(selectedTable)
+            }
+            binding.tableNo.text = "Table No.: ${selectedTable.combinationTableNumber}"
+
+            menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
+                zonesWithTables.firstOrNull { zoneWithTables ->
+                    zoneWithTables.zone.id == selectedTable.zoneId
+                }?.let { zoneWithTables ->
+                    binding.zoneNo.text = "Zone: ${zoneWithTables.zone.zoneName}"
+                }
+            }
+        }
+
         binding.buttonPaymentTypeCash.setOnClickListener { cartViewModel.setCurrentPaymentType("CASH") }
         binding.buttonPaymentTypeTouchNGo.setOnClickListener { cartViewModel.setCurrentPaymentType("TNG") }
         binding.buttonPaymentTypeGrabpay.setOnClickListener { cartViewModel.setCurrentPaymentType("GRABPAY") }
         binding.buttonPaymentTypeOthers.setOnClickListener { cartViewModel.setCurrentPaymentType("OTHERS") }
 
-        binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
-        binding.placeOrderButton.setOnClickListener {
-            cartViewModel.placeOrder(
-                menuViewModel.selectedZone!!,
-                menuViewModel.selectedTable!!
-            )
-        }
-
-        binding.zoneNo.text = "Zone: ${menuViewModel.selectedZone}"
-        binding.tableNo.text = "Table No.: ${menuViewModel.selectedTable}"
         binding.serverName.text =
             "Served by: ${App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")}"
+
+        binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
+
     }
 
     override fun onDestroyView() {

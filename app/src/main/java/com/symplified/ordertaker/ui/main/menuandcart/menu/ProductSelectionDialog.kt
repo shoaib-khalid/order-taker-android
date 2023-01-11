@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -20,10 +22,10 @@ import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.viewmodels.CartViewModel
 
-class MenuItemSelectionBottomSheet(
+class ProductSelectionDialog(
     private val product: Product,
     private val onAddToCartListener: OnAddToCartListener
-) : BottomSheetDialogFragment() {
+) : DialogFragment() {
 
     interface OnAddToCartListener {
         fun onItemAdded(cartItem: CartItem)
@@ -36,12 +38,13 @@ class MenuItemSelectionBottomSheet(
     private var itemPrice: Double = product.productInventories.minOf { it.dineInPrice }
     private val cartViewModel: CartViewModel by activityViewModels()
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return BottomSheetDialog(requireContext(), theme).apply {
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            behavior.peekHeight = 1000
-        }
-    }
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//        return BottomSheetDialog(requireContext(), theme).apply {
+//            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+//            behavior.peekHeight = 1000
+//        }
+//    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

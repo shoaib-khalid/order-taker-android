@@ -4,10 +4,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:minWidth="500dp"
+    android:minHeight="150dp"
     tools:viewBindingIgnore="true"
     android:padding="15dp">
 
     <TextView
+        style="@style/TextAppearance.AppCompat.Title"
         android:id="@+id/product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_rectangle"
-        app:layout_constraintTop_toBottomOf="@id/product_variant_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
 
         <TextView
@@ -95,8 +98,7 @@
         android:paddingVertical="10dp"
         android:backgroundTint="?colorPrimary"
         android:textColor="@color/white"
-        app:layout_constraintTop_toTopOf="@id/layout_quantity_selector"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/layout_quantity_selector"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -65,18 +65,19 @@ class MainActivity : AppCompatActivity() {
         val navHeaderSubtitle: TextView = headerView.findViewById(R.id.nav_header_subtitle)
 
         mainViewModel.storeName.observe(this) { storeName ->
-            if (storeName.isBlank()) {
-                mainViewModel.fetchStoreName()
-            } else {
+            if (storeName != null && storeName.isNotBlank()) {
                 navHeaderTitle.text = storeName
+            } else {
+                mainViewModel.fetchStoreName()
             }
         }
 
         mainViewModel.username.observe(this) { username ->
-            if (username.isBlank()) {
-                mainViewModel.fetchUsername()
+
+            if (username != null && username.isNotBlank()) {
+                navHeaderTitle.text = username
             } else {
-                navHeaderSubtitle.text = username
+                mainViewModel.fetchUsername()
             }
         }
     }

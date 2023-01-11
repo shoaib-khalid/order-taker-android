@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,12 +16,15 @@ import retrofit2.Response
 class MainViewModel : ViewModel() {
 
     private val _username = MutableLiveData<String>().apply {
-        value = App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")
+        Log.d("mainviewmode", "username: ${
+            App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")!!
+        }")
+        value = App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")!!
     }
     val username: LiveData<String> = _username
 
     private val _storeName = MutableLiveData<String>().apply {
-        value = App.sharedPreferences().getString(SharedPrefsKey.STORE_NAME, "")
+        value = App.sharedPreferences().getString(SharedPrefsKey.STORE_NAME, "")!!
     }
     val storeName: LiveData<String> = _storeName
 

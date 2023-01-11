@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 class TableRepository(private val tableDao: TableDao) {
     val allTables: Flow<List<Table>> = tableDao.getAllTables()
 
-    suspend fun insert(table: Table) {
+    fun insert(table: Table) {
         tableDao.insert(table)
     }
 
-    suspend fun clear() {
+    fun clear() {
         tableDao.deleteAll()
     }
 }
