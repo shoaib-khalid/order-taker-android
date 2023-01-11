@@ -92,6 +92,8 @@ class CartViewModel : ViewModel() {
             )
         )
 
+        Log.d("cartviewmodel", "OrderRequest: $orderRequest")
+
         ServiceGenerator
             .createOrderService()
             .placeOrder(

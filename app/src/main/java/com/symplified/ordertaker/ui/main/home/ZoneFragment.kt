@@ -48,10 +48,13 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
         arguments?.takeIf { it.containsKey(ZONE_ID) }?.apply {
             val zoneId = getInt(ZONE_ID)
             menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zone ->
-                val currentZone = zone.first { zoneWithTables -> zoneWithTables.zone.id == zoneId }
-                zoneName = currentZone.zone.zoneName
-                val newTables = currentZone.tables
-                adapter.setTables(newTables)
+                zone.firstOrNull { zoneWithTables ->
+                    zoneWithTables.zone.id == zoneId
+                }?.let { currentZone ->
+                    zoneName = currentZone.zone.zoneName
+                    val newTables = currentZone.tables
+                    adapter.setTables(newTables)
+                }
             }
         }
 
@@ -61,7 +64,9 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
     override fun onTableClicked(tableNo: String) {
         menuViewModel.selectedTable = tableNo
         menuViewModel.selectedZone = zoneName
-        findNavController().navigate(HomeFragmentDirections
-            .actionNavHomeToMenuAndCartFragment())
+        findNavController().navigate(
+            HomeFragmentDirections
+                .actionNavHomeToMenuAndCartFragment()
+        )
     }
 }

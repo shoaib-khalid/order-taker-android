@@ -3,12 +3,14 @@ package com.symplified.ordertaker.ui.main.menuandcart.cart
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,12 +81,17 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             "GRABPAY" to binding.buttonPaymentTypeGrabpay,
             "OTHERS" to binding.buttonPaymentTypeOthers
         )
+
+        val typedValue = TypedValue()
+        view.context.theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true)
+        val primaryColor = ContextCompat.getColor(view.context, typedValue.resourceId)
         cartViewModel.selectedPaymentType.observe(viewLifecycleOwner) { selectedPaymentType ->
             for ((paymentType, button) in paymentButtonsMap) {
                 val isSelectedPaymentType = (paymentType == selectedPaymentType)
                 button.isSelected = isSelectedPaymentType
-                button.setBackgroundColor(Color.parseColor(if (isSelectedPaymentType) "#FF03DAC5" else "#FFFFFFFF"))
-                button.setTextColor(Color.parseColor(if (isSelectedPaymentType) "#FFFFFFFF" else "#FF000000"))
+                button.setBackgroundColor(if (isSelectedPaymentType) primaryColor else Color.WHITE)
+//                button.setBackgroundColor(Color.parseColor(if (isSelectedPaymentType) "#FF03DAC5" else "#FFFFFFFF"))
+                button.setTextColor(if (isSelectedPaymentType) Color.WHITE else Color.BLACK)
             }
         }
 
