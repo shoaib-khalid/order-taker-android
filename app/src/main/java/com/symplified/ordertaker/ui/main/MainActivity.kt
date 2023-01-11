@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.username.observe(this) { username ->
 
             if (username != null && username.isNotBlank()) {
-                navHeaderTitle.text = username
+                navHeaderSubtitle.text = username
             } else {
                 mainViewModel.fetchUsername()
             }
