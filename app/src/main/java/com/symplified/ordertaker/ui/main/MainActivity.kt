@@ -21,6 +21,7 @@ import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.ui.login.LoginActivity
 import com.symplified.ordertaker.viewmodels.AuthViewModel
+import com.symplified.ordertaker.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val authViewModel: AuthViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +60,25 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val navHeaderTitle: TextView = navView.getHeaderView(0)
-            .findViewById(R.id.nav_header_title)
-        navHeaderTitle.text = getSharedPreferences(App.SHARED_PREFS_FILENAME, Context.MODE_PRIVATE)
-            .getString(SharedPrefsKey.USERNAME, "")
+        val headerView = navView.getHeaderView(0)
+        val navHeaderTitle: TextView = headerView.findViewById(R.id.nav_header_title)
+        val navHeaderSubtitle: TextView = headerView.findViewById(R.id.nav_header_subtitle)
+
+        mainViewModel.storeName.observe(this) { storeName ->
+            if (storeName.isBlank()) {
+                mainViewModel.fetchStoreName()
+            } else {
+                navHeaderTitle.text = storeName
+            }
+        }
+
+        mainViewModel.username.observe(this) { username ->
+            if (username.isBlank()) {
+                mainViewModel.fetchUsername()
+            } else {
+                navHeaderSubtitle.text = username
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

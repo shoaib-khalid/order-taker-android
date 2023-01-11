@@ -90,7 +90,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
                 val isSelectedPaymentType = (paymentType == selectedPaymentType)
                 button.isSelected = isSelectedPaymentType
                 button.setBackgroundColor(if (isSelectedPaymentType) primaryColor else Color.WHITE)
-//                button.setBackgroundColor(Color.parseColor(if (isSelectedPaymentType) "#FF03DAC5" else "#FFFFFFFF"))
                 button.setTextColor(if (isSelectedPaymentType) Color.WHITE else Color.BLACK)
             }
         }
