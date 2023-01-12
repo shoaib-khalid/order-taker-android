@@ -8,6 +8,7 @@ import com.symplified.ordertaker.data.repository.CartItemRepository
 import com.symplified.ordertaker.models.cartitems.*
 import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.zones.Table
+import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +61,7 @@ class CartViewModel : ViewModel() {
     val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
     private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val orderResultMessage: LiveData<String> = _orderResultMessage
-    fun placeOrder(table: Table) {
+    fun placeOrder(zone: Zone, table: Table) {
         val sharedPrefs = App.sharedPreferences()
         val staffId = sharedPrefs.getString(SharedPrefsKey.USER_ID, "")!!
         val storeId = sharedPrefs.getString(SharedPrefsKey.STORE_ID, "")!!
@@ -82,11 +83,18 @@ class CartViewModel : ViewModel() {
         }
         Log.d("cartviewmodel", "${cartItemsWithSubItemsRequest.size}")
 
+        var customerNotes = "Zone: ${zone.zoneName},\nTable No. ${table.combinationTableNumber}"
+        App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")?.let { username ->
+            if (username.isNotBlank()) {
+                customerNotes = "$customerNotes,\nServed by: $username"
+            }
+        }
         val orderRequest = listOf(
             OrderRequest(
                 cartItemsWithSubItemsRequest,
                 storeId,
-                OrderPaymentDetails(_selectedPaymentType.value!!)
+                OrderPaymentDetails(_selectedPaymentType.value!!),
+                customerNotes
             )
         )
 

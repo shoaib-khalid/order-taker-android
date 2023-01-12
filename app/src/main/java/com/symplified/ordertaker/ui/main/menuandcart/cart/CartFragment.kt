@@ -95,9 +95,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         }
 
         menuViewModel.selectedTable?.let { selectedTable ->
-            binding.placeOrderButton.setOnClickListener {
-                cartViewModel.placeOrder(selectedTable)
-            }
             binding.tableNo.text = "Table No.: ${selectedTable.combinationTableNumber}"
 
             menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
@@ -105,6 +102,10 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
                     zoneWithTables.zone.id == selectedTable.zoneId
                 }?.let { zoneWithTables ->
                     binding.zoneNo.text = "Zone: ${zoneWithTables.zone.zoneName}"
+
+                    binding.placeOrderButton.setOnClickListener {
+                        cartViewModel.placeOrder(zoneWithTables.zone, selectedTable)
+                    }
                 }
             }
         }
