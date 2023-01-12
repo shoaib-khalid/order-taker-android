@@ -16,8 +16,8 @@ interface ZoneDao {
     fun getZonesWithTables(): Flow<List<ZoneWithTables>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(zone: Zone)
+    fun insert(zone: Zone)
 
     @Query("DELETE FROM zones")
-    suspend fun deleteAll()
+    fun deleteAll()
 }

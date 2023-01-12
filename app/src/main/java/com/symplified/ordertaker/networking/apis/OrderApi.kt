@@ -13,8 +13,8 @@ interface OrderApi {
     @Headers("Authorization: Bearer accessToken")
     @POST("orders/placeGroupOrder?isStaffOrder=true")
     fun placeOrder(
-        @Query("zone") zoneName: String,
-        @Query("tableNo") tableNo: String,
+        @Query("zoneId") zoneId: Int,
+        @Query("tableId") tableId: Int,
         @Query("staffId") staffId: String,
         @Body requestBody: List<OrderRequest>
     ) : Call<ResponseBody>

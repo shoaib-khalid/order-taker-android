@@ -3,12 +3,14 @@ package com.symplified.ordertaker.ui.main.menuandcart.cart
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,12 +81,32 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             "GRABPAY" to binding.buttonPaymentTypeGrabpay,
             "OTHERS" to binding.buttonPaymentTypeOthers
         )
+
+        val typedValue = TypedValue()
+        view.context.theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true)
+        val primaryColor = ContextCompat.getColor(view.context, typedValue.resourceId)
         cartViewModel.selectedPaymentType.observe(viewLifecycleOwner) { selectedPaymentType ->
             for ((paymentType, button) in paymentButtonsMap) {
                 val isSelectedPaymentType = (paymentType == selectedPaymentType)
                 button.isSelected = isSelectedPaymentType
-                button.setBackgroundColor(Color.parseColor(if (isSelectedPaymentType) "#FF03DAC5" else "#FFFFFFFF"))
-                button.setTextColor(Color.parseColor(if (isSelectedPaymentType) "#FFFFFFFF" else "#FF000000"))
+                button.setBackgroundColor(if (isSelectedPaymentType) primaryColor else Color.WHITE)
+                button.setTextColor(if (isSelectedPaymentType) Color.WHITE else Color.BLACK)
+            }
+        }
+
+        menuViewModel.selectedTable?.let { selectedTable ->
+            binding.tableNo.text = "Table No.: ${selectedTable.combinationTableNumber}"
+
+            menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
+                zonesWithTables.firstOrNull { zoneWithTables ->
+                    zoneWithTables.zone.id == selectedTable.zoneId
+                }?.let { zoneWithTables ->
+                    binding.zoneNo.text = "Zone: ${zoneWithTables.zone.zoneName}"
+
+                    binding.placeOrderButton.setOnClickListener {
+                        cartViewModel.placeOrder(zoneWithTables.zone, selectedTable)
+                    }
+                }
             }
         }
 
@@ -93,18 +115,11 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         binding.buttonPaymentTypeGrabpay.setOnClickListener { cartViewModel.setCurrentPaymentType("GRABPAY") }
         binding.buttonPaymentTypeOthers.setOnClickListener { cartViewModel.setCurrentPaymentType("OTHERS") }
 
-        binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
-        binding.placeOrderButton.setOnClickListener {
-            cartViewModel.placeOrder(
-                menuViewModel.selectedZone!!,
-                menuViewModel.selectedTable!!
-            )
-        }
-
-        binding.zoneNo.text = "Zone: ${menuViewModel.selectedZone}"
-        binding.tableNo.text = "Table No.: ${menuViewModel.selectedTable}"
         binding.serverName.text =
             "Served by: ${App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")}"
+
+        binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
+
     }
 
     override fun onDestroyView() {

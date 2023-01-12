@@ -9,11 +9,11 @@ import java.time.ZoneId
 class ZoneRepository(private val zoneDao: ZoneDao) {
     val allZones: Flow<List<ZoneWithTables>> = zoneDao.getZonesWithTables()
 
-    suspend fun insert(zone: Zone) {
+    fun insert(zone: Zone) {
         zoneDao.insert(zone)
     }
 
-    suspend fun clear() {
+    fun clear() {
         zoneDao.deleteAll()
     }
 }

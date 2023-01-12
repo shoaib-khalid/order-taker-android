@@ -2,6 +2,13 @@
 <resources>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+
+    <color name="sf_300">#1A73BA</color>
+    <color name="sf_400">#004889</color>
+    <color name="sf_500">#5ea1ed</color>
+    <color name="sf_b_700">#3f4d65</color>
+    <color name="sf_b_800">#15253B</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="light_grey">#efefef</color>

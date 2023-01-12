@@ -17,10 +17,11 @@ import com.symplified.ordertaker.viewmodels.*
 
 class MenuFragment : Fragment(),
     MenuAdapter.OnMenuItemClickedListener,
-    MenuItemSelectionBottomSheet.OnAddToCartListener,
+    ProductSelectionDialog.OnAddToCartListener,
     CategoriesAdapter.OnCategoryClickListener {
 
     private var _binding: FragmentMenuBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -58,10 +59,10 @@ class MenuFragment : Fragment(),
     }
 
     override fun onItemClicked(item: Product) {
-        val menuItemSelectionBottomSheet = MenuItemSelectionBottomSheet(item, this)
+        ProductSelectionDialog(item, this)
             .show(
-            childFragmentManager, "MenuItemSelectionBottomSheet"
-        )
+                childFragmentManager, "MenuItemSelectionBottomSheet"
+            )
     }
 
     override fun onItemAdded(cartItem: CartItem) {

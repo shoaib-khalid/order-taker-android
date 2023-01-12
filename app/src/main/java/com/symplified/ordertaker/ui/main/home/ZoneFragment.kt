@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.databinding.FragmentZoneBinding
+import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
@@ -48,20 +49,24 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
         arguments?.takeIf { it.containsKey(ZONE_ID) }?.apply {
             val zoneId = getInt(ZONE_ID)
             menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zone ->
-                val currentZone = zone.first { zoneWithTables -> zoneWithTables.zone.id == zoneId }
-                zoneName = currentZone.zone.zoneName
-                val newTables = currentZone.tables
-                adapter.setTables(newTables)
+                zone.firstOrNull { zoneWithTables ->
+                    zoneWithTables.zone.id == zoneId
+                }?.let { currentZone ->
+                    zoneName = currentZone.zone.zoneName
+                    val newTables = currentZone.tables
+                    adapter.setTables(newTables)
+                }
             }
         }
 
 
     }
 
-    override fun onTableClicked(tableNo: String) {
-        menuViewModel.selectedTable = tableNo
-        menuViewModel.selectedZone = zoneName
-        findNavController().navigate(HomeFragmentDirections
-            .actionNavHomeToMenuAndCartFragment())
+    override fun onTableClicked(table: Table) {
+        menuViewModel.selectedTable = table
+        findNavController().navigate(
+            HomeFragmentDirections
+                .actionNavHomeToMenuAndCartFragment()
+        )
     }
 }

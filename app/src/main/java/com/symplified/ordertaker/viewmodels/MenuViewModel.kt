@@ -32,8 +32,7 @@ class MenuViewModel : ViewModel() {
     val categories: LiveData<List<Category>> = App.categoryRepository.allItems.asLiveData()
 //    val menuItems: LiveData<List<Product>> = OrderTakerAppication.productRepository.allItems.asLiveData()
 
-    var selectedZone: String? = null
-    var selectedTable: String? = null
+    var selectedTable: Table? = null
 
     private val _currentCategory: MutableLiveData<Category> by lazy {
         MutableLiveData<Category>()
@@ -79,7 +78,11 @@ class MenuViewModel : ViewModel() {
                         _isLoadingZonesAndTables.value = false
                         if (response.isSuccessful) {
                             response.body()?.let { zoneData ->
-                                zoneData.data.forEach { zone -> insert(zone) }
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    App.zoneRepository.clear()
+                                    App.tableRepository.clear()
+                                    zoneData.data.forEach { zone -> insert(zone) }
+                                }
                             }
                         }
                     }

@@ -6,6 +6,7 @@ data class OrderRequest(
     val storeId: String,
     val customerNotes: String,
     val dineInPack: String,
+    val dineInOption: String,
     val orderPaymentDetails: OrderPaymentDetails,
     val orderShipmentDetails: OrderShipmentDetails
 ) {
@@ -13,12 +14,14 @@ data class OrderRequest(
         cartItems: List<CartItemWithSubItemsRequest>,
         storeId: String,
         orderPaymentDetails: OrderPaymentDetails,
+        customerNotes: String
     ) : this(
         cartItems,
         null,
         storeId,
-        "Self Collect",
+        customerNotes,
         "DINEIN",
+        "SENDTOTABLE",
         orderPaymentDetails,
         OrderShipmentDetails(
             "", "", "", "", true, "", ""

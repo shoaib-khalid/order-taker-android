@@ -67,7 +67,7 @@ class AuthViewModel : ViewModel() {
                         ) {
                             Log.d("login-activity", response.toString())
                             if (response.isSuccessful && response.body() != null) {
-                                getStoreDataAndLogin(response.body()!!.data.session)
+                                getStoreIdAndLogin(response.body()!!.data.session)
                             } else {
                                 _errorMessage.value =
                                     if (response.code() == 401) "Username or password is incorrect."
@@ -89,7 +89,7 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun getStoreDataAndLogin(sessionData: AuthSessionData) {
+    fun getStoreIdAndLogin(sessionData: AuthSessionData) {
         ServiceGenerator.createAuthService()
             .getUserById(sessionData.ownerId)
             .clone()
