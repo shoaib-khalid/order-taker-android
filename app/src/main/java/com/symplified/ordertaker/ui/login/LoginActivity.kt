@@ -68,7 +68,4 @@ class LoginActivity : AppCompatActivity() {
             binding.tvPassword.error = errorMessage
         }
     }
-
-    private fun showSnackbar(errorMessage: String) {
-    }
 }
