@@ -6,16 +6,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.models.products.Product
+import com.symplified.ordertaker.models.products.ProductWithDetails
 
 class MenuAdapter(
-    private val items: List<Product>,
+    private val items: List<ProductWithDetails>,
     private val onMenuItemClickListener: OnMenuItemClickedListener
 ) :
     RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
 
     interface OnMenuItemClickedListener {
-        fun onItemClicked(item: Product)
+        fun onItemClicked(item: ProductWithDetails)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -35,11 +35,12 @@ class MenuAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.itemName.text = items[position].name
+        viewHolder.itemName.text = items[position].product.name
 //        viewHolder.itemPrice.text = "RM " + items[position].price
         val minimumDineInPrice = String.format(
             "%.2f",
-            items[position].productInventories.minOf { it.dineInPrice }
+            items[position].productInventoriesWithItems.minOfOrNull { it.productInventory.dineInPrice }
+                ?: 0.0
         )
         viewHolder.itemPrice.text = "RM $minimumDineInPrice"
         viewHolder.itemView.setOnClickListener {

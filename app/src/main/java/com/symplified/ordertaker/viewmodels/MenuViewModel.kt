@@ -1,19 +1,18 @@
 package com.symplified.ordertaker.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.google.gson.Gson
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
-import com.symplified.ordertaker.data.repository.CategoryRepository
-import com.symplified.ordertaker.data.repository.ProductRepository
-import com.symplified.ordertaker.data.repository.TableRepository
-import com.symplified.ordertaker.data.repository.ZoneRepository
 import com.symplified.ordertaker.models.ErrorResponseBody
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.categories.CategoryResponseBody
-import com.symplified.ordertaker.models.products.ProductResponseBody
+import com.symplified.ordertaker.models.categories.CategoryWithProducts
+import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.ZoneWithTables
@@ -22,14 +21,21 @@ import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+const val TAG = "menu-view-model"
+
 class MenuViewModel : ViewModel() {
+
     val zonesWithTables: LiveData<List<ZoneWithTables>> = App.zoneRepository.allZones.asLiveData()
     val tables: LiveData<List<Table>> = App.tableRepository.allTables.asLiveData()
-    val categories: LiveData<List<Category>> = App.categoryRepository.allItems.asLiveData()
+    val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
+    val categoriesWithProducts: LiveData<List<CategoryWithProducts>> =
+        App.productRepository.allCategoriesWithProducts.asLiveData()
+    val productsWithDetails: LiveData<List<ProductWithDetails>> = App.productRepository.allProductsWithDetails.asLiveData()
 //    val menuItems: LiveData<List<Product>> = OrderTakerAppication.productRepository.allItems.asLiveData()
 
     var selectedTable: Table? = null
@@ -40,11 +46,7 @@ class MenuViewModel : ViewModel() {
     val currentCategory: LiveData<Category> = _currentCategory
 
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
-        App.categoryRepository.insert(category)
-    }
-
-    fun clearAllCategories() = CoroutineScope(Dispatchers.IO).launch {
-        App.categoryRepository.clear()
+        App.productRepository.insert(category)
     }
 
     fun insert(zoneWithTables: ZoneWithTables) = CoroutineScope(Dispatchers.IO).launch {
@@ -62,8 +64,8 @@ class MenuViewModel : ViewModel() {
     }
 
     private val _isLoadingZonesAndTables = MutableLiveData<Boolean>().apply { value = false }
-    val isLoadingZonesAndTables : LiveData<Boolean> = _isLoadingZonesAndTables
-    fun getZonesAndTables() {
+    val isLoadingZonesAndTables: LiveData<Boolean> = _isLoadingZonesAndTables
+    fun fetchZonesAndTables() {
         _isLoadingZonesAndTables.value = true
         val storeId = App.sharedPreferences().getString(SharedPrefsKey.STORE_ID, "")!!
         ServiceGenerator.createLocationService()
@@ -89,18 +91,16 @@ class MenuViewModel : ViewModel() {
 
                     override fun onFailure(call: Call<ZonesResponseBody>, t: Throwable) {
                         _isLoadingZonesAndTables.value = false
-                        Log.d("zones", "onFailure ${t.localizedMessage}")
                     }
                 }
             )
     }
 
     private val _isLoadingCategories = MutableLiveData<Boolean>().apply { value = false }
-    val isLoadingCategories : LiveData<Boolean> = _isLoadingCategories
-    fun getCategories() {
+    val isLoadingCategories: LiveData<Boolean> = _isLoadingCategories
+    fun fetchCategories() {
         _isLoadingCategories.value = true
         val storeId = App.sharedPreferences().getString(SharedPrefsKey.STORE_ID, "")!!
-        Log.d("category-fragment", "Storeid: $storeId")
         ServiceGenerator.createProductService()
             .getCategories(storeId)
             .clone()
@@ -110,19 +110,19 @@ class MenuViewModel : ViewModel() {
                         call: Call<CategoryResponseBody>,
                         response: Response<CategoryResponseBody>
                     ) {
-                        Log.d("categories", "Category response raw: ${response.raw()}")
                         _isLoadingCategories.value = false
                         if (response.isSuccessful) {
                             response.body()?.let { body ->
-                                Log.d("categories", "${body.data.content.size}")
                                 body.data.content.forEach { category ->
                                     insert(category)
                                 }
                             }
                         } else {
                             response.errorBody()?.let { errorBody ->
-                                val errorResponse: ErrorResponseBody? = Gson().fromJson(errorBody.string(), ErrorResponseBody::class.java)
-                                Log.d("categories", "Error response: $errorResponse")
+                                val errorResponse: ErrorResponseBody? = Gson().fromJson(
+                                    errorBody.string(),
+                                    ErrorResponseBody::class.java
+                                )
                             }
                         }
                     }
@@ -134,55 +134,71 @@ class MenuViewModel : ViewModel() {
             )
     }
 
-    private val _products: MutableLiveData<Product> by lazy { MutableLiveData<Product>() }
-    val products: LiveData<Product> = _products
-
     private val _isLoadingProducts = MutableLiveData<Boolean>().apply { value = false }
-    val isLoadingProducts : LiveData<Boolean> = _isLoadingProducts
+    val isLoadingProducts: LiveData<Boolean> = _isLoadingProducts
+    private fun setIsLoadingProducts(status: Boolean) = CoroutineScope(Dispatchers.Main).launch {
+        _isLoadingProducts.value = status
+    }
 
-    fun setCurrentCategory(category: Category) {
-        _isLoadingProducts.value = true
+    fun fetchProducts() {
+        CoroutineScope(Dispatchers.IO).launch {
+            setIsLoadingProducts(true)
 
-        _currentCategory.value = category
-        val storeId = App.sharedPreferences().getString(SharedPrefsKey.STORE_ID, "")!!
-        ServiceGenerator.createProductService()
-            .getProductsByCategoryId(storeId, category.id)
-            .clone()
-            .enqueue(
-                object: Callback<ProductResponseBody> {
-                    override fun onResponse(
-                        call: Call<ProductResponseBody>,
-                        response: Response<ProductResponseBody>
-                    ) {
-                        if (response.isSuccessful) {
-                            response.body()?.let { productResponseBody ->
-                                Log.d("products", "Product response size: ${productResponseBody.data.content.size}")
-                                if (productResponseBody.data.content.isNotEmpty())
-                                    _products.value = productResponseBody.data.content[0]
+            val productApiService = ServiceGenerator.createProductService()
+            val storeId = App.sharedPreferences().getString(SharedPrefsKey.STORE_ID, "")!!
+            try {
+                val response = productApiService.getProductsByStoreId(storeId)
+                if (response.isSuccessful) {
+
+                    response.body()?.let { productResponseBody ->
+                        productResponseBody.data.content.forEach { product ->
+                            App.productRepository.insert(product)
+
+                            if (product.hasAddOn) {
+                                launch {
+                                    try {
+                                        val addOnResponse = productApiService.getProductAddOns(product.id)
+                                        if (addOnResponse.isSuccessful) {
+                                            addOnResponse.body()!!.data.forEach { addOnGroup ->
+                                                addOnGroup.productId = product.id
+                                                App.productRepository.insert(addOnGroup)
+                                            }
+                                        } else {
+                                            Log.e(TAG, "Error ${addOnResponse.code()} when getting addons for ${product.id}")
+                                        }
+                                    } catch (e: Throwable) {
+                                        Log.e(TAG, "Failed to get add-ons for ${product.id}. ${e.localizedMessage}")
+                                    }
+                                }
+                            }
+
+                            if (product.isPackage) {
+                                launch {
+                                    try {
+                                        val packageResponse = productApiService.getProductOptions(storeId, product.id)
+                                        if (packageResponse.isSuccessful) {
+                                            packageResponse.body()!!.data.forEach { productPackage ->
+                                                App.productRepository.insert(productPackage)
+                                            }
+                                        } else {
+                                            Log.e(TAG, "Error ${packageResponse.code()} when getting packages for ${product.id}.")
+                                        }
+                                    } catch (e: Throwable) {
+                                        Log.e(TAG, "Failed to get package. ${e.localizedMessage}")
+                                    }
+                                }
                             }
                         }
-                        _isLoadingProducts.value = false
-
                     }
-
-                    override fun onFailure(call: Call<ProductResponseBody>, t: Throwable) {
-                        _isLoadingProducts.value = false
-                    }
+                    setIsLoadingProducts(false)
+                } else {
+                    Log.d("menuviewmodel", "Error ${response.code()} when fetching products.")
+                    setIsLoadingProducts(false)
                 }
-            )
-    }
-}
-
-class MenuViewModelFactory(
-    private val tableRepository: TableRepository,
-    private val zoneRepository: ZoneRepository,
-    private val categoryRepository: CategoryRepository,
-    private val productRepository: ProductRepository
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MenuViewModel::class.java)) {
-            return MenuViewModel() as T
+            } catch (e: Throwable) {
+                Log.e("menuviewmodel", "Failed to get products. ${e.localizedMessage}")
+                setIsLoadingProducts(false)
+            }
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

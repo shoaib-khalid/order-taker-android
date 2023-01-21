@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.data
+package com.symplified.ordertaker.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,22 +6,25 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.symplified.ordertaker.models.cartitems.CartItem
-import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
+import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CartItemDao {
 
-    @Transaction
     @Query("SELECT * FROM cart_items")
     fun getAll(): Flow<List<CartItem>>
 
+    @Transaction
+    @Query("SELECT * FROM cart_items")
+    fun getAllCartItemWithAddOnsAndSubItems(): Flow<List<CartItemWithAddOnsAndSubItems>>
+
     @Insert
-    fun insert(cartItem: CartItem)
+    suspend fun insert(cartItem: CartItem): Long
 
     @Delete
-    fun delete(cartItem: CartItem)
+    suspend fun delete(cartItem: CartItem)
 
     @Query("DELETE FROM cart_items")
-    fun clear()
+    suspend fun deleteAll()
 }

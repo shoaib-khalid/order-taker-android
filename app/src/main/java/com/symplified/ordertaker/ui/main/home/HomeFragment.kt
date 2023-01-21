@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
         menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
             isZonesEmpty = zonesWithTables.isEmpty()
             if (isZonesEmpty) {
-                menuViewModel.getZonesAndTables()
+                menuViewModel.fetchZonesAndTables()
             }
 
             binding.pager.adapter = ZoneCollectionAdapter(this, zonesWithTables)
@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            menuViewModel.getZonesAndTables()
+            menuViewModel.fetchZonesAndTables()
         }
     }
 

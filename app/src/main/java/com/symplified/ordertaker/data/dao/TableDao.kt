@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.data
+package com.symplified.ordertaker.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

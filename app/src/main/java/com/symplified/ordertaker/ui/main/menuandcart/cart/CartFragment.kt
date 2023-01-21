@@ -8,19 +8,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
-import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.R
 import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.cartitems.CartItem
-import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
+import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
@@ -49,14 +46,22 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         cartItemsList.layoutManager = LinearLayoutManager(view.context);
         cartItemsList.adapter = cartItemsAdapter
 
-        cartViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
-            binding.placeOrderButton.isEnabled = cartItems.isNotEmpty()
+        cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { cartItemsWithAddOnsAndSubItems ->
+            cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
+                Log.d(
+                    "dialogviewmodel",
+                    "cartItem: ${cartItemWithAddOnsAndSubItems.cartItem.itemName}, cartItemAddons: ${cartItemWithAddOnsAndSubItems.cartItemAddons.size}, cartSubItems: ${cartItemWithAddOnsAndSubItems.cartSubItems.size}"
+                )
+            }
 
-            cartItemsAdapter.updateItems(cartItems)
+            binding.placeOrderButton.isEnabled = cartItemsWithAddOnsAndSubItems.isNotEmpty()
+
+            cartItemsAdapter.updateItems(cartItemsWithAddOnsAndSubItems)
 
             var totalPrice = 0.0
-            cartItems.forEach { cartItem ->
-                totalPrice += (cartItem.itemPrice * cartItem.quantity)
+            cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
+                totalPrice += (cartItemWithAddOnsAndSubItems.cartItem.itemPrice *
+                        cartItemWithAddOnsAndSubItems.cartItem.quantity)
             }
             binding.totalPriceCount.text = "RM ${String.format("%.2f", totalPrice)}"
         }
@@ -83,7 +88,11 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         )
 
         val typedValue = TypedValue()
-        view.context.theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true)
+        view.context.theme.resolveAttribute(
+            androidx.appcompat.R.attr.colorPrimary,
+            typedValue,
+            true
+        )
         val primaryColor = ContextCompat.getColor(view.context, typedValue.resourceId)
         cartViewModel.selectedPaymentType.observe(viewLifecycleOwner) { selectedPaymentType ->
             for ((paymentType, button) in paymentButtonsMap) {
@@ -127,7 +136,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         _binding = null
     }
 
-    override fun onItemRemoved(cartItem: CartItem) {
+    override fun onItemRemoved(cartItem: CartItemWithAddOnsAndSubItems) {
         cartViewModel.delete(cartItem)
     }
 }

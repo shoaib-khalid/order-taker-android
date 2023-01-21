@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.models.products.Product
+import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.ui.main.menuandcart.categories.CategoriesAdapter
 import com.symplified.ordertaker.viewmodels.*
 
@@ -27,7 +27,8 @@ class MenuFragment : Fragment(),
     private val binding get() = _binding!!
 
     private val cartViewModel: CartViewModel by activityViewModels()
-    private val productViewModel: ProductViewModel by activityViewModels()
+    private val menuViewModel: MenuViewModel by activityViewModels()
+    private val dialogViewModel: ProductSelectionViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +45,14 @@ class MenuFragment : Fragment(),
 //        itemList.adapter = menuAdapter
         binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
 
-        productViewModel.products.observe(viewLifecycleOwner) { products ->
+        menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
+            Log.d("menuviewmodel", "isProductsEmpty: ${products.isEmpty()}")
+            if (products.isEmpty()) { menuViewModel.fetchProducts() }
+
             binding.itemList.adapter = MenuAdapter(products, this)
         }
 
-        productViewModel.isLoadingProducts.observe(viewLifecycleOwner) { isLoading ->
+        menuViewModel.isLoadingProducts.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
@@ -58,7 +62,8 @@ class MenuFragment : Fragment(),
         _binding = null
     }
 
-    override fun onItemClicked(item: Product) {
+    override fun onItemClicked(item: ProductWithDetails) {
+        dialogViewModel.setSelectedProduct(item)
         ProductSelectionDialog(item, this)
             .show(
                 childFragmentManager, "MenuItemSelectionBottomSheet"
@@ -66,10 +71,9 @@ class MenuFragment : Fragment(),
     }
 
     override fun onItemAdded(cartItem: CartItem) {
-        cartViewModel.insert(cartItem)
+//        cartViewModel.insert(cartItem)
     }
 
     override fun onCategoryClicked(category: Category) {
-        Log.d("categories", "MenuFragment onCurrentCategoryChanged to ${category.name}")
     }
 }

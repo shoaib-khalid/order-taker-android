@@ -1,7 +1,7 @@
 package com.symplified.ordertaker.models.cartitems
 
 data class OrderRequest(
-    val cartItems: List<CartItemWithSubItemsRequest>,
+    val cartItems: List<CartItemWithAddOnsAndSubItemsRequest>,
     val customerId: String?,
     val storeId: String,
     val customerNotes: String,
@@ -11,7 +11,7 @@ data class OrderRequest(
     val orderShipmentDetails: OrderShipmentDetails
 ) {
     constructor(
-        cartItems: List<CartItemWithSubItemsRequest>,
+        cartItems: List<CartItemWithAddOnsAndSubItemsRequest>,
         storeId: String,
         orderPaymentDetails: OrderPaymentDetails,
         customerNotes: String

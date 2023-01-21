@@ -1,17 +1,14 @@
 package com.symplified.ordertaker.ui.main.menuandcart.categories
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.viewmodels.ProductViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
@@ -23,15 +20,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     private val binding get() = _binding!!
 
     private val menuViewModel: MenuViewModel by activityViewModels()
-//    {
-//        MenuViewModelFactory(
-//            OrderTakerApplication.tableRepository,
-//            OrderTakerApplication.zoneRepository,
-//            OrderTakerApplication.categoryRepository,
-//            OrderTakerApplication.productRepository
-//        )
-//    }
-    private val productViewModel: ProductViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,37 +35,24 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         binding.categoryList.adapter = CategoriesAdapter(onCategoryClickListener = this)
 
         menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
-            Log.d("categories", "categories size: ${categories.size}")
             isCategoriesEmpty = categories.isEmpty()
             if (isCategoriesEmpty) {
-                menuViewModel.getCategories()
+                menuViewModel.fetchCategories()
             } else {
                 binding.categoryList.adapter = CategoriesAdapter(categories, this)
             }
         }
-
-//        menuViewModel.currentCategory.observe(viewLifecycleOwner) { newCategory ->
-//            Log.d("categories", "CategoryFragment: New category set: ${newCategory.name}")
-//            Toast.makeText(
-//                context,
-//                "CategoryFragment: New category set: ${newCategory.name}",
-//                Toast.LENGTH_SHORT
-//            )
-//                .show()
-//        }
-
         menuViewModel.isLoadingCategories.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility =
                 if (isLoading && isCategoriesEmpty) View.VISIBLE else View.GONE
-            if (!isLoading) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
+//            if (!isLoading) {
+//                binding.swipeRefreshLayout.isRefreshing = false
+//            }
         }
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            menuViewModel.getCategories()
-            productViewModel.clearProducts()
-        }
+//        binding.swipeRefreshLayout.setOnRefreshListener {
+//            menuViewModel.fetchCategories()
+//        }
     }
 
     override fun onDestroyView() {
@@ -86,7 +61,5 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     }
 
     override fun onCategoryClicked(category: Category) {
-        productViewModel.setCurrentCategory(category)
-        Log.d("product-fragment", "onClickedCategory: ${category}")
     }
 }

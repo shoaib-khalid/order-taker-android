@@ -13,7 +13,6 @@ class ZoneCollectionAdapter(
 
 
     override fun createFragment(position: Int): Fragment {
-        Log.d("zone-collection-adapter", "Creating zone fragment. Zonename: ${zones[position].zone.zoneName}")
         val fragment = ZoneFragment()
         fragment.arguments = Bundle().apply {
             putInt(ZoneFragment.ZONE_ID, zones[position].zone.id)

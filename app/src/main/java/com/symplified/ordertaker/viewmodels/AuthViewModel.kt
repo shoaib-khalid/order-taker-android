@@ -65,7 +65,6 @@ class AuthViewModel : ViewModel() {
                             call: Call<AuthResponseBody>,
                             response: Response<AuthResponseBody>
                         ) {
-                            Log.d("login-activity", response.toString())
                             if (response.isSuccessful && response.body() != null) {
                                 getStoreIdAndLogin(response.body()!!.data.session)
                             } else {
@@ -125,9 +124,9 @@ class AuthViewModel : ViewModel() {
 
     fun logout() {
         _isAuthenticated.value = false
+        App.sharedPreferences().edit().clear().apply()
         CoroutineScope(Dispatchers.IO).launch {
-            App.sharedPreferences().edit().clear().apply()
-            App.categoryRepository.clear()
+            App.productRepository.clear()
             App.cartSubItemRepository.clear()
             App.cartItemRepository.clear()
             App.tableRepository.clear()

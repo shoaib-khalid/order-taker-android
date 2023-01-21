@@ -43,7 +43,6 @@ class CategoriesAdapter(
 
         viewHolder.textView.text = categories[position].name
         viewHolder.itemView.setOnClickListener {
-            Log.d("category", "onClicked ${categories[position].name}")
             notifyItemChanged(selectedPosition)
             notifyItemChanged(viewHolder.adapterPosition)
             selectedPosition = viewHolder.adapterPosition

@@ -23,5 +23,6 @@
     <string name="login_text">Login</string>
     <string name="production_mode_text">Switch to Production</string>
     <string name="menu_logout">Log Out</string>
+    <string name="add_to_cart">Add to Cart</string>
 
 </resources>

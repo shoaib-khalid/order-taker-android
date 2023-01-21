@@ -16,9 +16,6 @@ import retrofit2.Response
 class MainViewModel : ViewModel() {
 
     private val _username = MutableLiveData<String>().apply {
-        Log.d("mainviewmode", "username: ${
-            App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")!!
-        }")
         value = App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")!!
     }
     val username: LiveData<String> = _username

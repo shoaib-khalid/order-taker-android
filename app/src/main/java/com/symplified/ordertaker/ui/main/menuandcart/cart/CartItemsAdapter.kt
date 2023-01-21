@@ -8,15 +8,16 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItem
-import com.symplified.ordertaker.models.cartitems.CartItemWithSubItems
+import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 
 class CartItemsAdapter(
-    private val cartItems: MutableList<CartItem> = mutableListOf(),
+    private val cartItemsWithAddOnsAndSubItems: MutableList<CartItemWithAddOnsAndSubItems>
+    = mutableListOf(),
     private val onRemoveFromCartListener: OnRemoveFromCartListener
 ) : RecyclerView.Adapter<CartItemsAdapter.ViewHolder>() {
 
     interface OnRemoveFromCartListener {
-        fun onItemRemoved(cartItem: CartItem)
+        fun onItemRemoved(cartItem: CartItemWithAddOnsAndSubItems)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -43,30 +44,30 @@ class CartItemsAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemNumber.text = position.toString()
-        viewHolder.itemName.text = cartItems[position].itemName
+        viewHolder.itemName.text = cartItemsWithAddOnsAndSubItems[position].cartItem.itemName
 
-        val quantity = cartItems[position].quantity
-        val price = cartItems[position].itemPrice
+        val quantity = cartItemsWithAddOnsAndSubItems[position].cartItem.quantity
+        val price = cartItemsWithAddOnsAndSubItems[position].cartItem.itemPrice
         viewHolder.itemQuantity.text = quantity.toString()
         viewHolder.itemPrice.text = "RM ${String.format("%.2f", price * quantity)}"
 
         viewHolder.deleteBtn.setOnClickListener {
-            onRemoveFromCartListener.onItemRemoved(cartItems[position])
+            onRemoveFromCartListener.onItemRemoved(cartItemsWithAddOnsAndSubItems[position])
         }
     }
 
-    override fun getItemCount() = cartItems.size
+    override fun getItemCount() = cartItemsWithAddOnsAndSubItems.size
 
 //    fun addItem(cartItem: CartItem) = cartItems.add(cartItem)
 
-    fun clearCart() = cartItems.clear()
+    fun clearCart() = cartItemsWithAddOnsAndSubItems.clear()
 
-    fun updateItems(cartItemsToAdd: List<CartItem>) {
+    fun updateItems(cartItemsToAdd: List<CartItemWithAddOnsAndSubItems>) {
         if (cartItemsToAdd.isEmpty()) {
-            cartItems.clear()
+            cartItemsWithAddOnsAndSubItems.clear()
         } else {
-            cartItems.clear()
-            cartItems.addAll(cartItemsToAdd)
+            cartItemsWithAddOnsAndSubItems.clear()
+            cartItemsWithAddOnsAndSubItems.addAll(cartItemsToAdd)
         }
         notifyDataSetChanged()
     }

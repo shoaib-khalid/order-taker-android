@@ -23,10 +23,28 @@ class App : Application() {
         val database by lazy { AppDatabase.getDatabase(applicationContext()) }
         val tableRepository by lazy { TableRepository(database.tableDao()) }
         val zoneRepository by lazy { ZoneRepository(database.zoneDao()) }
-        val cartItemRepository by lazy { CartItemRepository(database.cartItemDao()) }
+        val cartItemRepository by lazy {
+            CartItemRepository(
+                database.cartItemDao(),
+                database.cartSubItemDao(),
+                database.cartItemAddOnDao()
+            )
+        }
         val cartSubItemRepository by lazy { CartSubItemRepository(database.cartSubItemDao()) }
-        val categoryRepository by lazy { CategoryRepository(database.categoryDao()) }
-//        val productRepository by lazy { ProductRepository(database.productDao()) }
+        val productRepository by lazy {
+            ProductRepository(
+                database.categoryDao(),
+                database.productDao(),
+                database.productInventoryDao(),
+                database.productInventoryItemDao(),
+                database.productVariantDao(),
+                database.productVariantAvailableDao(),
+                database.productAddOnGroupDao(),
+                database.productAddOnItemDetailsDao(),
+                database.productPackageDao(),
+                database.productPackageOptionDetailsDao()
+            )
+        }
 
         fun applicationContext(): Context {
             return instance!!.applicationContext

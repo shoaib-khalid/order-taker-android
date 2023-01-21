@@ -21,7 +21,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            Log.d("login-activity", "Logging out")
             authViewModel.logout()
         }
 
