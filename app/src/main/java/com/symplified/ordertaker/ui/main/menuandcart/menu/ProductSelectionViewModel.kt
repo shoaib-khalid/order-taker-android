@@ -110,7 +110,7 @@ class ProductSelectionViewModel : ViewModel() {
         addOn: ProductAddOnDetails,
         groupId: String
     ) {
-        cartItemAddOns.add(CartItemAddOn(productAddOnId = addOn.id, name = addOn.name))
+        cartItemAddOns.add(CartItemAddOn(productAddOnId = addOn.id, name = addOn.name, price = addOn.dineInPrice))
 
         _addOnGroupsCountMap.value?.let { addOnCountMap ->
             addOnCountMap[groupId]?.let { it.selected++ }

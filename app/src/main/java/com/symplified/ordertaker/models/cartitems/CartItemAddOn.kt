@@ -9,5 +9,6 @@ data class CartItemAddOn(
     val id: Long = 0,
     val productAddOnId: String,
     val name: String,
+    val price: Double,
     var cartItemId: Long = 0
 )

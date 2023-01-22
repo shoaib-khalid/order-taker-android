@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
@@ -45,30 +46,29 @@ class CartViewModel : ViewModel() {
         val storeId = sharedPrefs.getString(SharedPrefsKey.STORE_ID, "")!!
         _isPlacingOrder.value = true
 
-        val cartItemsWithSubItemsRequest: MutableList<CartItemWithAddOnsAndSubItemsRequest> =
-            mutableListOf()
-        cartItemsWithAddOnsAndSubItems.value?.let { cartItems ->
-            cartItems.forEach { cartItem ->
-//                cartItemsWithSubItemsRequest.add(
-//                    CartItemWithAddOnsAndSubItemsRequest(
-//                        itemCode = cartItem.itemCode,
-//                        productId = cartItem.productId,
-//                        quantity = cartItem.quantity,
-//                        cartSubItem = listOf()
-//                    )
-//                )
+        val cartItemRequests: MutableList<CartItemRequest> = mutableListOf()
+        cartItemsWithAddOnsAndSubItems.value?.let { cartItemsWithDetails ->
+            cartItemsWithDetails.forEach { cartItemWithDetails ->
+
+                val cartItemRequest = CartItemRequest(
+                    itemCode = cartItemWithDetails.cartItem.itemCode,
+                    productId = cartItemWithDetails.cartItem.productId,
+                    quantity = cartItemWithDetails.cartItem.quantity,
+                    cartSubItem = cartItemWithDetails.cartSubItems.ifEmpty { null },
+                    cartItemAddOn = cartItemWithDetails.cartItemAddons.ifEmpty { null }
+                )
+                cartItemRequests.add(cartItemRequest)
             }
         }
 
         var customerNotes = "Zone: ${zone.zoneName},\nTable No. ${table.combinationTableNumber}"
-        App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")?.let { username ->
-            if (username.isNotBlank()) {
-                customerNotes = "$customerNotes,\nServed by: $username"
-            }
+        val username = App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")!!
+        if (username.isNotBlank()) {
+            customerNotes = "$customerNotes,\nServed by: $username"
         }
         val orderRequest = listOf(
             OrderRequest(
-                cartItemsWithSubItemsRequest,
+                cartItemRequests,
                 storeId,
                 OrderPaymentDetails(_selectedPaymentType.value!!),
                 customerNotes

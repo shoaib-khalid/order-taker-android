@@ -47,12 +47,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         cartItemsList.adapter = cartItemsAdapter
 
         cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { cartItemsWithAddOnsAndSubItems ->
-            cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
-                Log.d(
-                    "dialogviewmodel",
-                    "cartItem: ${cartItemWithAddOnsAndSubItems.cartItem.itemName}, cartItemAddons: ${cartItemWithAddOnsAndSubItems.cartItemAddons.size}, cartSubItems: ${cartItemWithAddOnsAndSubItems.cartSubItems.size}"
-                )
-            }
 
             binding.placeOrderButton.isEnabled = cartItemsWithAddOnsAndSubItems.isNotEmpty()
 
@@ -60,8 +54,12 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
 
             var totalPrice = 0.0
             cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
-                totalPrice += (cartItemWithAddOnsAndSubItems.cartItem.itemPrice *
-                        cartItemWithAddOnsAndSubItems.cartItem.quantity)
+                var itemPrice = cartItemWithAddOnsAndSubItems.cartItem.itemPrice
+                cartItemWithAddOnsAndSubItems.cartItemAddons.forEach { addOn ->
+                    itemPrice += addOn.price
+                }
+
+                totalPrice += (itemPrice * cartItemWithAddOnsAndSubItems.cartItem.quantity)
             }
             binding.totalPriceCount.text = "RM ${String.format("%.2f", totalPrice)}"
         }
