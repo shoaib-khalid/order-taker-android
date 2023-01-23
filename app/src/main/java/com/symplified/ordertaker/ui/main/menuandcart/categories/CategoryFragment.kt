@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menuandcart.categories
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +35,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         binding.categoryList.layoutManager = LinearLayoutManager(view.context)
         binding.categoryList.adapter = CategoriesAdapter(onCategoryClickListener = this)
 
+
         menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
             isCategoriesEmpty = categories.isEmpty()
             if (isCategoriesEmpty) {
@@ -45,14 +47,12 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         menuViewModel.isLoadingCategories.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility =
                 if (isLoading && isCategoriesEmpty) View.VISIBLE else View.GONE
-//            if (!isLoading) {
-//                binding.swipeRefreshLayout.isRefreshing = false
-//            }
         }
-
-//        binding.swipeRefreshLayout.setOnRefreshListener {
-//            menuViewModel.fetchCategories()
-//        }
+        menuViewModel.selectedCategory.observe(viewLifecycleOwner) { category ->
+            category?.let { category ->
+                (binding.categoryList.adapter as CategoriesAdapter).setSelectedCategory(category)
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -61,5 +61,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     }
 
     override fun onCategoryClicked(category: Category) {
+        menuViewModel.selectCategory(category)
     }
 }

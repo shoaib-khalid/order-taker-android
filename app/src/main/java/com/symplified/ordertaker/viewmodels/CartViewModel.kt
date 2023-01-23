@@ -38,8 +38,13 @@ class CartViewModel : ViewModel() {
 
     private val _isPlacingOrder = MutableLiveData<Boolean>().apply { value = false }
     val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
+
     private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val orderResultMessage: LiveData<String> = _orderResultMessage
+
+    private val _isOrderSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isOrderSuccessful: LiveData<Boolean> = _isOrderSuccessful
+
     fun placeOrder(zone: Zone, table: Table) {
         val sharedPrefs = App.sharedPreferences()
         val staffId = sharedPrefs.getString(SharedPrefsKey.USER_ID, "")!!
@@ -92,6 +97,9 @@ class CartViewModel : ViewModel() {
                         if (response.isSuccessful) {
                             clearAll()
                             _orderResultMessage.value = "Order placed successfully"
+                            _orderResultMessage.value = ""
+                            _isOrderSuccessful.value = true
+                            _isOrderSuccessful.value = false
                         } else {
                             _orderResultMessage.value =
                                 "An error occurred while placing order. Please try again"

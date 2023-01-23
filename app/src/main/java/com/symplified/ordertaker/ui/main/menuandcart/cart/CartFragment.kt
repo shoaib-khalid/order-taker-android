@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.App
@@ -18,6 +19,7 @@ import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
+import com.symplified.ordertaker.ui.main.home.HomeFragmentDirections
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
@@ -74,8 +76,17 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             }
         }
 
+        cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
+            if (isOrderSuccessful) {
+                findNavController().popBackStack()
+            }
+
+        }
+
         cartViewModel.orderResultMessage.observe(viewLifecycleOwner) { message ->
-            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+            if (message.isNotBlank()) {
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+            }
         }
 
         val paymentButtonsMap: Map<String, Button> = mapOf(

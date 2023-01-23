@@ -63,6 +63,7 @@ class MenuFragment : Fragment(),
     }
 
     override fun onItemClicked(item: ProductWithDetails) {
+        Log.d("menufragment", item.toString())
         dialogViewModel.setSelectedProduct(item)
         ProductSelectionDialog(item, this)
             .show(

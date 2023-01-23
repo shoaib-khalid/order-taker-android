@@ -30,6 +30,9 @@ class ProductRepository(
     val allProductsWithDetails: Flow<List<ProductWithDetails>> =
         productDao.getAllProductsWithDetails()
 
+    fun getProductsWithCategory(category: Category) =
+        productDao.getProductsWithCategoryId(category.id)
+
     fun insert(product: Product) {
         productDao.insert(product)
         product.productInventories.forEach { inventory ->

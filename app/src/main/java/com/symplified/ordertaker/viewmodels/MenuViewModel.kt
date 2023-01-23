@@ -1,10 +1,7 @@
 package com.symplified.ordertaker.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
@@ -21,7 +18,6 @@ import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,15 +31,22 @@ class MenuViewModel : ViewModel() {
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
     val categoriesWithProducts: LiveData<List<CategoryWithProducts>> =
         App.productRepository.allCategoriesWithProducts.asLiveData()
-    val productsWithDetails: LiveData<List<ProductWithDetails>> = App.productRepository.allProductsWithDetails.asLiveData()
+//    val productsWithDetails: LiveData<List<ProductWithDetails>> = App.productRepository.allProductsWithDetails.asLiveData()
+
 //    val menuItems: LiveData<List<Product>> = OrderTakerAppication.productRepository.allItems.asLiveData()
 
     var selectedTable: Table? = null
 
-    private val _currentCategory: MutableLiveData<Category> by lazy {
-        MutableLiveData<Category>()
+    private val _selectedCategory = MutableLiveData<Category?>().apply { value = null }
+    val selectedCategory: LiveData<Category?> = _selectedCategory
+
+    val productsWithDetails: LiveData<List<ProductWithDetails>> = _selectedCategory.switchMap { category ->
+        if (category != null) {
+            App.productRepository.getProductsWithCategory(category)
+        } else {
+            App.productRepository.allProductsWithDetails.asLiveData()
+        }
     }
-    val currentCategory: LiveData<Category> = _currentCategory
 
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
         App.productRepository.insert(category)
@@ -61,6 +64,14 @@ class MenuViewModel : ViewModel() {
         zone.tagTables.forEach { table ->
             App.tableRepository.insert(table)
         }
+    }
+
+    fun selectCategory(category: Category) {
+        _selectedCategory.value = category
+    }
+
+    fun clearSelectedCategory() {
+        _selectedCategory.value = null
     }
 
     private val _isLoadingZonesAndTables = MutableLiveData<Boolean>().apply { value = false }

@@ -41,7 +41,7 @@ class AuthViewModel : ViewModel() {
         _passwordError.value = if (password.isBlank()) "Password cannot be blank" else ""
     }
 
-    private val _isLoading: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>(false) }
+    private val _isLoading = MutableLiveData<Boolean>().apply { value = false }
     val isLoading: LiveData<Boolean> = _isLoading
 
     private val _errorMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }

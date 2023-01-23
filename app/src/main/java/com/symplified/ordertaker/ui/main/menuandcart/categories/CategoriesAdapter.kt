@@ -56,4 +56,9 @@ class CategoriesAdapter(
         categories = updatedCategories
         notifyDataSetChanged()
     }
+
+    fun setSelectedCategory(category: Category) {
+        selectedPosition = categories.indexOf(category)
+        notifyItemChanged(selectedPosition)
+    }
 }
