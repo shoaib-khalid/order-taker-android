@@ -1,10 +1,13 @@
 package com.symplified.ordertaker.ui.main.home
 
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -42,7 +45,10 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        tablesRecyclerView.layoutManager = GridLayoutManager(view.context, 6)
+        val width: Int = getScreenWidth()
+        val spanCount = if (width >= 2000) 6 else if (width >= 1200) 4 else 3
+
+        tablesRecyclerView.layoutManager = GridLayoutManager(view.context, spanCount)
         val adapter = TablesAdapter(onTableClickListener = this)
         tablesRecyclerView.adapter = adapter
 
@@ -60,6 +66,20 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
         }
 
 
+    }
+
+    private fun getScreenWidth(): Int {
+        return if (Build.VERSION.SDK_INT >= 30) {
+            val windowMetrics = requireActivity().windowManager.currentWindowMetrics
+            val insets = windowMetrics.windowInsets
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+
+            windowMetrics.bounds.width() - insets.left - insets.right
+        } else {
+            val displayMetrics = DisplayMetrics()
+            requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+            displayMetrics.widthPixels
+        }
     }
 
     override fun onTableClicked(table: Table) {

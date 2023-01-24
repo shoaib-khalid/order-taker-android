@@ -89,6 +89,16 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             }
         }
 
+        cartViewModel.paymentChannels.observe(viewLifecycleOwner) { paymentChannels ->
+            if (paymentChannels.isEmpty()) {
+                Log.d("cartviewmodel", "paymentChannels empty")
+                cartViewModel.fetchPaymentChannels()
+            } else {
+                Log.d("cartviewmodel", "paymentChannels not empty")
+
+            }
+        }
+
         val paymentButtonsMap: Map<String, Button> = mapOf(
             "CASH" to binding.buttonPaymentTypeCash,
             "TNG" to binding.buttonPaymentTypeTouchNGo,

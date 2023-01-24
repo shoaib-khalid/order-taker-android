@@ -6,12 +6,14 @@ import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.data.repository.CartItemRepository
 import com.symplified.ordertaker.models.cartitems.*
+import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,6 +22,26 @@ import retrofit2.Response
 class CartViewModel : ViewModel() {
     val cartItemsWithAddOnsAndSubItems: LiveData<List<CartItemWithAddOnsAndSubItems>> =
         App.cartItemRepository.allItems.asLiveData()
+    val paymentChannels: LiveData<List<PaymentChannel>> =
+        App.paymentChannelRepository.allPaymentChannels.asLiveData()
+
+    private val _selectedPaymentType = MutableLiveData<String>().apply { value = "CASH" }
+    val selectedPaymentType: LiveData<String> = _selectedPaymentType
+
+    private val _isPlacingOrder = MutableLiveData<Boolean>().apply { value = false }
+    val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
+
+    private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val orderResultMessage: LiveData<String> = _orderResultMessage
+
+    private val _isOrderSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isOrderSuccessful: LiveData<Boolean> = _isOrderSuccessful
+
+    private val _isLoadingPaymentChannels: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isLoadingPaymentChannels: LiveData<Boolean> = _isLoadingPaymentChannels
+
+    private val _isPaymentChannelsReceived: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isPaymentChannelsReceived: LiveData<Boolean> = _isPaymentChannelsReceived
 
     fun delete(cartItem: CartItemWithAddOnsAndSubItems) = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.delete(cartItem)
@@ -30,20 +52,9 @@ class CartViewModel : ViewModel() {
         App.cartSubItemRepository.clear()
     }
 
-    private val _selectedPaymentType = MutableLiveData<String>().apply { value = "CASH" }
-    val selectedPaymentType: LiveData<String> = _selectedPaymentType
     fun setCurrentPaymentType(paymentType: String) {
         _selectedPaymentType.value = paymentType
     }
-
-    private val _isPlacingOrder = MutableLiveData<Boolean>().apply { value = false }
-    val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
-
-    private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
-    val orderResultMessage: LiveData<String> = _orderResultMessage
-
-    private val _isOrderSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val isOrderSuccessful: LiveData<Boolean> = _isOrderSuccessful
 
     fun placeOrder(zone: Zone, table: Table) {
         val sharedPrefs = App.sharedPreferences()
@@ -115,6 +126,18 @@ class CartViewModel : ViewModel() {
 
                 }
             )
+    }
+
+    fun fetchPaymentChannels() = CoroutineScope(Dispatchers.IO).launch {
+        withContext(Dispatchers.Main) {
+            _isLoadingPaymentChannels.value = true
+        }
+        val isPaymentChannelsReceived = App.paymentChannelRepository.fetchPaymentChannels()
+        Log.d("cartviewmodel", "cartviewmodel: Payment Channels received")
+        withContext(Dispatchers.Main) {
+            _isPaymentChannelsReceived.value = isPaymentChannelsReceived
+            _isLoadingPaymentChannels.value = false
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.data
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -9,6 +10,7 @@ import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemAddOn
 import com.symplified.ordertaker.models.cartitems.CartSubItem
 import com.symplified.ordertaker.models.categories.Category
+import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.products.addons.ProductAddOnDetails
 import com.symplified.ordertaker.models.products.addons.ProductAddOnGroup
@@ -22,6 +24,7 @@ import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.Table
 
 @Database(
+    version = 1,
     entities = [
         Table::class,
         Zone::class,
@@ -37,8 +40,10 @@ import com.symplified.ordertaker.models.zones.Table
         ProductAddOnGroup::class,
         ProductAddOnDetails::class,
         ProductPackage::class,
-        ProductPackageOptionDetails::class
-    ], version = 1, exportSchema = false
+        ProductPackageOptionDetails::class,
+        PaymentChannel::class
+    ],
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun tableDao(): TableDao
@@ -59,6 +64,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun productAddOnItemDetailsDao(): ProductAddOnItemDetailsDao
     abstract fun productPackageDao(): ProductPackageDao
     abstract fun productPackageOptionDetailsDao(): ProductPackageOptionDetailsDao
+
+    abstract fun paymentChannelDao(): PaymentChannelDao
 
     companion object {
         @Volatile

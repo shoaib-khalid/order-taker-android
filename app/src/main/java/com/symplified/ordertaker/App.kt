@@ -45,6 +45,7 @@ class App : Application() {
                 database.productPackageOptionDetailsDao()
             )
         }
+        val paymentChannelRepository by lazy { PaymentChannelRepository(database.paymentChannelDao()) }
 
         fun applicationContext(): Context {
             return instance!!.applicationContext
