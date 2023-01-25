@@ -13,17 +13,20 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
+import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.ui.main.home.HomeFragmentDirections
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
-class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
+class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
+    PaymentChannelAdapter.OnPaymentTypeClickListener {
     private var _binding: FragmentCartBinding? = null
 
     // This property is only valid between onCreateView and
@@ -47,6 +50,10 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         val cartItemsList = binding.cartItemsList
         cartItemsList.layoutManager = LinearLayoutManager(view.context);
         cartItemsList.adapter = cartItemsAdapter
+
+        binding.paymentTypeList.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        val paymentChannelAdapter = PaymentChannelAdapter(this)
+        binding.paymentTypeList.adapter = paymentChannelAdapter
 
         cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { cartItemsWithAddOnsAndSubItems ->
 
@@ -80,7 +87,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             if (isOrderSuccessful) {
                 findNavController().popBackStack()
             }
-
         }
 
         cartViewModel.orderResultMessage.observe(viewLifecycleOwner) { message ->
@@ -90,35 +96,9 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
         }
 
         cartViewModel.paymentChannels.observe(viewLifecycleOwner) { paymentChannels ->
+            paymentChannelAdapter.setPaymentChannels(paymentChannels)
             if (paymentChannels.isEmpty()) {
-                Log.d("cartviewmodel", "paymentChannels empty")
                 cartViewModel.fetchPaymentChannels()
-            } else {
-                Log.d("cartviewmodel", "paymentChannels not empty")
-
-            }
-        }
-
-        val paymentButtonsMap: Map<String, Button> = mapOf(
-            "CASH" to binding.buttonPaymentTypeCash,
-            "TNG" to binding.buttonPaymentTypeTouchNGo,
-            "GRABPAY" to binding.buttonPaymentTypeGrabpay,
-            "OTHERS" to binding.buttonPaymentTypeOthers
-        )
-
-        val typedValue = TypedValue()
-        view.context.theme.resolveAttribute(
-            androidx.appcompat.R.attr.colorPrimary,
-            typedValue,
-            true
-        )
-        val primaryColor = ContextCompat.getColor(view.context, typedValue.resourceId)
-        cartViewModel.selectedPaymentType.observe(viewLifecycleOwner) { selectedPaymentType ->
-            for ((paymentType, button) in paymentButtonsMap) {
-                val isSelectedPaymentType = (paymentType == selectedPaymentType)
-                button.isSelected = isSelectedPaymentType
-                button.setBackgroundColor(if (isSelectedPaymentType) primaryColor else Color.WHITE)
-                button.setTextColor(if (isSelectedPaymentType) Color.WHITE else Color.BLACK)
             }
         }
 
@@ -138,11 +118,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
             }
         }
 
-        binding.buttonPaymentTypeCash.setOnClickListener { cartViewModel.setCurrentPaymentType("CASH") }
-        binding.buttonPaymentTypeTouchNGo.setOnClickListener { cartViewModel.setCurrentPaymentType("TNG") }
-        binding.buttonPaymentTypeGrabpay.setOnClickListener { cartViewModel.setCurrentPaymentType("GRABPAY") }
-        binding.buttonPaymentTypeOthers.setOnClickListener { cartViewModel.setCurrentPaymentType("OTHERS") }
-
         binding.serverName.text =
             "Served by: ${App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")}"
 
@@ -157,5 +132,9 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener {
 
     override fun onItemRemoved(cartItem: CartItemWithAddOnsAndSubItems) {
         cartViewModel.delete(cartItem)
+    }
+
+    override fun onPaymentTypeClicked(paymentChannel: PaymentChannel) {
+
     }
 }

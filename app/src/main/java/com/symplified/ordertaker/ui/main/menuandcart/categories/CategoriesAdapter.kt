@@ -22,11 +22,7 @@ class CategoriesAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textView: TextView
-
-        init {
-            textView = view.findViewById(R.id.category_text_view)
-        }
+        val textView: TextView = view.findViewById(R.id.category_text_view)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
