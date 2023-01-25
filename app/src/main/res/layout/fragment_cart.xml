@@ -140,6 +140,39 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
+        <ProgressBar
+            android:id="@+id/payment_type_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/payment_type_list"
+            app:layout_constraintBottom_toTopOf="@id/zone_no"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/payment_type_error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/payment_type_failure_text"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/payment_type_list"
+            app:layout_constraintBottom_toTopOf="@id/payment_type_retry_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+        <Button
+            android:id="@+id/payment_type_retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/payment_type_error_text"
+            app:layout_constraintBottom_toTopOf="@id/zone_no"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
         <TextView
             android:id="@+id/zone_no"
             android:layout_width="wrap_content"

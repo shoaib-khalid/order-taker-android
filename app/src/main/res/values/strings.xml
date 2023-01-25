@@ -24,5 +24,6 @@
     <string name="production_mode_text">Switch to Production</string>
     <string name="menu_logout">Log Out</string>
     <string name="add_to_cart">Add to Cart</string>
+    <string name="payment_type_failure_text">Failed to load payment types</string>
 
 </resources>

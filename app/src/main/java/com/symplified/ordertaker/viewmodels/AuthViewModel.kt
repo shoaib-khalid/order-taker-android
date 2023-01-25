@@ -131,6 +131,7 @@ class AuthViewModel : ViewModel() {
             App.cartItemRepository.clear()
             App.tableRepository.clear()
             App.zoneRepository.clear()
+            App.paymentChannelRepository.clear()
         }
     }
 }

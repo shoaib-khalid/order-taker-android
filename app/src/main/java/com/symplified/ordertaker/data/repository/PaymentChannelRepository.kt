@@ -27,4 +27,8 @@ class PaymentChannelRepository(private val paymentChannelDao: PaymentChannelDao)
             return false
         }
     }
+
+    fun clear() {
+        paymentChannelDao.clear()
+    }
 }

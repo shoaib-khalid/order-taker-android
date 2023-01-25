@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
-import com.symplified.ordertaker.data.repository.CartItemRepository
 import com.symplified.ordertaker.models.cartitems.*
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.zones.Table
@@ -25,8 +24,16 @@ class CartViewModel : ViewModel() {
     val paymentChannels: LiveData<List<PaymentChannel>> =
         App.paymentChannelRepository.allPaymentChannels.asLiveData()
 
-    private val _selectedPaymentType = MutableLiveData<String>().apply { value = "CASH" }
-    val selectedPaymentType: LiveData<String> = _selectedPaymentType
+    private val _selectedPaymentChannel = MutableLiveData<PaymentChannel>().apply {
+        value = PaymentChannel("CASH", "Cash")
+    }
+    val selectedPaymentChannel: LiveData<PaymentChannel> = _selectedPaymentChannel
+
+    private val _isLoadingPaymentChannels: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isLoadingPaymentChannels: LiveData<Boolean> = _isLoadingPaymentChannels
+
+    private val _isPaymentChannelsReceived = MutableLiveData<Boolean>().apply { value = true }
+    val isPaymentChannelsReceived: LiveData<Boolean> = _isPaymentChannelsReceived
 
     private val _isPlacingOrder = MutableLiveData<Boolean>().apply { value = false }
     val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
@@ -37,12 +44,6 @@ class CartViewModel : ViewModel() {
     private val _isOrderSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val isOrderSuccessful: LiveData<Boolean> = _isOrderSuccessful
 
-    private val _isLoadingPaymentChannels: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val isLoadingPaymentChannels: LiveData<Boolean> = _isLoadingPaymentChannels
-
-    private val _isPaymentChannelsReceived: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val isPaymentChannelsReceived: LiveData<Boolean> = _isPaymentChannelsReceived
-
     fun delete(cartItem: CartItemWithAddOnsAndSubItems) = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.delete(cartItem)
     }
@@ -50,10 +51,13 @@ class CartViewModel : ViewModel() {
     fun clearAll() = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.clear()
         App.cartSubItemRepository.clear()
+        setSelectedPaymentChannel(PaymentChannel("CASH", "Cash"))
     }
 
-    fun setCurrentPaymentType(paymentType: String) {
-        _selectedPaymentType.value = paymentType
+    fun setSelectedPaymentChannel(paymentType: PaymentChannel) {
+        viewModelScope.launch {
+            _selectedPaymentChannel.value = paymentType
+        }
     }
 
     fun placeOrder(zone: Zone, table: Table) {
@@ -86,10 +90,13 @@ class CartViewModel : ViewModel() {
             OrderRequest(
                 cartItemRequests,
                 storeId,
-                OrderPaymentDetails(_selectedPaymentType.value!!),
+                OrderPaymentDetails(
+                    _selectedPaymentChannel.value!!.channelCode
+                ),
                 customerNotes
             )
         )
+        Log.d("place-order", orderRequest.toString())
 
         ServiceGenerator
             .createOrderService()
@@ -105,6 +112,7 @@ class CartViewModel : ViewModel() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
+                        Log.d("place-order", response.raw().toString())
                         if (response.isSuccessful) {
                             clearAll()
                             _orderResultMessage.value = "Order placed successfully"
@@ -140,13 +148,4 @@ class CartViewModel : ViewModel() {
         }
     }
 
-}
-
-class CartViewModelFactory(private val repository: CartItemRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(CartViewModel::class.java)) {
-            return CartViewModel() as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
 }

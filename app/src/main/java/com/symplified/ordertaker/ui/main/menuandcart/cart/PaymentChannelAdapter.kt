@@ -1,12 +1,11 @@
 package com.symplified.ordertaker.ui.main.menuandcart.cart
 
-import android.content.res.Configuration
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
@@ -52,7 +51,7 @@ class PaymentChannelAdapter(
 
     override fun getItemCount() = paymentChannels.size
 
-    fun setPaymentChannels(updatedPaymentChannels: List<PaymentChannel>) {
+    fun updatePaymentChannels(updatedPaymentChannels: List<PaymentChannel>) {
         if (paymentChannels.isNotEmpty()) {
             val originalSize = paymentChannels.size
             paymentChannels.clear()
@@ -60,5 +59,23 @@ class PaymentChannelAdapter(
         }
         paymentChannels.addAll(updatedPaymentChannels)
         notifyItemRangeInserted(0, paymentChannels.size)
+    }
+
+    fun selectPaymentChannel(selectedPaymentChannel: PaymentChannel) {
+        Log.d("payment-channel", "Selected payment channel: $selectedPaymentChannel")
+        clearSelectedPaymentChannel()
+        val indexOfSelected = paymentChannels.indexOf(selectedPaymentChannel)
+        if (indexOfSelected != -1) {
+            selectedPosition = indexOfSelected
+            notifyItemChanged(indexOfSelected)
+        }
+    }
+
+    fun clearSelectedPaymentChannel() {
+        val previouslySelected = selectedPosition
+        selectedPosition = RecyclerView.NO_POSITION
+        if (previouslySelected != RecyclerView.NO_POSITION) {
+            notifyItemChanged(previouslySelected)
+        }
     }
 }

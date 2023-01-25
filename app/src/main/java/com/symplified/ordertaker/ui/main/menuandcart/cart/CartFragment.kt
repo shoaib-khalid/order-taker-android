@@ -1,27 +1,19 @@
 package com.symplified.ordertaker.ui.main.menuandcart.cart
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.FragmentCartBinding
-import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
-import com.symplified.ordertaker.ui.main.home.HomeFragmentDirections
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
@@ -95,10 +87,35 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
             }
         }
 
+        binding.paymentTypeRetryButton.setOnClickListener {
+            cartViewModel.fetchPaymentChannels()
+        }
+
+        var isPaymentChannelsEmpty = false
         cartViewModel.paymentChannels.observe(viewLifecycleOwner) { paymentChannels ->
-            paymentChannelAdapter.setPaymentChannels(paymentChannels)
+            isPaymentChannelsEmpty = paymentChannels.isEmpty()
+
+            paymentChannelAdapter.updatePaymentChannels(paymentChannels)
+            paymentChannelAdapter.selectPaymentChannel(cartViewModel.selectedPaymentChannel.value!!)
             if (paymentChannels.isEmpty()) {
                 cartViewModel.fetchPaymentChannels()
+            }
+        }
+
+        cartViewModel.selectedPaymentChannel.observe(viewLifecycleOwner) { selectedPaymentChannel ->
+            paymentChannelAdapter.selectPaymentChannel(selectedPaymentChannel)
+        }
+
+        cartViewModel.isPaymentChannelsReceived.observe(viewLifecycleOwner) { isReceived ->
+            binding.paymentTypeErrorText.visibility = if (isReceived) View.GONE else View.VISIBLE
+            binding.paymentTypeRetryButton.visibility = if (isReceived) View.GONE else View.VISIBLE
+        }
+
+        cartViewModel.isLoadingPaymentChannels.observe(viewLifecycleOwner) { isLoading ->
+            binding.paymentTypeProgressBar.visibility = if (isLoading && isPaymentChannelsEmpty) View.VISIBLE else View.GONE
+            if (isLoading) {
+                binding.paymentTypeErrorText.visibility = View.GONE
+                binding.paymentTypeRetryButton.visibility = View.GONE
             }
         }
 
@@ -135,6 +152,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
     }
 
     override fun onPaymentTypeClicked(paymentChannel: PaymentChannel) {
-
+        cartViewModel.setSelectedPaymentChannel(paymentChannel)
     }
 }
