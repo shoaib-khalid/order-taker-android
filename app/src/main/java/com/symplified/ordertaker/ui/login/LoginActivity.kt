@@ -32,6 +32,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initViews() {
 
+        authViewModel.logout()
+
         binding.tvEmail.editText!!.doOnTextChanged { text, _, _, _ -> authViewModel.setUsername(text!!.toString()) }
         binding.tvPassword.editText!!.doOnTextChanged { text, _, _, _ -> authViewModel.setPassword(text!!.toString()) }
 

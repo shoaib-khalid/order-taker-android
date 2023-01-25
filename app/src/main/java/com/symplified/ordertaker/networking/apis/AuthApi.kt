@@ -4,6 +4,7 @@ import com.symplified.ordertaker.models.auth.AuthRequestBody
 import com.symplified.ordertaker.models.auth.AuthResponseBody
 import com.symplified.ordertaker.models.users.UserResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -14,9 +15,9 @@ interface AuthApi {
 
     @Headers("Authorization: Bearer accessToken")
     @POST("stores/null/users/authenticate")
-    fun authenticate(@Body requestBody: AuthRequestBody): Call<AuthResponseBody>
+    suspend fun authenticate(@Body requestBody: AuthRequestBody): Response<AuthResponseBody>
 
     @Headers("Authorization: Bearer accessToken")
     @GET("stores/null/users/{userId}")
-    fun getUserById(@Path("userId") userId: String): Call<UserResponseBody>
+    suspend fun getUserById(@Path("userId") userId: String): Response<UserResponseBody>
 }

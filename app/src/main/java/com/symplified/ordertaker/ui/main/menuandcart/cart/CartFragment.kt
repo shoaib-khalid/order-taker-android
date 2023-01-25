@@ -135,8 +135,10 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
             }
         }
 
-        binding.serverName.text =
-            "Served by: ${App.sharedPreferences().getString(SharedPrefsKey.USERNAME, "")}"
+        cartViewModel.user.observe(viewLifecycleOwner) { user ->
+            binding.serverName.text =
+                "Served by: ${user?.name ?: ""}"
+        }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
 

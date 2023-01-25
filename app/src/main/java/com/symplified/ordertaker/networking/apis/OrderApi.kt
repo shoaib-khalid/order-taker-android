@@ -11,12 +11,12 @@ interface OrderApi {
 
     @Headers("Authorization: Bearer accessToken")
     @POST("orders/placeGroupOrder?isStaffOrder=true")
-    fun placeOrder(
+    suspend fun placeOrder(
         @Query("zoneId") zoneId: Int,
         @Query("tableId") tableId: Int,
         @Query("staffId") staffId: String,
         @Body requestBody: List<OrderRequest>
-    ) : Call<ResponseBody>
+    ) : Response<ResponseBody>
 
     @Headers("Authorization: Bearer accessToken")
     @GET("qrorder/paymentChannel")

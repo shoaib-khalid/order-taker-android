@@ -3,6 +3,7 @@ package com.symplified.ordertaker
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import com.symplified.ordertaker.data.AppDatabase
 import com.symplified.ordertaker.data.repository.*
 
@@ -46,6 +47,7 @@ class App : Application() {
             )
         }
         val paymentChannelRepository by lazy { PaymentChannelRepository(database.paymentChannelDao()) }
+        val userRepository by lazy { UserRepository(database.userDao()) }
 
         fun applicationContext(): Context {
             return instance!!.applicationContext
@@ -56,6 +58,11 @@ class App : Application() {
                 SHARED_PREFS_FILENAME,
                 Context.MODE_PRIVATE
             )
+        }
+
+        fun isConnectedToInternet(): Boolean {
+            val cm = applicationContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            return cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
         }
     }
 

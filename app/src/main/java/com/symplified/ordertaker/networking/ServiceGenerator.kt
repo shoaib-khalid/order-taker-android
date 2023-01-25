@@ -9,31 +9,30 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
-class ServiceGenerator {
-    companion object {
-        private const val BASE_URL = "https://api.symplified.it/"
-        private const val USER_SERVICE_PATH = "user-service/v1/"
-        private const val LOCATION_SERVICE_PATH = "location-service/v1/"
-        private const val PRODUCT_SERVICE_PATH = "product-service/v1/"
-        private const val ORDER_SERVICE_PATH = "order-service/v1/"
+object ServiceGenerator {
+    private const val BASE_URL = "https://api.symplified.it/"
 
-        fun createAuthService(): AuthApi =
-            createRetrofitInstance(USER_SERVICE_PATH).create(AuthApi::class.java)
+    private const val USER_SERVICE_PATH = "user-service/v1/"
+    private const val LOCATION_SERVICE_PATH = "location-service/v1/"
+    private const val PRODUCT_SERVICE_PATH = "product-service/v1/"
+    private const val ORDER_SERVICE_PATH = "order-service/v1/"
 
-        fun createLocationService(): LocationApi =
-            createRetrofitInstance(LOCATION_SERVICE_PATH).create(LocationApi::class.java)
+    fun createAuthService(): AuthApi =
+        createRetrofitInstance(USER_SERVICE_PATH).create(AuthApi::class.java)
 
-        fun createProductService(): ProductApi =
-            createRetrofitInstance(PRODUCT_SERVICE_PATH).create(ProductApi::class.java)
+    fun createLocationService(): LocationApi =
+        createRetrofitInstance(LOCATION_SERVICE_PATH).create(LocationApi::class.java)
 
-        fun createOrderService(): OrderApi =
-            createRetrofitInstance(ORDER_SERVICE_PATH).create(OrderApi::class.java)
+    fun createProductService(): ProductApi =
+        createRetrofitInstance(PRODUCT_SERVICE_PATH).create(ProductApi::class.java)
 
-        private fun createRetrofitInstance(servicePath: String): Retrofit =
-            Retrofit.Builder()
-                .client(OkHttpClient())
-                .baseUrl("${BASE_URL}${servicePath}")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-    }
+    fun createOrderService(): OrderApi =
+        createRetrofitInstance(ORDER_SERVICE_PATH).create(OrderApi::class.java)
+
+    private fun createRetrofitInstance(servicePath: String): Retrofit =
+        Retrofit.Builder()
+            .client(OkHttpClient())
+            .baseUrl("${BASE_URL}${servicePath}")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 }

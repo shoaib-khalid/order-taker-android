@@ -15,6 +15,7 @@ import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,85 +42,44 @@ class AuthViewModel : ViewModel() {
         _passwordError.value = if (password.isBlank()) "Password cannot be blank" else ""
     }
 
+    private val _isAuthenticated: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isAuthenticated: LiveData<Boolean> = _isAuthenticated
+
     private val _isLoading = MutableLiveData<Boolean>().apply { value = false }
     val isLoading: LiveData<Boolean> = _isLoading
 
     private val _errorMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val errorMessage: LiveData<String> = _errorMessage
 
-    private val _isAuthenticated = MutableLiveData<Boolean>().apply {
-        val isAuthenticated = App.sharedPreferences()
-            .getBoolean(SharedPrefsKey.IS_AUTHENTICATED, false)
-        value = isAuthenticated
-    }
-    val isAuthenticated: LiveData<Boolean> = _isAuthenticated
-
     fun tryLogin() {
-        if (_username.value!!.isNotBlank() && _password.value!!.isNotBlank()) {
-            viewModelScope.launch {
-                _isLoading.value = true
-                ServiceGenerator.createAuthService()
-                    .authenticate(AuthRequestBody(_username.value!!, _password.value!!))
-                    .enqueue(object : Callback<AuthResponseBody> {
-                        override fun onResponse(
-                            call: Call<AuthResponseBody>,
-                            response: Response<AuthResponseBody>
-                        ) {
-                            if (response.isSuccessful && response.body() != null) {
-                                getStoreIdAndLogin(response.body()!!.data.session)
-                            } else {
-                                _errorMessage.value =
-                                    if (response.code() == 401) "Username or password is incorrect."
-                                    else "An error occurred. Please try again."
-                                _isLoading.value = false
-                            }
-                        }
+        if (App.isConnectedToInternet()
+            && _username.value!!.isNotBlank()
+            && _password.value!!.isNotBlank()
+        ) {
+            _isLoading.value = true
+            CoroutineScope(Dispatchers.IO).launch {
+                val isAuthenticated =
+                    App.userRepository.authenticate(
+                        AuthRequestBody(
+                            _username.value!!,
+                            _password.value!!
+                        )
+                    )
 
-                        override fun onFailure(call: Call<AuthResponseBody>, t: Throwable) {
-                            _isLoading.value = false
-                            _errorMessage.value = "An error occurred. Please try again."
-                        }
-
-                    })
+                withContext(Dispatchers.Main) {
+                    _isLoading.value = false
+                    _isAuthenticated.value = isAuthenticated
+                    if (!isAuthenticated) {
+                        _errorMessage.value = "Username or password is incorrect."
+                    }
+                }
             }
+        } else if (!App.isConnectedToInternet()) {
+            _errorMessage.value = "Not connected to internet."
         } else {
             _usernameError.value = "Username cannot be blank."
             _passwordError.value = "Password cannot be blank."
         }
-    }
-
-    fun getStoreIdAndLogin(sessionData: AuthSessionData) {
-        ServiceGenerator.createAuthService()
-            .getUserById(sessionData.ownerId)
-            .clone()
-            .enqueue(object : Callback<UserResponseBody> {
-                override fun onResponse(
-                    call: Call<UserResponseBody>,
-                    response: Response<UserResponseBody>
-                ) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val userData = response.body()!!.data
-                        App.sharedPreferences()
-                            .edit()
-                            .putString(SharedPrefsKey.USER_ID, userData.id)
-                            .putString(SharedPrefsKey.USERNAME, userData.username)
-                            .putString(SharedPrefsKey.STORE_ID, userData.storeId)
-                            .putString(SharedPrefsKey.ACCESS_TOKEN, sessionData.accessToken)
-                            .putString(SharedPrefsKey.REFRESH_TOKEN, sessionData.refreshToken)
-                            .putBoolean(SharedPrefsKey.IS_AUTHENTICATED, true)
-                            .apply()
-                        _isAuthenticated.value = true
-                    } else {
-                        _isLoading.value = false
-                        _errorMessage.value = "An error occurred. Please try again."
-                    }
-                }
-
-                override fun onFailure(call: Call<UserResponseBody>, t: Throwable) {
-                    _isLoading.value = false
-                    _errorMessage.value = "An error occurred. Please try again."
-                }
-            })
     }
 
     fun logout() {
@@ -132,6 +92,7 @@ class AuthViewModel : ViewModel() {
             App.tableRepository.clear()
             App.zoneRepository.clear()
             App.paymentChannelRepository.clear()
+            App.userRepository.logout()
         }
     }
 }

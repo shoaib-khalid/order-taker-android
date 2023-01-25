@@ -20,14 +20,6 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val menuViewModel: MenuViewModel by activityViewModels()
-//    {
-//        MenuViewModelFactory(
-//            OrderTakerApplication.tableRepository,
-//            OrderTakerApplication.zoneRepository,
-//            OrderTakerApplication.categoryRepository,
-//            OrderTakerApplication.productRepository
-//        )
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

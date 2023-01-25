@@ -20,6 +20,7 @@ import com.symplified.ordertaker.models.products.options.ProductPackage
 import com.symplified.ordertaker.models.products.options.ProductPackageOptionDetails
 import com.symplified.ordertaker.models.products.variants.ProductVariant
 import com.symplified.ordertaker.models.products.variants.ProductVariantAvailable
+import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.Table
 
@@ -41,7 +42,8 @@ import com.symplified.ordertaker.models.zones.Table
         ProductAddOnDetails::class,
         ProductPackage::class,
         ProductPackageOptionDetails::class,
-        PaymentChannel::class
+        PaymentChannel::class,
+        User::class
     ],
     exportSchema = true
 )
@@ -66,6 +68,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun productPackageOptionDetailsDao(): ProductPackageOptionDetailsDao
 
     abstract fun paymentChannelDao(): PaymentChannelDao
+
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile

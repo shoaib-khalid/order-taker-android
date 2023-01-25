@@ -16,11 +16,11 @@ interface ProductApi {
 
     @Headers("Authorization: Bearer accessToken")
     @GET("store-categories?pageSize=1000000&sortByCol=sequenceNumber&sortingOrder=ASC")
-    fun getCategories(@Query("storeId") storeId: String): Call<CategoryResponseBody>
+    suspend fun getCategories(@Query("storeId") storeId: String): Response<CategoryResponseBody>
 
     @Headers("Authorization: Bearer accessToken")
     @GET("stores/{storeId}/products?pageSize=1000000&sortByCol=created&sortingOrder=DESC&status=ACTIVE,OUTOFSTOCK&platformType=dinein")
-    fun getProductsByStoreIdAndCategoryId(
+    suspend fun getProductsByStoreIdAndCategoryId(
         @Path("storeId") storeId: String,
         @Query("categoryId") categoryId: String
     ): Call<ProductResponseBody>
@@ -44,5 +44,5 @@ interface ProductApi {
 
     @Headers("Authorization: Bearer accessToken")
     @GET("stores/{storeId}")
-    fun getStoreById(@Path("storeId") storeId: String) : Call<StoreResponseBody>
+    suspend fun getStoreById(@Path("storeId") storeId: String) : Response<StoreResponseBody>
 }

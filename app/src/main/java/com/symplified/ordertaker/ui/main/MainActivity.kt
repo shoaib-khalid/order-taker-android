@@ -3,8 +3,10 @@ package com.symplified.ordertaker.ui.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -28,18 +30,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private val authViewModel: AuthViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        authViewModel.isAuthenticated.observe(this) { isAuthenticated ->
-            if (!isAuthenticated) {
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
-            }
-        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -64,20 +58,14 @@ class MainActivity : AppCompatActivity() {
         val navHeaderTitle: TextView = headerView.findViewById(R.id.nav_header_title)
         val navHeaderSubtitle: TextView = headerView.findViewById(R.id.nav_header_subtitle)
 
-        mainViewModel.storeName.observe(this) { storeName ->
-            if (storeName != null && storeName.isNotBlank()) {
-                navHeaderTitle.text = storeName
-            } else {
-                mainViewModel.fetchStoreName()
-            }
-        }
+        mainViewModel.user.observe(this) { user ->
 
-        mainViewModel.username.observe(this) { username ->
-
-            if (username != null && username.isNotBlank()) {
-                navHeaderSubtitle.text = username
+            if (user != null) {
+                navHeaderTitle.text = user.storeName
+                navHeaderSubtitle.text = user.name
             } else {
-                mainViewModel.fetchUsername()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
         }
     }
