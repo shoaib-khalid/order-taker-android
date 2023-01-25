@@ -12,6 +12,9 @@ interface UserDao {
     @Query("SELECT * FROM users LIMIT 1")
     fun getUser(): Flow<User?>
 
+    @Query("SELECT currencySymbol FROM users LIMIT 1")
+    fun getCurrencySymbol(): Flow<String?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(user: User)
 

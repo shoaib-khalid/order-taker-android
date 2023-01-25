@@ -8,6 +8,10 @@
     <TextView
         android:id="@+id/checkbox_group_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Add-On Group title"
+        android:layout_margin="5dp"/>
 
 </LinearLayout>

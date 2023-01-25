@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.allViews
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.symplified.ordertaker.R
@@ -29,6 +30,8 @@ class ProductSelectionDialog(
 
     private val productPackagesWithOptionViews: MutableMap<String, Map<String, View>> =
         mutableMapOf()
+
+    private var currencySymbol = "RM"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,6 +66,10 @@ class ProductSelectionDialog(
             decrementButton.isEnabled = quantity > 1
         }
 
+        dialogViewModel.currencySymbol.observe(viewLifecycleOwner) { currencySymbol ->
+            this.currencySymbol = currencySymbol ?: "RM"
+        }
+
         dialogViewModel.productWithDetails.observe(viewLifecycleOwner) { productWithDetails ->
             productNameView.text = productWithDetails.product.name
 
@@ -80,26 +87,21 @@ class ProductSelectionDialog(
                     }
 
                     inventory.inventoryItems.firstOrNull()?.let { item ->
-                        Log.d("dialogfragment", "inventoryIndex: $inventoryIndex, item: ${item.productVariantAvailable.value}")
+                        Log.d(
+                            "dialogfragment",
+                            "inventoryIndex: $inventoryIndex, item: ${item.productVariantAvailable.value}"
+                        )
                         val radioButton = RadioButton(view.context)
-                        radioButton.text = "${item.productVariantAvailable.value}...RM${
+                        radioButton.text = "${item.productVariantAvailable.value}...$currencySymbol${
                             String.format("%.2f", inventory.productInventory.dineInPrice)
                         }"
                         radioButton.id = inventoryIndex
                         radioGroup.addView(radioButton)
                         radioGroup.setOnCheckedChangeListener { group, checkedId ->
                             dialogViewModel.setCartItemWithVariant(checkedId)
-//                        itemCode = productWithDetails.productInventories[checkedId].itemCode
-//                        productId = productWithDetails.productInventories[checkedId].productId
-//                        fullProductName = "${productWithDetails.name} - ${item.productVariantAvailable?.value}"
-//                        itemPrice = productWithDetails.productInventories[checkedId].dineInPrice
                         }
                         if (inventoryIndex == 0) {
                             radioGroup.check(inventoryIndex)
-//                        itemCode = productWithDetails.productInventories[inventoryIndex].itemCode
-//                        productId = productWithDetails.productInventories[inventoryIndex].productId
-//                        fullProductName = "${productWithDetails.name} - ${item.productVariantAvailable?.value}"
-//                        itemPrice = productWithDetails.productInventories[inventoryIndex].dineInPrice
                         }
                     }
                 }
@@ -120,14 +122,13 @@ class ProductSelectionDialog(
                 (addOnLayout.findViewById(R.id.checkbox_group_title) as TextView).text =
                     titleText
                 addOnGroupWithDetails.addOnDetails.forEachIndexed { detailsIndex, addOnDetails ->
-                    val checkbox = CheckBox(view.context)
+                    val addOnView: View =
+                        inflater.inflate(R.layout.row_addon_option, container, false)
+
+                    val checkbox = addOnView.findViewById(R.id.addon_checkbox) as CheckBox
                     checkbox.id = detailsIndex
-                    checkbox.text = "${addOnDetails.name}   +RM${
-                        String.format(
-                            "%.2f",
-                            addOnDetails.dineInPrice
-                        )
-                    }"
+                    checkbox.text = addOnDetails.name
+
                     checkbox.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
                             dialogViewModel.selectAddOn(addOnDetails, addOnGroup.id)
@@ -135,8 +136,12 @@ class ProductSelectionDialog(
                             dialogViewModel.removeAddOn(addOnDetails, addOnGroup.id)
                         }
                     }
+
+                    (addOnView.findViewById(R.id.price_text_view) as TextView).text =
+                        "+$currencySymbol${String.format("%.2f", addOnDetails.dineInPrice)}"
+
                     checkboxes.add(checkbox)
-                    (addOnLayout.rootView as LinearLayout).addView(checkbox)
+                    (addOnLayout.rootView as LinearLayout).addView(addOnView)
                 }
                 addOnGroupsWithCheckboxes[addOnGroup.id] = checkboxes.toList()
                 variantsLayout.addView(addOnLayout)
@@ -151,17 +156,17 @@ class ProductSelectionDialog(
                 val minAmount = packageGroup.minAllow
                 val maxAmount = packageGroup.totalAllow
                 (packageLayout.findViewById(R.id.checkbox_group_title) as TextView).text =
-                    "Select $minAmount of $maxAmount"
+                    "Select at least $minAmount of $maxAmount"
 
                 productPackageWithOptionDetails.productPackageOptionDetails.forEach { optionDetails ->
                     val optionView: View =
                         inflater.inflate(R.layout.row_package_option, container, false)
-                    (optionView.findViewById(R.id.option_text_view) as TextView).text =
+                    (optionView.findViewById<TextView>(R.id.option_text_view)).text =
                         optionDetails.product!!.name
-                    (optionView.findViewById(R.id.btn_add) as ImageButton).setOnClickListener {
+                    (optionView.findViewById<ImageButton>(R.id.btn_add)).setOnClickListener {
                         dialogViewModel.addCartSubItem(packageGroup, optionDetails)
                     }
-                    (optionView.findViewById(R.id.btn_decrement) as ImageButton).setOnClickListener {
+                    (optionView.findViewById<ImageButton>(R.id.btn_decrement)).setOnClickListener {
                         dialogViewModel.decrementCartSubItem(packageGroup, optionDetails)
                     }
 

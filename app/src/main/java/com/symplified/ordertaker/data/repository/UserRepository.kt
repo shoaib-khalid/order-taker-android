@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val userDao: UserDao) {
     val user: Flow<User?> = userDao.getUser()
+    val currencySymbol: Flow<String?> = userDao.getCurrencySymbol()
 
     // authenticate user -> getUserById -> getStoreById -> insert into repo -> return true
     suspend fun authenticate(authRequest: AuthRequest): Boolean {
@@ -39,6 +40,7 @@ class UserRepository(private val userDao: UserDao) {
             userData.id,
             userData.storeId,
             store.name,
+            store.regionCountry.currencySymbol,
             userData.username,
             userData.name,
             sessionData.accessToken,

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemAddOn
@@ -17,6 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ProductSelectionViewModel : ViewModel() {
+
+    val currencySymbol: LiveData<String?> = App.userRepository.currencySymbol.asLiveData()
 
     private val _productWithDetails: MutableLiveData<ProductWithDetails> by lazy { MutableLiveData<ProductWithDetails>() }
     val productWithDetails: LiveData<ProductWithDetails> = _productWithDetails

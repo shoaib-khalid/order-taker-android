@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "284f21aab72386638971cc5a0e3dfb55",
+    "identityHash": "2763f58ec973cebd2d3caa7108236097",
     "entities": [
       {
         "tableName": "tables",
@@ -698,7 +698,7 @@
       },
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `storeId` TEXT NOT NULL, `storeName` TEXT, `username` TEXT NOT NULL, `name` TEXT NOT NULL, `accessToken` TEXT NOT NULL, `refreshToken` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `storeId` TEXT NOT NULL, `storeName` TEXT NOT NULL, `currencySymbol` TEXT NOT NULL, `username` TEXT NOT NULL, `name` TEXT NOT NULL, `accessToken` TEXT NOT NULL, `refreshToken` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -716,7 +716,13 @@
             "fieldPath": "storeName",
             "columnName": "storeName",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
+          },
+          {
+            "fieldPath": "currencySymbol",
+            "columnName": "currencySymbol",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "username",
@@ -756,7 +762,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '284f21aab72386638971cc5a0e3dfb55')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2763f58ec973cebd2d3caa7108236097')"
     ]
   }
 }

@@ -8,7 +8,8 @@ data class User(
     @PrimaryKey
     val id: String,
     val storeId: String,
-    val storeName: String?,
+    val storeName: String,
+    val currencySymbol: String,
     val username: String,
     val name: String,
     val accessToken: String,
