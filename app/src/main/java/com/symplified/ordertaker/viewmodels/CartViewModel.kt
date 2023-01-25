@@ -3,8 +3,10 @@ package com.symplified.ordertaker.viewmodels
 import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.constants.SharedPrefsKey
-import com.symplified.ordertaker.models.cartitems.*
+import com.symplified.ordertaker.models.cartitems.CartItemRequest
+import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
+import com.symplified.ordertaker.models.cartitems.OrderPaymentDetails
+import com.symplified.ordertaker.models.cartitems.OrderRequest
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.models.zones.Table
@@ -12,13 +14,8 @@ import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class CartViewModel : ViewModel() {
     val cartItemsWithAddOnsAndSubItems: LiveData<List<CartItemWithAddOnsAndSubItems>> =

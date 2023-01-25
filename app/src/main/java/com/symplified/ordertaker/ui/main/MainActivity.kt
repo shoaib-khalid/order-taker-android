@@ -1,28 +1,22 @@
 package com.symplified.ordertaker.ui.main
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.ui.login.LoginActivity
-import com.symplified.ordertaker.viewmodels.AuthViewModel
 import com.symplified.ordertaker.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity() {

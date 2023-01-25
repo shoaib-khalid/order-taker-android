@@ -1,7 +1,6 @@
 package com.symplified.ordertaker.data
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -21,8 +20,8 @@ import com.symplified.ordertaker.models.products.options.ProductPackageOptionDet
 import com.symplified.ordertaker.models.products.variants.ProductVariant
 import com.symplified.ordertaker.models.products.variants.ProductVariantAvailable
 import com.symplified.ordertaker.models.users.User
-import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.Table
+import com.symplified.ordertaker.models.zones.Zone
 
 @Database(
     version = 1,

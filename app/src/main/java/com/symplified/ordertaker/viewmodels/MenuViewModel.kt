@@ -2,27 +2,17 @@ package com.symplified.ordertaker.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.google.gson.Gson
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.constants.SharedPrefsKey
-import com.symplified.ordertaker.models.ErrorResponseBody
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.models.categories.CategoryResponseBody
-import com.symplified.ordertaker.models.categories.CategoryWithProducts
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.ZoneWithTables
-import com.symplified.ordertaker.models.zones.ZonesResponseBody
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 const val TAG = "menu-view-model"
 

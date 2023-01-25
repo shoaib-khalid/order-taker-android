@@ -2,7 +2,6 @@ package com.symplified.ordertaker.data.dao
 
 import androidx.room.*
 import com.symplified.ordertaker.models.products.addons.ProductAddOnDetails
-import com.symplified.ordertaker.models.products.inventories.ProductInventoryItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao

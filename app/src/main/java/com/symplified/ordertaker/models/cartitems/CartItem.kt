@@ -1,7 +1,6 @@
 package com.symplified.ordertaker.models.cartitems
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "cart_items")

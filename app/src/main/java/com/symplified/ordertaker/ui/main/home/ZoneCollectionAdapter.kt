@@ -1,7 +1,6 @@
 package com.symplified.ordertaker.ui.main.home
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.symplified.ordertaker.models.zones.ZoneWithTables

@@ -7,7 +7,6 @@ import com.symplified.ordertaker.networking.apis.ProductApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object ServiceGenerator {
     private const val BASE_URL = "https://api.symplified.it/"

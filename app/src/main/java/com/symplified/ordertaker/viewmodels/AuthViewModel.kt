@@ -4,26 +4,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.google.firebase.messaging.FirebaseMessaging
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.constants.SharedPrefsKey
-import com.symplified.ordertaker.models.auth.AuthRequestBody
-import com.symplified.ordertaker.models.auth.AuthResponseBody
-import com.symplified.ordertaker.models.auth.AuthSessionData
-import com.symplified.ordertaker.models.users.UserResponseBody
-import com.symplified.ordertaker.networking.ServiceGenerator
+import com.symplified.ordertaker.models.auth.AuthRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class AuthViewModel : ViewModel() {
 
     private val _username = MutableLiveData<String>().apply { value = "" }
-    val username: LiveData<String> = _username
     private val _usernameError: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val usernameError: LiveData<String> = _usernameError
     fun setUsername(username: String) {
@@ -32,7 +23,6 @@ class AuthViewModel : ViewModel() {
     }
 
     private val _password = MutableLiveData<String>().apply { value = "" }
-    val password: LiveData<String> = _password
     private val _passwordError: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
@@ -57,20 +47,29 @@ class AuthViewModel : ViewModel() {
             && _password.value!!.isNotBlank()
         ) {
             _isLoading.value = true
-            CoroutineScope(Dispatchers.IO).launch {
-                val isAuthenticated =
-                    App.userRepository.authenticate(
-                        AuthRequestBody(
-                            _username.value!!,
-                            _password.value!!
-                        )
-                    )
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
 
-                withContext(Dispatchers.Main) {
+                if (!task.isSuccessful) {
                     _isLoading.value = false
-                    _isAuthenticated.value = isAuthenticated
-                    if (!isAuthenticated) {
-                        _errorMessage.value = "Username or password is incorrect."
+                    _errorMessage.value = "An error occurred. Please try again."
+                    return@addOnCompleteListener
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    val isAuthenticated =
+                        App.userRepository.authenticate(
+                            AuthRequest(
+                                _username.value!!,
+                                _password.value!!
+                            )
+                        )
+
+                    withContext(Dispatchers.Main) {
+                        _isLoading.value = false
+                        _isAuthenticated.value = isAuthenticated
+                        if (!isAuthenticated) {
+                            _errorMessage.value = "Username or password is incorrect."
+                        }
                     }
                 }
             }
@@ -86,13 +85,13 @@ class AuthViewModel : ViewModel() {
         _isAuthenticated.value = false
         App.sharedPreferences().edit().clear().apply()
         CoroutineScope(Dispatchers.IO).launch {
+            App.userRepository.logout()
             App.productRepository.clear()
             App.cartSubItemRepository.clear()
             App.cartItemRepository.clear()
             App.tableRepository.clear()
             App.zoneRepository.clear()
             App.paymentChannelRepository.clear()
-            App.userRepository.logout()
         }
     }
 }

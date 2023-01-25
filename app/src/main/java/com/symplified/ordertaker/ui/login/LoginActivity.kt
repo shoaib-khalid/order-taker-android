@@ -1,11 +1,10 @@
 package com.symplified.ordertaker.ui.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.databinding.ActivityLoginBinding
