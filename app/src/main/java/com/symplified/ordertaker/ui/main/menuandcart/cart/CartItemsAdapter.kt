@@ -20,21 +20,12 @@ class CartItemsAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val itemNumber: TextView
-        val itemName: TextView
-        val subItems: TextView
-        val itemQuantity: TextView
-        val itemPrice: TextView
-        val deleteBtn: AppCompatImageButton
-
-        init {
-            itemNumber = view.findViewById(R.id.cart_item_no)
-            subItems = view.findViewById(R.id.cart_sub_items_text)
-            itemName = view.findViewById(R.id.cart_item_name)
-            itemQuantity = view.findViewById(R.id.cart_item_quantity)
-            itemPrice = view.findViewById(R.id.cart_item_price)
-            deleteBtn = view.findViewById(R.id.delete_btn)
-        }
+        val itemNumber: TextView = view.findViewById(R.id.cart_item_no)
+        val itemName: TextView = view.findViewById(R.id.cart_item_name)
+        val subItems: TextView = view.findViewById(R.id.cart_sub_items_text)
+        val itemQuantity: TextView = view.findViewById(R.id.cart_item_quantity)
+        val itemPrice: TextView = view.findViewById(R.id.cart_item_price)
+        val deleteBtn: AppCompatImageButton = view.findViewById(R.id.delete_btn)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -50,7 +41,8 @@ class CartItemsAdapter(
 
         viewHolder.subItems.visibility =
             if (cartItemsWithAddOnsAndSubItems[position].cartSubItems.isEmpty()
-                && cartItemsWithAddOnsAndSubItems[position].cartItemAddons.isEmpty())
+                && cartItemsWithAddOnsAndSubItems[position].cartItemAddons.isEmpty()
+            )
                 View.GONE
             else
                 View.VISIBLE
@@ -61,7 +53,13 @@ class CartItemsAdapter(
             if (subItemsText.isNotEmpty()) {
                 subItemsText.append(", ")
             }
-            subItemsText.append(subItem.productName)
+            subItemsText.append(subItem.quantity).append(" x ")
+            if (subItem.productName.length <= 10) {
+                subItemsText.append(subItem.productName)
+            } else {
+                subItemsText.append(subItem.productName.substring(0..6).trim())
+                    .append("...")
+            }
         }
         cartItemsWithAddOnsAndSubItems[position].cartItemAddons.forEach { addOn ->
             itemPrice += addOn.price
@@ -71,7 +69,10 @@ class CartItemsAdapter(
             }
             subItemsText.append(addOn.name)
         }
-        viewHolder.subItems.text = subItemsText.toString()
+        if (subItemsText.isNotEmpty()) {
+            viewHolder.subItems.visibility = View.VISIBLE
+            viewHolder.subItems.text = subItemsText.toString()
+        }
 
         val quantity = cartItemsWithAddOnsAndSubItems[position].cartItem.quantity
 

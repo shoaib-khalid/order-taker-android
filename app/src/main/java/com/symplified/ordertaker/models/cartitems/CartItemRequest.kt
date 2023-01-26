@@ -5,6 +5,6 @@ data class CartItemRequest(
     val productId: String,
     val quantity: Int,
     val specialInstruction: String = "",
-    val cartItemAddOn: List<CartItemAddOn>?,
-    val cartSubItem: List<CartSubItem>?
+    val cartItemAddOn: List<CartItemAddOnRequest>?,
+    val cartSubItem: List<CartSubItemRequest>?
 )

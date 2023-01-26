@@ -117,8 +117,8 @@ class ProductSelectionDialog(
                 val titleText = "${addOnGroup.title} " +
                         "(${
                             if (addOnGroup.minAllowed == 0) "Optional"
-                            else "Select at least ${addOnGroup.maxAllowed}"
-                        })"
+                            else "Select at least ${addOnGroup.minAllowed}"
+                        }) Max. ${addOnGroup.maxAllowed}"
                 (addOnLayout.findViewById(R.id.checkbox_group_title) as TextView).text =
                     titleText
                 addOnGroupWithDetails.addOnDetails.forEachIndexed { detailsIndex, addOnDetails ->

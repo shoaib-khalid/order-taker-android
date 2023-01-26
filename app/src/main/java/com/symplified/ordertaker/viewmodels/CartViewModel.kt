@@ -3,10 +3,7 @@ package com.symplified.ordertaker.viewmodels
 import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.models.cartitems.CartItemRequest
-import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
-import com.symplified.ordertaker.models.cartitems.OrderPaymentDetails
-import com.symplified.ordertaker.models.cartitems.OrderRequest
+import com.symplified.ordertaker.models.cartitems.*
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.models.zones.Table
@@ -32,10 +29,10 @@ class CartViewModel : ViewModel() {
     private val _isLoadingPaymentChannels: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val isLoadingPaymentChannels: LiveData<Boolean> = _isLoadingPaymentChannels
 
-    private val _isPaymentChannelsReceived = MutableLiveData<Boolean>().apply { value = true }
+    private val _isPaymentChannelsReceived: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val isPaymentChannelsReceived: LiveData<Boolean> = _isPaymentChannelsReceived
 
-    private val _isPlacingOrder = MutableLiveData<Boolean>().apply { value = false }
+    private val _isPlacingOrder: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
 
     private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
@@ -70,12 +67,31 @@ class CartViewModel : ViewModel() {
             cartItemsWithAddOnsAndSubItems.value?.let { cartItemsWithDetails ->
                 cartItemsWithDetails.forEach { cartItemWithDetails ->
 
+                    val cartSubItemsRequestList: MutableList<CartSubItemRequest> = mutableListOf()
+                    cartItemWithDetails.cartSubItems.forEach { subItem ->
+                        for (i in 1..subItem.quantity) {
+                            cartSubItemsRequestList.add(
+                                CartSubItemRequest(
+                                    SKU = subItem.SKU,
+                                    productName = subItem.productName,
+                                    productId = subItem.productId,
+                                    itemCode = subItem.itemCode
+                                )
+                            )
+                        }
+                    }
+
+                    val cartItemAddOnRequestList: List<CartItemAddOnRequest> =
+                        cartItemWithDetails.cartItemAddons.map { addOn ->
+                            CartItemAddOnRequest(addOn.productAddOnId)
+                        }
+
                     val cartItemRequest = CartItemRequest(
                         itemCode = cartItemWithDetails.cartItem.itemCode,
                         productId = cartItemWithDetails.cartItem.productId,
                         quantity = cartItemWithDetails.cartItem.quantity,
-                        cartSubItem = cartItemWithDetails.cartSubItems.ifEmpty { null },
-                        cartItemAddOn = cartItemWithDetails.cartItemAddons.ifEmpty { null }
+                        cartSubItem = cartSubItemsRequestList.ifEmpty { null },
+                        cartItemAddOn = cartItemAddOnRequestList.ifEmpty { null }
                     )
                     cartItemRequests.add(cartItemRequest)
                 }

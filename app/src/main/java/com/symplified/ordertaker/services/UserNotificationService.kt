@@ -35,7 +35,7 @@ class UserNotificationService: FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        Log.d("my-firebase", "onMessageReceived: ${message.from} ${message.data}")
+        Log.d("my-firebase", "onMessageReceived: Title: ${message.data["title"]}, Body: ${message.data["body"]}")
 
         val stackBuilder = TaskStackBuilder.create(applicationContext)
             .addNextIntentWithParentStack(Intent(applicationContext, MainActivity::class.java))
@@ -51,6 +51,7 @@ class UserNotificationService: FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .setContentTitle("Shift Ended")
             .setContentText("Your shift has ended.")
+            .setSmallIcon(R.drawable.ic_notification)
             .build()
         notificationManager.notify(1234, builder)
 

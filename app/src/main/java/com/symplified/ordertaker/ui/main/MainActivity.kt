@@ -1,19 +1,15 @@
 package com.symplified.ordertaker.ui.main
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.TaskStackBuilder
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -21,11 +17,18 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
+import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.ui.login.LoginActivity
 import com.symplified.ordertaker.viewmodels.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,9 +62,9 @@ class MainActivity : AppCompatActivity() {
         val headerView = navView.getHeaderView(0)
         val navHeaderTitle: TextView = headerView.findViewById(R.id.nav_header_title)
         val navHeaderSubtitle: TextView = headerView.findViewById(R.id.nav_header_subtitle)
+        val navHeaderImage: ImageView = headerView.findViewById(R.id.imageView)
 
         mainViewModel.user.observe(this) { user ->
-
             if (user != null) {
                 navHeaderTitle.text = user.storeName
                 navHeaderSubtitle.text = user.name
@@ -69,6 +72,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }
+        }
+
+        mainViewModel.headerImageUrl.observe(this) { assetUrl ->
+            Glide.with(this).load(assetUrl).into(navHeaderImage)
         }
     }
 
@@ -83,11 +90,11 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_logout -> {
             AlertDialog.Builder(this)
                 .setMessage(getString(R.string.action_logout_confirmation))
-                .setPositiveButton(getString(R.string.yes)) { _,_ -> mainViewModel.logout() }
+                .setPositiveButton(getString(R.string.yes)) { _, _ -> mainViewModel.logout() }
                 .setNegativeButton(getString(R.string.no), null)
                 .show()
             true

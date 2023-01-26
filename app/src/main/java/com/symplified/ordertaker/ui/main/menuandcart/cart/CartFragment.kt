@@ -41,7 +41,8 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
         cartItemsList.layoutManager = LinearLayoutManager(view.context);
         cartItemsList.adapter = cartItemsAdapter
 
-        binding.paymentTypeList.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        binding.paymentTypeList.layoutManager =
+            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         val paymentChannelAdapter = PaymentChannelAdapter(this)
         binding.paymentTypeList.adapter = paymentChannelAdapter
 
@@ -110,7 +111,8 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
         }
 
         cartViewModel.isLoadingPaymentChannels.observe(viewLifecycleOwner) { isLoading ->
-            binding.paymentTypeProgressBar.visibility = if (isLoading && isPaymentChannelsEmpty) View.VISIBLE else View.GONE
+            binding.paymentTypeProgressBar.visibility =
+                if (isLoading && isPaymentChannelsEmpty) View.VISIBLE else View.GONE
             if (isLoading) {
                 binding.paymentTypeErrorText.visibility = View.GONE
                 binding.paymentTypeRetryButton.visibility = View.GONE

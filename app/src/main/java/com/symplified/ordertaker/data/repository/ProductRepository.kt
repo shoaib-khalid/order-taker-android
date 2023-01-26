@@ -7,6 +7,8 @@ import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.products.addons.ProductAddOnGroup
 import com.symplified.ordertaker.models.products.options.ProductPackage
+import com.symplified.ordertaker.models.stores.assets.StoreAsset
+import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.flow.Flow
 
 class ProductRepository(
@@ -71,6 +73,17 @@ class ProductRepository(
                 productInventoryDao.insert(productInventory)
             }
         }
+    }
+
+    suspend fun getStoreAssets(storeId: String): List<StoreAsset> {
+        try {
+            val assetResponse = ServiceGenerator.createProductService()
+                .getStoreAssetsByStoreId(storeId)
+            if (assetResponse.isSuccessful) {
+                return assetResponse.body()!!.data
+            }
+        } catch (_:Throwable) {}
+        return listOf()
     }
 
     fun clear() {

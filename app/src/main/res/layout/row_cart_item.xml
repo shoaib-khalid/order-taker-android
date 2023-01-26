@@ -30,7 +30,7 @@
         android:id="@+id/cart_sub_items_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:visibility="gone"
         app:layout_constraintWidth_percent="0.40"
         app:layout_constraintTop_toBottomOf="@id/cart_item_name"
         app:layout_constraintLeft_toRightOf="@id/cart_item_no"
