@@ -8,12 +8,17 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class CartItemsAdapter(
     private val cartItemsWithAddOnsAndSubItems: MutableList<CartItemWithAddOnsAndSubItems>
     = mutableListOf(),
     private val onRemoveFromCartListener: OnRemoveFromCartListener
 ) : RecyclerView.Adapter<CartItemsAdapter.ViewHolder>() {
+
 
     interface OnRemoveFromCartListener {
         fun onItemRemoved(cartItem: CartItemWithAddOnsAndSubItems)
@@ -80,23 +85,43 @@ class CartItemsAdapter(
         viewHolder.itemPrice.text = "RM ${String.format("%.2f", itemPrice * quantity)}"
 
         viewHolder.deleteBtn.setOnClickListener {
-            onRemoveFromCartListener.onItemRemoved(cartItemsWithAddOnsAndSubItems[position])
+            val removedCartItem = cartItemsWithAddOnsAndSubItems.removeAt(viewHolder.adapterPosition)
+            notifyItemRemoved(viewHolder.adapterPosition)
+            onRemoveFromCartListener.onItemRemoved(removedCartItem)
         }
     }
 
     override fun getItemCount() = cartItemsWithAddOnsAndSubItems.size
 
-//    fun addItem(cartItem: CartItem) = cartItems.add(cartItem)
-
-    fun clearCart() = cartItemsWithAddOnsAndSubItems.clear()
-
-    fun updateItems(cartItemsToAdd: List<CartItemWithAddOnsAndSubItems>) {
-        if (cartItemsToAdd.isEmpty()) {
-            cartItemsWithAddOnsAndSubItems.clear()
+    fun updateItems(updatedCartItems: List<CartItemWithAddOnsAndSubItems>) {
+        if (updatedCartItems.isEmpty()) {
+            clear()
         } else {
-            cartItemsWithAddOnsAndSubItems.clear()
-            cartItemsWithAddOnsAndSubItems.addAll(cartItemsToAdd)
+            updatedCartItems.forEach { cartItemToAdd ->
+                if (!cartItemsWithAddOnsAndSubItems.contains(cartItemToAdd)) {
+                    cartItemsWithAddOnsAndSubItems.add(cartItemToAdd)
+                    notifyItemInserted(cartItemsWithAddOnsAndSubItems.indexOf(cartItemToAdd))
+                }
+            }
+
+            val cartItemsToRemove: MutableList<Int> = mutableListOf()
+            cartItemsWithAddOnsAndSubItems.forEachIndexed { index, cartItem ->
+                if (!updatedCartItems.contains(cartItem)) {
+                    cartItemsToRemove.add(index)
+                }
+            }
+
+            cartItemsToRemove.forEach { indexToRemove ->
+                cartItemsWithAddOnsAndSubItems.removeAt(indexToRemove)
+                notifyItemRemoved(indexToRemove)
+            }
         }
-        notifyDataSetChanged()
     }
+
+    private fun clear() {
+        val originalSize = cartItemsWithAddOnsAndSubItems.size
+        cartItemsWithAddOnsAndSubItems.clear()
+        notifyItemRangeRemoved(0, originalSize)
+    }
+
 }
