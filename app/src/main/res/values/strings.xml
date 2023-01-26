@@ -1,9 +1,6 @@
 <resources>
-    <string name="app_name">Symplified Order Taker</string>
-
-    <!-- Shared Preference keys -->
-    <string name="preference_file_key">Symplified Order Taker Shared Preferences File</string>
-    <string name="is_logged_in">Is User Logged In</string>
+    <string name="app_name">Dine In Waiter Ordering</string>
+    <string name="welcome_message">Welcome to Dine In Waiter Ordering</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -16,8 +13,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="welcome_message">Welcome to Symplified Order Taker</string>
     <string name="hint_email">Username</string>
     <string name="hint_password">Password</string>
     <string name="login_text">Login</string>
@@ -25,5 +20,9 @@
     <string name="menu_logout">Log Out</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="payment_type_failure_text">Failed to load payment types</string>
+
+    <string name="action_logout_confirmation">Are you sure you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

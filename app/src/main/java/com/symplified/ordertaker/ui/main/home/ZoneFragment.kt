@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.ui.main.home
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -63,8 +64,6 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
                 }
             }
         }
-
-
     }
 
     private fun getScreenWidth(): Int {

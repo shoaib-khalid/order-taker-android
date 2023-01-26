@@ -60,7 +60,8 @@ class AuthViewModel : ViewModel() {
                         App.userRepository.authenticate(
                             AuthRequest(
                                 _username.value!!,
-                                _password.value!!
+                                _password.value!!,
+                                task.result
                             )
                         )
 

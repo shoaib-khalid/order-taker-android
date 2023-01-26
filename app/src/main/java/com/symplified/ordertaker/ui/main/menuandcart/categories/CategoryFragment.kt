@@ -48,7 +48,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
                 if (isLoading && isCategoriesEmpty) View.VISIBLE else View.GONE
         }
         menuViewModel.selectedCategory.observe(viewLifecycleOwner) { category ->
-            category?.let { category ->
+            category?.let {
                 (binding.categoryList.adapter as CategoriesAdapter).setSelectedCategory(category)
             }
         }
