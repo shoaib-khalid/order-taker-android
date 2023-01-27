@@ -1,6 +1,5 @@
 package com.symplified.ordertaker.ui.main.home
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -17,7 +16,7 @@ import com.symplified.ordertaker.databinding.FragmentZoneBinding
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
-class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
+class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
 
     companion object {
         const val ZONE_ID = "ZONE_ID"
@@ -49,13 +48,13 @@ class ZoneFragment : Fragment(), TablesAdapter.OnTableClickListener {
         val spanCount = if (width >= 2000) 6 else if (width >= 1200) 4 else 3
 
         tablesRecyclerView.layoutManager = GridLayoutManager(view.context, spanCount)
-        val adapter = TablesAdapter(onTableClickListener = this)
+        val adapter = TableListAdapter(onTableClickListener = this)
         tablesRecyclerView.adapter = adapter
 
         arguments?.takeIf { it.containsKey(ZONE_ID) }?.apply {
             val zoneId = getInt(ZONE_ID)
-            menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zone ->
-                zone.firstOrNull { zoneWithTables ->
+            menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
+                zonesWithTables.firstOrNull { zoneWithTables ->
                     zoneWithTables.zone.id == zoneId
                 }?.let { currentZone ->
                     zoneName = currentZone.zone.zoneName

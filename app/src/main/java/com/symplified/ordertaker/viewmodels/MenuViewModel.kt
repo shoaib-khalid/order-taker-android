@@ -1,7 +1,5 @@
 package com.symplified.ordertaker.viewmodels
 
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
@@ -9,12 +7,10 @@ import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
-import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -23,7 +19,6 @@ const val TAG = "menu-view-model"
 class MenuViewModel : ViewModel() {
 
     val zonesWithTables: LiveData<List<ZoneWithTables>> = App.zoneRepository.allZones.asLiveData()
-    val tables: LiveData<List<Table>> = App.tableRepository.allTables.asLiveData()
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 
     var selectedTable: Table? = null
@@ -40,21 +35,7 @@ class MenuViewModel : ViewModel() {
         }
 
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
-        App.productRepository.insert(category)
-    }
-
-    fun insert(zoneWithTables: ZoneWithTables) = CoroutineScope(Dispatchers.IO).launch {
-        App.zoneRepository.insert(zoneWithTables.zone)
-        zoneWithTables.tables.forEach { table ->
-            App.tableRepository.insert(table)
-        }
-    }
-
-    fun insert(zone: Zone) = CoroutineScope(Dispatchers.IO).launch {
-        App.zoneRepository.insert(zone)
-        zone.tagTables.forEach { table ->
-            App.tableRepository.insert(table)
-        }
+        App.productRepository.insertAddOnGroups(category)
     }
 
     fun selectCategory(category: Category) {
@@ -67,32 +48,6 @@ class MenuViewModel : ViewModel() {
 
     private val _isLoadingZonesAndTables = MutableLiveData<Boolean>().apply { value = false }
     val isLoadingZonesAndTables: LiveData<Boolean> = _isLoadingZonesAndTables
-    fun fetchZonesAndTables() {
-        _isLoadingZonesAndTables.value = true
-        CoroutineScope(Dispatchers.IO).launch {
-            App.userRepository.user.collect { user ->
-                if (user != null) {
-                    try {
-                        val response =
-                            ServiceGenerator.createLocationService().getZones(user.storeId)
-                        if (response.isSuccessful) {
-                            response.body()?.let { zoneData ->
-                                App.zoneRepository.clear()
-                                App.tableRepository.clear()
-                                zoneData.data.forEach { zone ->
-                                    insert(zone)
-                                }
-                            }
-                        }
-                    } catch (_: Throwable) {
-                    }
-                    withContext(Dispatchers.Main) {
-                        _isLoadingZonesAndTables.value = false
-                    }
-                }
-            }
-        }
-    }
 
     private val _isLoadingCategories = MutableLiveData<Boolean>().apply { value = false }
     val isLoadingCategories: LiveData<Boolean> = _isLoadingCategories
@@ -104,24 +59,13 @@ class MenuViewModel : ViewModel() {
 
             App.userRepository.user.collect { user ->
                 if (user != null) {
-                    try {
-                        val response =
-                            ServiceGenerator.createProductService().getCategories(user.storeId)
-                        response.body()?.let { body ->
-                            body.data.content.forEach { category ->
-                                insert(category)
-                            }
-                        }
-                    } catch (e: Throwable) {
-                        Log.e("menuviewmodel", e.localizedMessage!!)
-                    }
+                    App.productRepository.fetchCategories(user.storeId)
                 }
                 withContext(Dispatchers.Main) {
                     _isLoadingCategories.value = false
                 }
             }
         }
-
     }
 
     private val _isLoadingProducts = MutableLiveData<Boolean>().apply { value = false }
@@ -130,62 +74,28 @@ class MenuViewModel : ViewModel() {
         _isLoadingProducts.value = status
     }
 
-    fun fetchProducts() {
+    fun fetchProducts() = CoroutineScope(Dispatchers.IO).launch {
+        setIsLoadingProducts(true)
+
+        App.userRepository.user.collect { user ->
+            user?.let {
+                App.productRepository.fetchProducts(user.storeId)
+            }
+            setIsLoadingProducts(false)
+        }
+    }
+
+    fun fetchZonesAndTables() {
+        _isLoadingZonesAndTables.value = true
+
         CoroutineScope(Dispatchers.IO).launch {
-            setIsLoadingProducts(true)
-
-            val productApiService = ServiceGenerator.createProductService()
             App.userRepository.user.collect { user ->
-                user?.let {
-                    try {
-                        val response = productApiService.getProductsByStoreId(user.storeId)
-                        if (response.isSuccessful) {
-                            response.body()?.let { productResponseBody ->
-                                productResponseBody.data.content.forEach { product ->
-                                    App.productRepository.insert(product)
+                if (user != null) {
+                    App.zoneRepository.fetchZonesAndTables(user.storeId)
+                }
 
-                                    if (product.hasAddOn) {
-                                        launch {
-                                            try {
-                                                val addOnResponse =
-                                                    productApiService.getProductAddOns(product.id)
-                                                if (addOnResponse.isSuccessful) {
-                                                    addOnResponse.body()!!.data.forEach { addOnGroup ->
-                                                        addOnGroup.productId = product.id
-                                                        App.productRepository.insert(addOnGroup)
-                                                    }
-                                                }
-                                            } catch (_: Throwable) {
-                                            }
-                                        }
-                                    }
-
-                                    if (product.isPackage) {
-                                        launch {
-                                            try {
-                                                val packageResponse =
-                                                    productApiService.getProductOptions(
-                                                        user.storeId,
-                                                        product.id
-                                                    )
-                                                if (packageResponse.isSuccessful) {
-                                                    packageResponse.body()!!.data.forEach { productPackage ->
-                                                        App.productRepository.insert(productPackage)
-                                                    }
-                                                }
-                                            } catch (_: Throwable) {
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            setIsLoadingProducts(false)
-                        } else {
-                            setIsLoadingProducts(false)
-                        }
-                    } catch (_: Throwable) {
-                        setIsLoadingProducts(false)
-                    }
+                withContext(Dispatchers.Main) {
+                    _isLoadingZonesAndTables.value = false
                 }
             }
         }

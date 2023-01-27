@@ -17,5 +17,5 @@ interface ProductInventoryItemDao {
     fun delete(productInventoryItem: ProductInventoryItem)
 
     @Query("DELETE FROM inventory_items")
-    fun clear()
+    suspend fun clear()
 }

@@ -22,7 +22,7 @@ interface ProductDao {
     fun getProductsWithCategoryId(categoryId: String) : LiveData<List<ProductWithDetails>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(product: Product)
+    suspend fun insert(product: Product)
 
     @Delete
     fun delete(product: Product)

@@ -112,8 +112,10 @@ class CartItemsAdapter(
             }
 
             cartItemsToRemove.forEach { indexToRemove ->
-                cartItemsWithAddOnsAndSubItems.removeAt(indexToRemove)
-                notifyItemRemoved(indexToRemove)
+                cartItemsWithAddOnsAndSubItems.elementAtOrNull(indexToRemove)?.let {
+                    cartItemsWithAddOnsAndSubItems.removeAt(indexToRemove)
+                    notifyItemRemoved(indexToRemove)
+                }
             }
         }
     }

@@ -13,6 +13,9 @@ interface ProductAddOnGroupDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(productAddOnGroup: ProductAddOnGroup)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(productAddOnGroups: List<ProductAddOnGroup>)
+
     @Delete
     fun delete(productAddOnGroup: ProductAddOnGroup)
 

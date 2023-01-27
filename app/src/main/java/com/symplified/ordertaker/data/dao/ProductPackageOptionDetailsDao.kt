@@ -11,7 +11,10 @@ interface ProductPackageOptionDetailsDao {
     fun getAll(): Flow<List<ProductPackageOptionDetails>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(productPackageOptionDetails: ProductPackageOptionDetails)
+    suspend fun insert(productPackageOptionDetails: ProductPackageOptionDetails)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(productPackageOptionDetails: List<ProductPackageOptionDetails>)
 
     @Delete
     fun delete(productPackageOptionDetails: ProductPackageOptionDetails)

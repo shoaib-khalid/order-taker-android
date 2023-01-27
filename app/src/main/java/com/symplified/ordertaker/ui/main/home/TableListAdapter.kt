@@ -8,21 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.zones.Table
 
-class TablesAdapter(private var tables: List<Table> = listOf(),
-                    private val onTableClickListener: OnTableClickListener
+class TableListAdapter(private var tables: MutableList<Table> = mutableListOf(),
+                       private val onTableClickListener: OnTableClickListener
 ) :
-    RecyclerView.Adapter<TablesAdapter.ViewHolder>() {
+    RecyclerView.Adapter<TableListAdapter.ViewHolder>() {
 
     interface OnTableClickListener {
         fun onTableClicked(table: Table)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textView: TextView
-
-        init {
-            textView = view.findViewById(R.id.text_view)
-        }
+        val textView: TextView = view.findViewById(R.id.text_view)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +37,26 @@ class TablesAdapter(private var tables: List<Table> = listOf(),
     override fun getItemCount() = tables.size
 
     fun setTables(newTables: List<Table>) {
-        tables = newTables
-        notifyDataSetChanged()
+        newTables.forEach { newTable ->
+            if (tables.firstOrNull { it.id == newTable.id } == null) {
+                if (tables.add(newTable)) {
+                    notifyItemInserted(tables.size - 1)
+                }
+            }
+        }
+
+        val tablesToRemove: MutableList<Int> = mutableListOf()
+        tables.forEachIndexed { index, table ->
+            if (newTables.firstOrNull { it.id == table.id  } == null) {
+                tablesToRemove.add(index)
+            }
+        }
+
+        tablesToRemove.forEach { indexToRemove ->
+            tables.elementAtOrNull(indexToRemove)?.let {
+                tables.removeAt(indexToRemove)
+                notifyItemRemoved(indexToRemove)
+            }
+        }
     }
 }

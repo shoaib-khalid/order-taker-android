@@ -11,7 +11,10 @@ interface ProductInventoryDao {
     fun getAll(): Flow<List<ProductInventory>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(productInventory: ProductInventory)
+    suspend fun insert(productInventory: ProductInventory)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(productInventories: List<ProductInventory>)
 
     @Delete
     fun delete(productInventory: ProductInventory)

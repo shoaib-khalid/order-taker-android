@@ -19,7 +19,10 @@ interface CategoryDao {
     fun getAllCategoriesWithProducts(): Flow<List<CategoryWithProducts>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(category: Category)
+    suspend fun insert(category: Category)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(categories: List<Category>)
 
     @Query("DELETE FROM categories WHERE id != '$BEST_SELLERS_CATEGORY_ID'")
     fun clear()

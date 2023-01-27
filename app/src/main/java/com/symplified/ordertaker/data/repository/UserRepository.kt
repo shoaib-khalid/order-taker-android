@@ -1,9 +1,11 @@
 package com.symplified.ordertaker.data.repository
 
-import android.util.Log
-import com.google.firebase.messaging.FirebaseMessaging
+import com.symplified.ordertaker.App
+import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
+import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
 import com.symplified.ordertaker.data.dao.UserDao
 import com.symplified.ordertaker.models.auth.AuthRequest
+import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +48,21 @@ class UserRepository(private val userDao: UserDao) {
             sessionData.accessToken,
             sessionData.refreshToken
         ))
+
+        CoroutineScope(Dispatchers.IO).launch {
+            launch {
+                App.zoneRepository.fetchZonesAndTables(userData.storeId)
+            }
+            launch {
+                App.productRepository.insertAddOnGroups(Category(BEST_SELLERS_CATEGORY_ID, BEST_SELLERS_CATEGORY_NAME))
+            }
+            launch {
+                App.productRepository.fetchCategories(userData.storeId)
+            }
+            launch {
+                App.productRepository.fetchProducts(userData.storeId)
+            }
+        }
 
         return true
     }

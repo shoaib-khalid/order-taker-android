@@ -25,7 +25,7 @@ class App : Application() {
 
         val database by lazy { AppDatabase.getDatabase(applicationContext()) }
         val tableRepository by lazy { TableRepository(database.tableDao()) }
-        val zoneRepository by lazy { ZoneRepository(database.zoneDao()) }
+        val zoneRepository by lazy { ZoneRepository(database.zoneDao(), database.tableDao()) }
         val cartItemRepository by lazy {
             CartItemRepository(
                 database.cartItemDao(),
@@ -63,7 +63,8 @@ class App : Application() {
         }
 
         fun isConnectedToInternet(): Boolean {
-            val cm = applicationContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val cm =
+                applicationContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             return cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
         }
     }

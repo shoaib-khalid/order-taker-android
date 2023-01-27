@@ -13,6 +13,9 @@ interface ProductAddOnItemDetailsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(productAddOnDetails: ProductAddOnDetails)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(productAddOnDetails: List<ProductAddOnDetails>)
+
     @Delete
     fun delete(productAddOnDetails: ProductAddOnDetails)
 

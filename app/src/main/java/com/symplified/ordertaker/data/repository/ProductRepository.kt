@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.data.repository
 
+import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.*
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.categories.CategoryWithProducts
@@ -9,7 +10,10 @@ import com.symplified.ordertaker.models.products.addons.ProductAddOnGroup
 import com.symplified.ordertaker.models.products.options.ProductPackage
 import com.symplified.ordertaker.models.stores.assets.StoreAsset
 import com.symplified.ordertaker.networking.ServiceGenerator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 class ProductRepository(
     private val categoryDao: CategoryDao,
@@ -27,7 +31,7 @@ class ProductRepository(
         categoryDao.getAllCategoriesWithProducts()
     val allCategories: Flow<List<Category>> = categoryDao.getAllCategories()
 
-    fun insert(category: Category) = categoryDao.insert(category)
+    suspend fun insertAddOnGroups(category: Category) = categoryDao.insert(category)
 
     val allProductsWithDetails: Flow<List<ProductWithDetails>> =
         productDao.getAllProductsWithDetails()
@@ -38,7 +42,7 @@ class ProductRepository(
         else
             productDao.getProductsWithCategoryId(category.id)
 
-    fun insert(product: Product) {
+    suspend fun insertAddOnGroups(product: Product) {
         productDao.insert(product)
         product.productInventories.forEach { inventory ->
             productInventoryDao.insert(inventory)
@@ -58,22 +62,22 @@ class ProductRepository(
         }
     }
 
-    fun insert(productAddOnGroup: ProductAddOnGroup) {
-        productAddOnGroupDao.insert(productAddOnGroup)
-        productAddOnGroup.productAddOnItemDetail.forEach { addOnDetails ->
-            productAddOnItemDetailsDao.insert(addOnDetails)
+    fun insertAddOnGroups(productAddOnGroups: List<ProductAddOnGroup>) {
+        productAddOnGroupDao.insert(productAddOnGroups)
+        productAddOnGroups.forEach { addOnGroup ->
+            productAddOnItemDetailsDao.insert(addOnGroup.productAddOnItemDetail)
         }
     }
 
-    fun insert(productPackage: ProductPackage) {
-        productPackageDao.insert(productPackage)
-        productPackage.productPackageOptionDetail.forEach { optionDetails ->
-            productPackageOptionDetailsDao.insert(optionDetails)
-            optionDetails.product?.let { product ->
-                productDao.insert(product)
-            }
-            optionDetails.productInventory.forEach { productInventory ->
-                productInventoryDao.insert(productInventory)
+    suspend fun insertProductPackages(productPackages: List<ProductPackage>) {
+        productPackageDao.insert(productPackages)
+        productPackages.forEach { productPackage ->
+            productPackageOptionDetailsDao.insert(productPackage.productPackageOptionDetail)
+            productPackage.productPackageOptionDetail.forEach { optionDetails ->
+                optionDetails.product?.let { product ->
+                    productDao.insert(product)
+                }
+                productInventoryDao.insert(optionDetails.productInventory)
             }
         }
     }
@@ -90,7 +94,7 @@ class ProductRepository(
         return listOf()
     }
 
-    fun clear() {
+    suspend fun clear() {
         categoryDao.clear()
         productDao.clear()
         productInventoryDao.clear()
@@ -101,5 +105,67 @@ class ProductRepository(
         productAddOnItemDetailsDao.clear()
         productPackageDao.clear()
         productPackageOptionDetailsDao.clear()
+    }
+
+    suspend fun fetchCategories(storeId: String): Boolean {
+        try {
+            val response =
+                ServiceGenerator.createProductService().getCategories(storeId)
+            if (response.isSuccessful) {
+                categoryDao.insert(response.body()!!.data.content)
+                return true
+            }
+            return false
+        } catch (e: Throwable) {
+            return false
+        }
+    }
+
+    suspend fun fetchProducts(storeId: String): Boolean {
+        try {
+            val productApiService = ServiceGenerator.createProductService()
+            val response = productApiService.getProductsByStoreId(storeId)
+            if (response.isSuccessful) {
+                response.body()?.let { productResponseBody ->
+                    productResponseBody.data.content.forEach { product ->
+                        App.productRepository.insertAddOnGroups(product)
+
+                        if (product.hasAddOn) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    val addOnResponse =
+                                        productApiService.getProductAddOns(product.id)
+                                    if (addOnResponse.isSuccessful) {
+                                        val addOnGroups = addOnResponse.body()!!.data
+                                        addOnGroups.forEach { addOnGroup ->
+                                            addOnGroup.productId = product.id
+                                        }
+                                        insertAddOnGroups(addOnGroups)
+                                    }
+                                } catch (_: Throwable) {
+                                }
+                            }
+                        }
+
+                        if (product.isPackage) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    val packageResponse =
+                                        productApiService.getProductOptions(storeId, product.id)
+                                    if (packageResponse.isSuccessful) {
+                                        val packages = packageResponse.body()!!.data
+                                        insertProductPackages(packages)
+                                    }
+                                } catch (_: Throwable) {
+                                }
+                            }
+                        }
+                    }
+                }
+                return true
+            }
+        } catch (_: Throwable) {
+        }
+        return false
     }
 }

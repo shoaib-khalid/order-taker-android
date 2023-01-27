@@ -33,18 +33,15 @@ class HomeFragment : Fragment() {
 
     private var isZonesEmpty = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val zoneCollectionAdapter = ZoneCollectionAdapter(this, mutableListOf())
+        binding.pager.adapter = zoneCollectionAdapter
+        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
+            tab.text = zoneCollectionAdapter.zonesWithTables[position].zone.zoneName
+        }.attach()
 
         menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
             isZonesEmpty = zonesWithTables.isEmpty()
-            if (isZonesEmpty) {
-                menuViewModel.fetchZonesAndTables()
-            }
-
-            binding.pager.adapter = ZoneCollectionAdapter(this, zonesWithTables)
-
-            TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-                tab.text = zonesWithTables[position].zone.zoneName
-            }.attach()
+            zoneCollectionAdapter.updateZones(zonesWithTables)
         }
 
         menuViewModel.isLoadingZonesAndTables.observe(viewLifecycleOwner) { isLoading ->

@@ -13,6 +13,9 @@ interface ProductPackageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(productPackage: ProductPackage)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(productPackages: List<ProductPackage>)
+
     @Delete
     fun delete(productPackage: ProductPackage)
 
