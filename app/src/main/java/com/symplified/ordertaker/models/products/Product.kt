@@ -1,5 +1,7 @@
 package com.symplified.ordertaker.models.products
 
+import android.net.Uri
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -14,10 +16,16 @@ data class Product(
     val categoryId: String,
     val isPackage: Boolean,
     val hasAddOn: Boolean,
+    @ColumnInfo(typeAffinity = ColumnInfo.TEXT, defaultValue = "")
+    val thumbnailUrl: String,
+    @ColumnInfo(typeAffinity = ColumnInfo.INTEGER, defaultValue = "0")
+    val sequenceNumber: Int,
     @Ignore
     val productInventories: List<ProductInventory>,
     @Ignore
-    val productVariants: List<ProductVariant>
+    val productVariants: List<ProductVariant>,
+    @Ignore
+    val productAssets: List<ProductAsset>
 ) {
     constructor(
         id: String,
@@ -25,5 +33,18 @@ data class Product(
         categoryId: String,
         isPackage: Boolean,
         hasAddOn: Boolean,
-    ) : this(id, name, categoryId, isPackage, hasAddOn, listOf(), listOf())
+        thumbnailUrl: String,
+        sequenceNumber: Int
+    ) : this(
+        id,
+        name,
+        categoryId,
+        isPackage,
+        hasAddOn,
+        thumbnailUrl.split("/").last(),
+        sequenceNumber,
+        listOf(),
+        listOf(),
+        listOf()
+    )
 }

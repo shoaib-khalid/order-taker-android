@@ -35,8 +35,6 @@ class UserNotificationService: FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        Log.d("my-firebase", "onMessageReceived: Title: ${message.data["title"]}, Body: ${message.data["body"]}")
-
         val stackBuilder = TaskStackBuilder.create(applicationContext)
             .addNextIntentWithParentStack(Intent(applicationContext, MainActivity::class.java))
 

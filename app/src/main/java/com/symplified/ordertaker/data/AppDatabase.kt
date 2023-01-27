@@ -1,9 +1,7 @@
 package com.symplified.ordertaker.data
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import com.symplified.ordertaker.data.dao.*
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemAddOn
@@ -24,7 +22,7 @@ import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 
 @Database(
-    version = 1,
+    version = 3,
     entities = [
         Table::class,
         Zone::class,
@@ -43,6 +41,10 @@ import com.symplified.ordertaker.models.zones.Zone
         ProductPackageOptionDetails::class,
         PaymentChannel::class,
         User::class
+    ],
+    autoMigrations = [
+        AutoMigration (from = 1, to = 2),
+        AutoMigration(from = 2, to = 3)
     ],
     exportSchema = true
 )

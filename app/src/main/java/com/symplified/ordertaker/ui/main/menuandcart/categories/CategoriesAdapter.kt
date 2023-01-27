@@ -47,11 +47,6 @@ class CategoriesAdapter(
 
     override fun getItemCount() = categories.size
 
-    fun updateItems(updatedCategories: List<Category>) {
-        categories = updatedCategories
-        notifyDataSetChanged()
-    }
-
     fun setSelectedCategory(category: Category) {
         selectedPosition = categories.indexOf(category)
         notifyItemChanged(selectedPosition)

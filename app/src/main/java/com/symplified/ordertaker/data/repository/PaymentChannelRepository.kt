@@ -18,7 +18,6 @@ class PaymentChannelRepository(private val paymentChannelDao: PaymentChannelDao)
             paymentChannelsResponse.body()?.let { responseBody ->
                 paymentChannelDao.insert(responseBody.data)
             }
-            Log.d("cartviewmodel", "paymentchannelrepository: Payment Channels received")
             return true
         } catch (_:Throwable) {
             return false

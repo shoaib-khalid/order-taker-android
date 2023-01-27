@@ -54,7 +54,6 @@ class AuthViewModel : ViewModel() {
                     _errorMessage.value = "An error occurred. Please try again."
                     return@addOnCompleteListener
                 }
-                Log.d("my-firebase", "Firebase token: ${task.result}")
 
                 CoroutineScope(Dispatchers.IO).launch {
                     val isAuthenticated =

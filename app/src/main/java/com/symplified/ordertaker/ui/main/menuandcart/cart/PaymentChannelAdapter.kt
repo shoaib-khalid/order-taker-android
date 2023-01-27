@@ -62,7 +62,6 @@ class PaymentChannelAdapter(
     }
 
     fun selectPaymentChannel(selectedPaymentChannel: PaymentChannel) {
-        Log.d("payment-channel", "Selected payment channel: $selectedPaymentChannel")
         clearSelectedPaymentChannel()
         val indexOfSelected = paymentChannels.indexOf(selectedPaymentChannel)
         if (indexOfSelected != -1) {

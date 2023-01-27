@@ -140,7 +140,6 @@ class CartViewModel : ViewModel() {
             _isLoadingPaymentChannels.value = true
         }
         val isPaymentChannelsReceived = App.paymentChannelRepository.fetchPaymentChannels()
-        Log.d("cartviewmodel", "cartviewmodel: Payment Channels received")
         withContext(Dispatchers.Main) {
             _isPaymentChannelsReceived.value = isPaymentChannelsReceived
             _isLoadingPaymentChannels.value = false

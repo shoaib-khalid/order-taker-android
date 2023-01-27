@@ -36,7 +36,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 
 
         menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
-            isCategoriesEmpty = categories.isEmpty()
+            isCategoriesEmpty = categories.size <= 1
             if (isCategoriesEmpty) {
                 menuViewModel.fetchCategories()
             } else {

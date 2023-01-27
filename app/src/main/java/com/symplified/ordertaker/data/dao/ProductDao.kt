@@ -9,12 +9,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ProductDao {
 
-    @Query("SELECT * FROM products")
-    fun getAllProducts(): Flow<List<Product>>
-
     @Transaction
     @Query("SELECT * FROM products")
     fun getAllProductsWithDetails(): Flow<List<ProductWithDetails>>
+
+    @Transaction
+    @Query("SELECT * FROM products ORDER BY sequenceNumber LIMIT 12")
+    fun getBestSellers(): LiveData<List<ProductWithDetails>>
 
     @Transaction
     @Query("SELECT * FROM products WHERE categoryId=:categoryId")

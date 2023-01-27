@@ -1,8 +1,11 @@
 package com.symplified.ordertaker.viewmodels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
+import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
+import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
@@ -11,6 +14,7 @@ import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -29,11 +33,10 @@ class MenuViewModel : ViewModel() {
 
     val productsWithDetails: LiveData<List<ProductWithDetails>> =
         _selectedCategory.switchMap { category ->
-            if (category != null) {
+            if (category != null)
                 App.productRepository.getProductsWithCategory(category)
-            } else {
+            else
                 App.productRepository.allProductsWithDetails.asLiveData()
-            }
         }
 
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
@@ -68,7 +71,6 @@ class MenuViewModel : ViewModel() {
         _isLoadingZonesAndTables.value = true
         CoroutineScope(Dispatchers.IO).launch {
             App.userRepository.user.collect { user ->
-                Log.d("menuviewmodel", "User: ${user?.name?: "null"}")
                 if (user != null) {
                     try {
                         val response =
@@ -78,12 +80,12 @@ class MenuViewModel : ViewModel() {
                                 App.zoneRepository.clear()
                                 App.tableRepository.clear()
                                 zoneData.data.forEach { zone ->
-                                    Log.d("menuviewmodel", zone.zoneName)
                                     insert(zone)
                                 }
                             }
                         }
-                    } catch (_: Throwable) { }
+                    } catch (_: Throwable) {
+                    }
                     withContext(Dispatchers.Main) {
                         _isLoadingZonesAndTables.value = false
                     }
@@ -98,6 +100,8 @@ class MenuViewModel : ViewModel() {
         _isLoadingCategories.value = true
 
         CoroutineScope(Dispatchers.IO).launch {
+            insert(Category(BEST_SELLERS_CATEGORY_ID, BEST_SELLERS_CATEGORY_NAME))
+
             App.userRepository.user.collect { user ->
                 if (user != null) {
                     try {
@@ -132,7 +136,7 @@ class MenuViewModel : ViewModel() {
 
             val productApiService = ServiceGenerator.createProductService()
             App.userRepository.user.collect { user ->
-                if (user != null) {
+                user?.let {
                     try {
                         val response = productApiService.getProductsByStoreId(user.storeId)
                         if (response.isSuccessful) {
@@ -151,7 +155,8 @@ class MenuViewModel : ViewModel() {
                                                         App.productRepository.insert(addOnGroup)
                                                     }
                                                 }
-                                            } catch (_: Throwable) {}
+                                            } catch (_: Throwable) {
+                                            }
                                         }
                                     }
 
@@ -168,7 +173,8 @@ class MenuViewModel : ViewModel() {
                                                         App.productRepository.insert(productPackage)
                                                     }
                                                 }
-                                            } catch (_: Throwable) {}
+                                            } catch (_: Throwable) {
+                                            }
                                         }
                                     }
                                 }
@@ -177,7 +183,9 @@ class MenuViewModel : ViewModel() {
                         } else {
                             setIsLoadingProducts(false)
                         }
-                    } catch (_: Throwable) { setIsLoadingProducts(false) }
+                    } catch (_: Throwable) {
+                        setIsLoadingProducts(false)
+                    }
                 }
             }
         }

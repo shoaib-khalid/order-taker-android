@@ -48,8 +48,6 @@ class ProductSelectionViewModel : ViewModel() {
     val isCartItemValid: LiveData<Boolean> = _isCartItemValid
 
     fun setSelectedProduct(productWithDetails: ProductWithDetails) {
-        Log.d("dialogviewmodel", "${productWithDetails.product.id}")
-
         cartItem = null
         _productWithDetails.value = productWithDetails
         _productQuantity.value = 1
@@ -65,7 +63,6 @@ class ProductSelectionViewModel : ViewModel() {
                         itemCode = inventoryWithItems.productInventory.itemCode,
                         productId = productWithDetails.product.id
                     )
-                    Log.d("dialogviewmodel", "cartItemSet: $cartItem")
                 }
         }
 
@@ -113,7 +110,13 @@ class ProductSelectionViewModel : ViewModel() {
         addOn: ProductAddOnDetails,
         groupId: String
     ) {
-        cartItemAddOns.add(CartItemAddOn(productAddOnId = addOn.id, name = addOn.name, price = addOn.dineInPrice))
+        cartItemAddOns.add(
+            CartItemAddOn(
+                productAddOnId = addOn.id,
+                name = addOn.name,
+                price = addOn.dineInPrice
+            )
+        )
 
         _addOnGroupsCountMap.value?.let { addOnCountMap ->
             addOnCountMap[groupId]?.let { it.selected++ }
@@ -238,14 +241,8 @@ class ProductSelectionViewModel : ViewModel() {
         }
     }
 
-    fun addToCart() {
-        CoroutineScope(Dispatchers.IO).launch {
-            Log.d(
-                "dialogviewmodel",
-                "Added cartItem: ${cartItem!!.itemName}, cartItemAddons: ${cartItemAddOns.size}, cartSubItems: ${_cartSubItems.value!!.size}"
-            )
-            App.cartItemRepository.insert(cartItem!!, cartItemAddOns, _cartSubItems.value!!)
-        }
+    fun addToCart() = CoroutineScope(Dispatchers.IO).launch {
+        App.cartItemRepository.insert(cartItem!!, cartItemAddOns, _cartSubItems.value!!)
     }
 
     data class GroupSelectionStats(

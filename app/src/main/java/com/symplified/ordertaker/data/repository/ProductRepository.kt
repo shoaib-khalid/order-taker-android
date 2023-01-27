@@ -33,7 +33,10 @@ class ProductRepository(
         productDao.getAllProductsWithDetails()
 
     fun getProductsWithCategory(category: Category) =
-        productDao.getProductsWithCategoryId(category.id)
+        if (category.id == BEST_SELLERS_CATEGORY_ID)
+            productDao.getBestSellers()
+        else
+            productDao.getProductsWithCategoryId(category.id)
 
     fun insert(product: Product) {
         productDao.insert(product)
@@ -82,7 +85,8 @@ class ProductRepository(
             if (assetResponse.isSuccessful) {
                 return assetResponse.body()!!.data
             }
-        } catch (_:Throwable) {}
+        } catch (_: Throwable) {
+        }
         return listOf()
     }
 

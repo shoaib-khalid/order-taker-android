@@ -19,6 +19,8 @@ class App : Application() {
 //        const val testStoreId = "c9315221-a003-4830-9e28-c26c3d044dff"
         const val SHARED_PREFS_FILENAME = "Symplified Order Taker Shared Preferences File"
 
+        const val ASSET_URL = "https://assets.symplified.it/product-assets"
+
         private var instance: App? = null
 
         val database by lazy { AppDatabase.getDatabase(applicationContext()) }

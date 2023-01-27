@@ -87,10 +87,6 @@ class ProductSelectionDialog(
                     }
 
                     inventory.inventoryItems.firstOrNull()?.let { item ->
-                        Log.d(
-                            "dialogfragment",
-                            "inventoryIndex: $inventoryIndex, item: ${item.productVariantAvailable.value}"
-                        )
                         val radioButton = RadioButton(view.context)
                         radioButton.text = "${item.productVariantAvailable.value}...$currencySymbol${
                             String.format("%.2f", inventory.productInventory.dineInPrice)

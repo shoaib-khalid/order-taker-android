@@ -36,14 +36,4 @@ class MenuAndCartFragment : Fragment() {
         _binding = FragmentMenuAndCartBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("menuandcart", "onDestroyView")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("menuandcart", "onDetach")
-    }
 }

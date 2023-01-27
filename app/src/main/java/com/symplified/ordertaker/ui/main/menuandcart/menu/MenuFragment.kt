@@ -47,7 +47,6 @@ class MenuFragment : Fragment(),
         binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
 
         menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
-            Log.d("menuviewmodel", "isProductsEmpty: ${products.isEmpty()}")
             if (products.isEmpty()) { menuViewModel.fetchProducts() }
 
             binding.itemList.adapter = MenuAdapter(products, this)
@@ -64,7 +63,6 @@ class MenuFragment : Fragment(),
     }
 
     override fun onItemClicked(item: ProductWithDetails) {
-        Log.d("menufragment", item.toString())
         dialogViewModel.setSelectedProduct(item)
         ProductSelectionDialog(item, this)
             .show(
