@@ -26,6 +26,7 @@ class MenuAdapter(
         val itemName: TextView = view.findViewById(R.id.item_name)
         val itemImage: ImageView = view.findViewById(R.id.item_image)
         val itemPrice: TextView = view.findViewById(R.id.cart_item_price)
+        val outOfStockOverlay: TextView = view.findViewById(R.id.out_of_stock_overlay)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -39,7 +40,7 @@ class MenuAdapter(
         val fullThumbnailUrl = "${App.ASSET_URL}/${items[position].product.thumbnailUrl}"
         Glide.with(viewHolder.itemView.context)
             .load(fullThumbnailUrl)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(viewHolder.itemImage)
 
         val minimumDineInPrice = String.format(
@@ -48,8 +49,17 @@ class MenuAdapter(
                 ?: 0.0
         )
         viewHolder.itemPrice.text = "RM $minimumDineInPrice"
+
         viewHolder.itemView.setOnClickListener {
-            onMenuItemClickListener.onItemClicked(items[position])
+            onMenuItemClickListener.onItemClicked(items[viewHolder.adapterPosition])
+        }
+
+        items[position].productInventoriesWithItems.getOrNull(0)?.let { inventoryWithItems ->
+            if (inventoryWithItems.productInventory.quantity <= 0 &&
+                !items[position].product.allowOutOfStockPurchases) {
+                viewHolder.itemView.isEnabled = false
+                viewHolder.outOfStockOverlay.visibility = View.VISIBLE
+            }
         }
     }
 

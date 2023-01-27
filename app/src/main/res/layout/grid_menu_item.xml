@@ -44,7 +44,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/out_of_stock_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textColor="@color/white"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="OUT OF STOCK"
+        android:background="#33000000"
+        android:visibility="gone" />
 
 </androidx.cardview.widget.CardView>

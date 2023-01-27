@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.models.products.inventories
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -13,6 +14,8 @@ data class ProductInventory(
     val productId: String,
     val status: ProductStatus,
     val sku: String,
+    @ColumnInfo(typeAffinity = ColumnInfo.INTEGER, defaultValue = "1")
+    val quantity: Int,
     @Ignore
     val productInventoryItems: List<ProductInventoryItem>
 ) {
@@ -21,6 +24,7 @@ data class ProductInventory(
         dineInPrice: Double,
         productId: String,
         status: ProductStatus,
-        sku: String
-    ) : this(itemCode, dineInPrice, productId, status, sku, listOf())
+        sku: String,
+        quantity: Int
+    ) : this(itemCode, dineInPrice, productId, status, sku, quantity, listOf())
 }

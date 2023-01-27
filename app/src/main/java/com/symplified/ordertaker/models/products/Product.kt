@@ -20,6 +20,8 @@ data class Product(
     val thumbnailUrl: String,
     @ColumnInfo(typeAffinity = ColumnInfo.INTEGER, defaultValue = "0")
     val sequenceNumber: Int,
+    @ColumnInfo(typeAffinity = ColumnInfo.INTEGER, defaultValue = "1")
+    val allowOutOfStockPurchases: Boolean,
     @Ignore
     val productInventories: List<ProductInventory>,
     @Ignore
@@ -34,7 +36,8 @@ data class Product(
         isPackage: Boolean,
         hasAddOn: Boolean,
         thumbnailUrl: String,
-        sequenceNumber: Int
+        sequenceNumber: Int,
+        allowOutOfStockPurchases: Boolean
     ) : this(
         id,
         name,
@@ -43,6 +46,7 @@ data class Product(
         hasAddOn,
         thumbnailUrl.split("/").last(),
         sequenceNumber,
+        allowOutOfStockPurchases,
         listOf(),
         listOf(),
         listOf()
