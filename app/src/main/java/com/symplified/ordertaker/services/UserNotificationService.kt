@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -26,7 +25,7 @@ class UserNotificationService: FirebaseMessagingService() {
             App.userRepository.user.collect { user ->
                 if (user != null) {
                     ServiceGenerator.createAuthService()
-                        .refreshFirebaseToken(
+                        .updateFirebaseToken(
                             user.storeId, user.id, TokenRefreshRequest(token)
                         )
                 }

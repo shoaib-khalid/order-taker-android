@@ -35,7 +35,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun logout() {
-        App.sharedPreferences().edit().clear().apply()
         CoroutineScope(Dispatchers.IO).launch {
             App.userRepository.logout()
             App.productRepository.clear()

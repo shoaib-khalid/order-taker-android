@@ -6,13 +6,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.messaging.FirebaseMessaging
 import com.symplified.ordertaker.App
+import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.models.auth.AuthRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AuthViewModel : ViewModel() {
+
+    val stagingUsername = "qa_user"
+    val stagingPassword = "qa@kalsym"
 
     private val _username = MutableLiveData<String>().apply { value = "" }
     private val _usernameError: MutableLiveData<String> by lazy { MutableLiveData<String>() }
@@ -41,35 +47,51 @@ class AuthViewModel : ViewModel() {
     private val _errorMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
     val errorMessage: LiveData<String> = _errorMessage
 
+//    private val _isStaging = MutableLiveData<Boolean>().apply {
+//        value = App.sharedPreferences().getBoolean(SharedPrefsKey.IS_STAGING, false)
+//    }
+//    val isStaging: LiveData<Boolean> = _isStaging
+
+    private val _isStaging = MutableStateFlow(App.sharedPreferences().getBoolean(SharedPrefsKey.IS_STAGING, false))
+    val isStaging: StateFlow<Boolean> = _isStaging
+
     fun tryLogin() {
         if (App.isConnectedToInternet()
             && _username.value!!.isNotBlank()
             && _password.value!!.isNotBlank()
         ) {
-            _isLoading.value = true
-            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (_username.value == stagingUsername
+                && _password.value == stagingPassword
+            ) {
+                _isStaging.value = true
+                App.sharedPreferences().edit().putBoolean(SharedPrefsKey.IS_STAGING, true).apply()
+            } else {
 
-                if (!task.isSuccessful) {
-                    _isLoading.value = false
-                    _errorMessage.value = "An error occurred. Please try again."
-                    return@addOnCompleteListener
-                }
+                _isLoading.value = true
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    val isAuthenticated =
-                        App.userRepository.authenticate(
-                            AuthRequest(
-                                _username.value!!,
-                                _password.value!!,
-                                task.result
-                            )
-                        )
-
-                    withContext(Dispatchers.Main) {
+                    if (!task.isSuccessful) {
                         _isLoading.value = false
-                        _isAuthenticated.value = isAuthenticated
-                        if (!isAuthenticated) {
-                            _errorMessage.value = "Username or password is incorrect."
+                        _errorMessage.value = "An error occurred. Please try again."
+                        return@addOnCompleteListener
+                    }
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val isAuthenticated =
+                            App.userRepository.authenticate(
+                                AuthRequest(
+                                    _username.value!!,
+                                    _password.value!!,
+                                    task.result
+                                )
+                            )
+
+                        withContext(Dispatchers.Main) {
+                            _isLoading.value = false
+                            _isAuthenticated.value = isAuthenticated
+                            if (!isAuthenticated) {
+                                _errorMessage.value = "Username or password is incorrect."
+                            }
                         }
                     }
                 }
@@ -84,7 +106,6 @@ class AuthViewModel : ViewModel() {
 
     fun logout() {
         _isAuthenticated.value = false
-        App.sharedPreferences().edit().clear().apply()
         CoroutineScope(Dispatchers.IO).launch {
             App.userRepository.logout()
             App.productRepository.clear()
@@ -93,5 +114,10 @@ class AuthViewModel : ViewModel() {
             App.zoneRepository.clear()
             App.paymentChannelRepository.clear()
         }
+    }
+
+    fun switchToProduction() {
+        _isStaging.value = false
+        App.sharedPreferences().edit().putBoolean(SharedPrefsKey.IS_STAGING, false).apply()
     }
 }

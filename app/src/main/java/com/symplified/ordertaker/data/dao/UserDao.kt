@@ -12,6 +12,15 @@ interface UserDao {
     @Query("SELECT * FROM users LIMIT 1")
     fun getUser(): Flow<User?>
 
+    @Query("SELECT accessToken FROM users LIMIT 1")
+    fun getAccessToken(): String?
+
+    @Query("SELECT refreshToken FROM users LIMIT 1")
+    fun getRefreshToken(): String?
+
+    @Query("UPDATE users SET accessToken = :accessToken, refreshToken = :refreshToken")
+    fun setTokens(accessToken: String, refreshToken: String)
+
     @Query("SELECT currencySymbol FROM users LIMIT 1")
     fun getCurrencySymbol(): Flow<String?>
 

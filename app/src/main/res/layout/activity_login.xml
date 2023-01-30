@@ -136,7 +136,7 @@
             app:layout_constraintWidth_percent="0.90" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_production"
+            android:id="@+id/btn_switch_to_production"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"

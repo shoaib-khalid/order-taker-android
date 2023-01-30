@@ -73,4 +73,10 @@ class UserRepository(private val userDao: UserDao) {
     fun logout() {
         userDao.clear()
     }
+
+    fun getAccessToken(): String? = userDao.getAccessToken()
+
+    fun getRefreshToken(): String? = userDao.getRefreshToken()
+
+    fun setTokens(accessToken: String, refreshToken: String) = userDao.setTokens(accessToken, refreshToken)
 }

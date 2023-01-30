@@ -46,6 +46,13 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.10" />
+
         <ImageView
             android:id="@+id/iv_header"
             android:layout_width="0dp"
@@ -131,25 +138,16 @@
             app:layout_constraintWidth_percent="0.65" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_production"
+            android:id="@+id/btn_switch_to_production"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/blue_200"
             android:paddingVertical="16dp"
             android:text="@string/production_mode_text"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/gl_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_login"
             app:layout_constraintWidth_percent="0.65" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.10" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_bottom"

@@ -6,10 +6,15 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
+import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityLoginBinding
 import com.symplified.ordertaker.ui.main.MainActivity
 import com.symplified.ordertaker.viewmodels.AuthViewModel
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -34,7 +39,11 @@ class LoginActivity : AppCompatActivity() {
         authViewModel.logout()
 
         binding.tvEmail.editText!!.doOnTextChanged { text, _, _, _ -> authViewModel.setUsername(text!!.toString()) }
-        binding.tvPassword.editText!!.doOnTextChanged { text, _, _, _ -> authViewModel.setPassword(text!!.toString()) }
+        binding.tvPassword.editText!!.doOnTextChanged { text, _, _, _ ->
+            authViewModel.setPassword(
+                text!!.toString()
+            )
+        }
 
         binding.btnLogin.setOnClickListener {
             authViewModel.tryLogin()
@@ -66,6 +75,21 @@ class LoginActivity : AppCompatActivity() {
         }
         authViewModel.passwordError.observe(this) { errorMessage ->
             binding.tvPassword.error = errorMessage
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                authViewModel.isStaging.collect { isStaging ->
+                    binding.btnSwitchToProduction.visibility =
+                        if (isStaging) View.VISIBLE else View.GONE
+                    binding.welcome.text =
+                        if (isStaging) getString(R.string.staging_mode) else getString(R.string.welcome_message)
+                }
+            }
+        }
+
+        binding.btnSwitchToProduction.setOnClickListener {
+            authViewModel.switchToProduction()
         }
     }
 }

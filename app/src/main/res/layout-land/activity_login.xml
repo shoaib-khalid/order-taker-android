@@ -47,7 +47,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/main_layout">
 
             <ImageView
@@ -134,12 +134,11 @@
                 app:layout_constraintWidth_percent="0.65" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_production"
+                android:id="@+id/btn_switch_to_production"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingVertical="16dp"
                 android:text="@string/production_mode_text"
-                app:layout_constraintBottom_toTopOf="@+id/gl_bottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_login"
