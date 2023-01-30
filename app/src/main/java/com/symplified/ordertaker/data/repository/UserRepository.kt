@@ -62,6 +62,9 @@ class UserRepository(private val userDao: UserDao) {
             launch {
                 App.productRepository.fetchProducts(userData.storeId)
             }
+            launch {
+                App.paymentChannelRepository.fetchPaymentChannels()
+            }
         }
 
         return true
