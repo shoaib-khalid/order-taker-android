@@ -1,210 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:padding="5dp"
+    android:layout_margin="3dp"
     tools:context=".ui.main.menuandcart.cart.CartFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_margin="3dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cart_header"
+            android:id="@+id/progress_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/light_grey"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/product_name_title"
-                android:layout_width="0dp"
+            <ProgressBar
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Product Name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="@id/product_quantity_title"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.40" />
-
-            <TextView
-                android:id="@+id/product_quantity_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Qty"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/product_name_title"
-                app:layout_constraintRight_toLeftOf="@id/product_price_title"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.20" />
-
-            <TextView
-                android:id="@+id/product_price_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Price"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/product_quantity_title"
-                app:layout_constraintRight_toLeftOf="@id/product_action_header"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.30" />
-
-            <TextView
-                android:id="@+id/product_action_header"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Del"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/product_price_title"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.05" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cart_items_list"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:scrollbars="vertical"
-            app:layout_constraintBottom_toTopOf="@id/total_price_count"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cart_header"
-            app:layout_constraintWidth_percent="0.80" />
-
-        <TextView
-            android:id="@+id/total_price_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RM 67.50"
-            app:layout_constraintBottom_toTopOf="@id/payment_type_label"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <TextView
-            android:id="@+id/payment_type_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Payment Type:"
-            app:layout_constraintBottom_toTopOf="@id/payment_type_list"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/payment_type_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/zone_no"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <ProgressBar
-            android:id="@+id/payment_type_progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/payment_type_list"
-            app:layout_constraintBottom_toTopOf="@id/zone_no"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <TextView
-            android:id="@+id/payment_type_error_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/payment_type_failure_text"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/payment_type_list"
-            app:layout_constraintBottom_toTopOf="@id/payment_type_retry_button"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-        <Button
-            android:id="@+id/payment_type_retry_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Retry"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/payment_type_error_text"
-            app:layout_constraintBottom_toTopOf="@id/zone_no"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <TextView
-            android:id="@+id/zone_no"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/table_no"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <TextView
-            android:id="@+id/table_no"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/server_name"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <TextView
-            android:id="@+id/server_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/clear_cart_button"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <Button
-            android:id="@+id/clear_cart_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Clear Cart"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/place_order_button"
-            app:layout_constraintWidth_percent="0.40" />
-
-        <Button
-            android:id="@+id/place_order_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Place Order"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/clear_cart_button"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintWidth_percent="0.40" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cart_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/light_grey"
+                android:paddingVertical="2dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/product_name_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Product Name"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="@id/product_quantity_title"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.60" />
+
+                <TextView
+                    android:id="@+id/product_quantity_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Qty"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/product_name_title"
+                    app:layout_constraintRight_toLeftOf="@id/product_price_title"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.10" />
+
+                <TextView
+                    android:id="@+id/product_price_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Price"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/product_quantity_title"
+                    app:layout_constraintRight_toLeftOf="@id/product_action_header"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.10" />
+
+                <TextView
+                    android:id="@+id/product_action_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Del"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/product_price_title"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.20" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cart_items_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toTopOf="@id/total_price_count"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cart_header"
+                app:layout_constraintWidth_percent="0.80" />
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:id="@+id/total_price_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/payment_type_label"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:id="@+id/payment_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_payment_type"
+                app:layout_constraintBottom_toTopOf="@id/payment_type_list"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/payment_type_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/zone_no"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/payment_type_progress_bar"
+                style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/zone_no"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/payment_type_list" />
+
+            <TextView
+                android:id="@+id/payment_type_error_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/payment_type_failure_text"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/payment_type_retry_button"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/payment_type_list" />
+
+            <Button
+                android:id="@+id/payment_type_retry_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retry"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/zone_no"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/payment_type_error_text" />
+
+            <TextView
+                android:id="@+id/zone_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/table_no"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/table_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/server_name"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/server_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/clear_cart_button"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <Button
+                android:id="@+id/clear_cart_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Clear Cart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/place_order_button"
+                app:layout_constraintWidth_percent="0.40" />
+
+            <Button
+                android:id="@+id/place_order_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Place Order"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/clear_cart_button"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintWidth_percent="0.40" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

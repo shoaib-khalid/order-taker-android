@@ -46,7 +46,8 @@ class App : Application() {
                 database.productAddOnGroupDao(),
                 database.productAddOnItemDetailsDao(),
                 database.productPackageDao(),
-                database.productPackageOptionDetailsDao()
+                database.productPackageOptionDetailsDao(),
+                database.bestSellerDao()
             )
         }
         val paymentChannelRepository by lazy { PaymentChannelRepository(database.paymentChannelDao()) }

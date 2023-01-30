@@ -47,7 +47,7 @@ class MenuFragment : Fragment(),
         binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
 
         menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
-            if (products.isEmpty()) { menuViewModel.fetchProducts() }
+//            if (products.isEmpty()) { menuViewModel.fetchProducts() }
 
             binding.itemList.adapter = MenuAdapter(products, this)
         }

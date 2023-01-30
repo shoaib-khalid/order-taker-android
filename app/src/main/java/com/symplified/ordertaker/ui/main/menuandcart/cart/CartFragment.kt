@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +15,9 @@ import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
     PaymentChannelAdapter.OnPaymentTypeClickListener {
@@ -52,16 +56,20 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
 
             cartItemsAdapter.updateItems(cartItemsWithAddOnsAndSubItems)
 
-            var totalPrice = 0.0
-            cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
-                var itemPrice = cartItemWithAddOnsAndSubItems.cartItem.itemPrice
-                cartItemWithAddOnsAndSubItems.cartItemAddons.forEach { addOn ->
-                    itemPrice += addOn.price
-                }
+            lifecycleScope.launch(Dispatchers.Default) {
+                var totalPrice = 0.0
+                cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
+                    var itemPrice = cartItemWithAddOnsAndSubItems.cartItem.itemPrice
+                    cartItemWithAddOnsAndSubItems.cartItemAddons.forEach { addOn ->
+                        itemPrice += addOn.price
+                    }
 
-                totalPrice += (itemPrice * cartItemWithAddOnsAndSubItems.cartItem.quantity)
+                    totalPrice += (itemPrice * cartItemWithAddOnsAndSubItems.cartItem.quantity)
+                }
+                withContext(Dispatchers.Main) {
+                    binding.totalPriceCount.text = "RM ${String.format("%.2f", totalPrice)}"
+                }
             }
-            binding.totalPriceCount.text = "RM ${String.format("%.2f", totalPrice)}"
         }
 
         cartViewModel.isPlacingOrder.observe(viewLifecycleOwner) { isPlacingOrder ->

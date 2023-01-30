@@ -1,7 +1,9 @@
 package com.symplified.ordertaker.data.repository
 
+import android.util.Log
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.*
+import com.symplified.ordertaker.models.bestsellers.BestSellerProduct
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.categories.CategoryWithProducts
 import com.symplified.ordertaker.models.products.Product
@@ -25,11 +27,13 @@ class ProductRepository(
     private val productAddOnGroupDao: ProductAddOnGroupDao,
     private val productAddOnItemDetailsDao: ProductAddOnItemDetailsDao,
     private val productPackageDao: ProductPackageDao,
-    private val productPackageOptionDetailsDao: ProductPackageOptionDetailsDao
+    private val productPackageOptionDetailsDao: ProductPackageOptionDetailsDao,
+    private val bestSellerDao: BestSellerDao
 ) {
     val allCategoriesWithProducts: Flow<List<CategoryWithProducts>> =
         categoryDao.getAllCategoriesWithProducts()
     val allCategories: Flow<List<Category>> = categoryDao.getAllCategories()
+    val bestSellers: Flow<List<BestSellerProduct>> = bestSellerDao.getAllBestSellers()
 
     suspend fun insertAddOnGroups(category: Category) = categoryDao.insert(category)
 
@@ -42,7 +46,7 @@ class ProductRepository(
         else
             productDao.getProductsWithCategoryId(category.id)
 
-    suspend fun insertAddOnGroups(product: Product) {
+    private suspend fun insertAddOnGroups(product: Product) {
         productDao.insert(product)
         product.productInventories.forEach { inventory ->
             productInventoryDao.insert(inventory)
@@ -62,14 +66,14 @@ class ProductRepository(
         }
     }
 
-    fun insertAddOnGroups(productAddOnGroups: List<ProductAddOnGroup>) {
+    private suspend fun insertAddOnGroups(productAddOnGroups: List<ProductAddOnGroup>) {
         productAddOnGroupDao.insert(productAddOnGroups)
         productAddOnGroups.forEach { addOnGroup ->
             productAddOnItemDetailsDao.insert(addOnGroup.productAddOnItemDetail)
         }
     }
 
-    suspend fun insertProductPackages(productPackages: List<ProductPackage>) {
+    private suspend fun insertProductPackages(productPackages: List<ProductPackage>) {
         productPackageDao.insert(productPackages)
         productPackages.forEach { productPackage ->
             productPackageOptionDetailsDao.insert(productPackage.productPackageOptionDetail)
@@ -96,6 +100,7 @@ class ProductRepository(
 
     suspend fun clear() {
         categoryDao.clear()
+        bestSellerDao.clear()
         productDao.clear()
         productInventoryDao.clear()
         productInventoryItemDao.clear()
@@ -166,6 +171,19 @@ class ProductRepository(
             }
         } catch (_: Throwable) {
         }
+        return false
+    }
+
+    suspend fun fetchBestSellers(storeId: String): Boolean {
+        try {
+            val response =ServiceGenerator.createLocationService()
+                .getBestSellers(storeId)
+            Log.d("best-sellers", "Best Sellers request successful: ${response.isSuccessful}")
+            response.body()?.let { responseBody ->
+                bestSellerDao.insert(responseBody.data)
+                return true
+            }
+        } catch (_: Throwable) {}
         return false
     }
 }

@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintWidth_percent="0.40"
+        app:layout_constraintWidth_percent="0.60"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/cart_item_no"
         app:layout_constraintBottom_toTopOf="@id/cart_sub_items_text" />
@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintWidth_percent="0.40"
+        app:layout_constraintWidth_percent="0.60"
         app:layout_constraintTop_toBottomOf="@id/cart_item_name"
         app:layout_constraintLeft_toRightOf="@id/cart_item_no"
         app:layout_constraintRight_toRightOf="@id/cart_item_name"
@@ -39,6 +39,7 @@
 
 
     <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/cart_item_quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -49,11 +50,12 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
         android:id="@+id/cart_item_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintWidth_percent="0.30"
+        app:layout_constraintWidth_percent="0.10"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/cart_item_quantity"
         app:layout_constraintRight_toLeftOf="@id/delete_btn"

@@ -3,6 +3,7 @@ package com.symplified.ordertaker.data
 import android.content.Context
 import androidx.room.*
 import com.symplified.ordertaker.data.dao.*
+import com.symplified.ordertaker.models.bestsellers.BestSeller
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemAddOn
 import com.symplified.ordertaker.models.cartitems.CartSubItem
@@ -22,7 +23,7 @@ import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 
 @Database(
-    version = 4,
+    version = 5,
     entities = [
         Table::class,
         Zone::class,
@@ -40,12 +41,14 @@ import com.symplified.ordertaker.models.zones.Zone
         ProductPackage::class,
         ProductPackageOptionDetails::class,
         PaymentChannel::class,
-        User::class
+        User::class,
+        BestSeller::class
     ],
     autoMigrations = [
         AutoMigration (from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
-        AutoMigration(from = 3, to = 4)
+        AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5)
     ],
     exportSchema = true
 )
@@ -68,6 +71,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun productAddOnItemDetailsDao(): ProductAddOnItemDetailsDao
     abstract fun productPackageDao(): ProductPackageDao
     abstract fun productPackageOptionDetailsDao(): ProductPackageOptionDetailsDao
+
+    abstract fun bestSellerDao(): BestSellerDao
 
     abstract fun paymentChannelDao(): PaymentChannelDao
 

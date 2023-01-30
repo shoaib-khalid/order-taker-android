@@ -8,10 +8,7 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class CartItemsAdapter(
     private val cartItemsWithAddOnsAndSubItems: MutableList<CartItemWithAddOnsAndSubItems>
@@ -52,37 +49,47 @@ class CartItemsAdapter(
             else
                 View.VISIBLE
 
-        var itemPrice = cartItemsWithAddOnsAndSubItems[position].cartItem.itemPrice
-        val subItemsText = StringBuilder()
-        cartItemsWithAddOnsAndSubItems[position].cartSubItems.forEach { subItem ->
-            if (subItemsText.isNotEmpty()) {
-                subItemsText.append(", ")
-            }
-            subItemsText.append(subItem.quantity).append(" x ")
-            if (subItem.productName.length <= 10) {
-                subItemsText.append(subItem.productName)
-            } else {
-                subItemsText.append(subItem.productName.substring(0..6).trim())
-                    .append("...")
-            }
-        }
-        cartItemsWithAddOnsAndSubItems[position].cartItemAddons.forEach { addOn ->
-            itemPrice += addOn.price
-
-            if (subItemsText.isNotEmpty()) {
-                subItemsText.append(", ")
-            }
-            subItemsText.append(addOn.name)
-        }
-        if (subItemsText.isNotEmpty()) {
-            viewHolder.subItems.visibility = View.VISIBLE
-            viewHolder.subItems.text = subItemsText.toString()
-        }
-
         val quantity = cartItemsWithAddOnsAndSubItems[position].cartItem.quantity
-
         viewHolder.itemQuantity.text = quantity.toString()
-        viewHolder.itemPrice.text = "RM ${String.format("%.2f", itemPrice * quantity)}"
+
+        CoroutineScope(Dispatchers.Default).launch {
+            var itemPrice = cartItemsWithAddOnsAndSubItems[position].cartItem.itemPrice
+            val subItemsText = StringBuilder()
+            cartItemsWithAddOnsAndSubItems[position].cartSubItems.forEach { subItem ->
+                if (subItemsText.isNotEmpty()) {
+                    subItemsText.append(", ")
+                }
+                subItemsText.append(subItem.quantity).append(" x ")
+                if (subItem.productName.length <= 10) {
+                    subItemsText.append(subItem.productName)
+                } else {
+                    subItemsText.append(subItem.productName.substring(0..7).trim())
+                        .append("...")
+                }
+            }
+            cartItemsWithAddOnsAndSubItems[position].cartItemAddons.forEach { addOn ->
+                itemPrice += addOn.price
+
+                if (subItemsText.isNotEmpty()) {
+                    subItemsText.append(", ")
+                }
+                if (addOn.name.length <= 10) {
+                    subItemsText.append(addOn.name)
+                } else {
+                    subItemsText.append(addOn.name.substring(0..7).trim())
+                        .append("...")
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                if (subItemsText.isNotEmpty()) {
+                    viewHolder.subItems.visibility = View.VISIBLE
+                    viewHolder.subItems.text = subItemsText.toString()
+                }
+
+                viewHolder.itemPrice.text = "RM ${String.format("%.2f", itemPrice * quantity)}"
+            }
+        }
 
         viewHolder.deleteBtn.setOnClickListener {
             val removedCartItem = cartItemsWithAddOnsAndSubItems.removeAt(viewHolder.adapterPosition)

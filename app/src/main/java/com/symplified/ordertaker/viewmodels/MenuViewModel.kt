@@ -1,9 +1,12 @@
 package com.symplified.ordertaker.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
 import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
+import com.symplified.ordertaker.data.dao.BestSellerDao
+import com.symplified.ordertaker.models.bestsellers.BestSeller
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
@@ -11,6 +14,7 @@ import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -21,6 +25,18 @@ class MenuViewModel : ViewModel() {
     val zonesWithTables: LiveData<List<ZoneWithTables>> = App.zoneRepository.allZones.asLiveData()
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 
+    private val bestSellers = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
+
+    init {
+        viewModelScope.launch {
+            App.productRepository.bestSellers.collect {
+                bestSellers.value = it
+                    .filter { bestSellerProduct -> bestSellerProduct.productWithDetails != null }
+                    .map { bestSellerProduct -> bestSellerProduct.productWithDetails!! }
+            }
+        }
+    }
+
     var selectedTable: Table? = null
 
     private val _selectedCategory = MutableLiveData<Category?>().apply { value = null }
@@ -28,7 +44,10 @@ class MenuViewModel : ViewModel() {
 
     val productsWithDetails: LiveData<List<ProductWithDetails>> =
         _selectedCategory.switchMap { category ->
-            if (category != null)
+            if (category != null && category.id == BEST_SELLERS_CATEGORY_ID)
+                bestSellers
+            else
+                if (category != null)
                 App.productRepository.getProductsWithCategory(category)
             else
                 App.productRepository.allProductsWithDetails.asLiveData()
