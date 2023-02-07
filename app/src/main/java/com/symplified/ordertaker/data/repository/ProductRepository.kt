@@ -46,6 +46,10 @@ class ProductRepository(
         else
             productDao.getProductsWithCategoryId(category.id)
 
+    private suspend fun insertProduct(product: Product) {
+        productDao.insert(product)
+    }
+
     private suspend fun insertAddOnGroups(product: Product) {
         productDao.insert(product)
         product.productInventories.forEach { inventory ->
@@ -133,7 +137,7 @@ class ProductRepository(
             if (response.isSuccessful) {
                 response.body()?.let { productResponseBody ->
                     productResponseBody.data.content.forEach { product ->
-                        App.productRepository.insertAddOnGroups(product)
+                        insertProduct(product)
 
                         if (product.hasAddOn) {
                             CoroutineScope(Dispatchers.IO).launch {
@@ -176,7 +180,7 @@ class ProductRepository(
 
     suspend fun fetchBestSellers(storeId: String): Boolean {
         try {
-            val response =ServiceGenerator.createLocationService()
+            val response = ServiceGenerator.createLocationService()
                 .getBestSellers(storeId)
             Log.d("best-sellers", "Best Sellers request successful: ${response.isSuccessful}")
             response.body()?.let { responseBody ->

@@ -23,7 +23,7 @@ class TableListAdapter(private var tables: MutableList<Table> = mutableListOf(),
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.grid_zone, viewGroup, false)
+            .inflate(R.layout.grid_table, viewGroup, false)
         return ViewHolder(view)
     }
 

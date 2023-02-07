@@ -20,7 +20,8 @@ class App : Application() {
         const val SHARED_PREFS_FILENAME = "Symplified Order Taker Shared Preferences File"
         const val DEV_TAG = "dev-logging"
 
-        const val ASSET_URL = "https://assets.symplified.it/product-assets"
+        const val ASSET_URL_PRODUCTION = "https://assets.symplified.biz/product-assets"
+        const val ASSET_URL_STAGING = "https://assets.symplified.it/product-assets"
 
         private var instance: App? = null
 

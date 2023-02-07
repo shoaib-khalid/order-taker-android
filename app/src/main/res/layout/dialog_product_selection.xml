@@ -86,7 +86,7 @@
         android:id="@+id/btn_add_to_cart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_add_shopping_cart_white_16"
+        android:drawableStart="@drawable/ic_add_shopping_cart"
         android:paddingHorizontal="40dp"
         android:paddingVertical="10dp"
         android:text="@string/add_to_cart"

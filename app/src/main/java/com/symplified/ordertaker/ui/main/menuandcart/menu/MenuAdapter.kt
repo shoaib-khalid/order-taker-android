@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
+import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.models.products.ProductWithDetails
 
 class MenuAdapter(
@@ -17,6 +19,11 @@ class MenuAdapter(
     private val onMenuItemClickListener: OnMenuItemClickedListener
 ) :
     RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
+
+    private val assetUrl =
+        if (App.sharedPreferences().getBoolean(SharedPrefsKey.IS_STAGING, false))
+            App.ASSET_URL_STAGING
+        else App.ASSET_URL_PRODUCTION
 
     interface OnMenuItemClickedListener {
         fun onItemClicked(item: ProductWithDetails)
@@ -37,11 +44,15 @@ class MenuAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemName.text = items[position].product.name
-        val fullThumbnailUrl = "${App.ASSET_URL}/${items[position].product.thumbnailUrl}"
-        Glide.with(viewHolder.itemView.context)
-            .load(fullThumbnailUrl)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-            .into(viewHolder.itemImage)
+
+        if (items[position].product.thumbnailUrl.isNotBlank()) {
+                val fullThumbnailUrl = "${assetUrl}/${items[position].product.thumbnailUrl}"
+                Log.d("menu-adapter", fullThumbnailUrl)
+                Glide.with(viewHolder.itemView.context)
+                    .load(fullThumbnailUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .into(viewHolder.itemImage)
+        }
 
         val minimumDineInPrice = String.format(
             "%.2f",

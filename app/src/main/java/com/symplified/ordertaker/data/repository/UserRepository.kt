@@ -18,59 +18,70 @@ class UserRepository(private val userDao: UserDao) {
     val currencySymbol: Flow<String?> = userDao.getCurrencySymbol()
 
     suspend fun authenticate(authRequest: AuthRequest): Boolean {
-        val authApiService = ServiceGenerator.createAuthService()
-        val authResponse = authApiService.authenticate(authRequest)
-        if (!authResponse.isSuccessful) {
-            return false
-        }
+        try {
+            val authApiService = ServiceGenerator.createAuthService()
+            val authResponse = authApiService.authenticate(authRequest)
+            if (!authResponse.isSuccessful) {
+                return false
+            }
 
-        val sessionData = authResponse.body()!!.data.session
-        val userResponse = authApiService.getUserById(sessionData.ownerId)
-        if (!userResponse.isSuccessful) {
-            return false
-        }
+            val sessionData = authResponse.body()!!.data.session
+            val userResponse = authApiService.getUserById(sessionData.ownerId)
+            if (!userResponse.isSuccessful) {
+                return false
+            }
 
-        val userData = userResponse.body()!!.data
-        val storeResponse = ServiceGenerator.createProductService().getStoreById(userData.storeId)
-        if (!storeResponse.isSuccessful) {
-            return false
-        }
-        val store = storeResponse.body()!!.data
+            val userData = userResponse.body()!!.data
+            val storeResponse =
+                ServiceGenerator.createProductService().getStoreById(userData.storeId)
+            if (!storeResponse.isSuccessful) {
+                return false
+            }
+            val store = storeResponse.body()!!.data
 
-        userDao.clear()
-        userDao.insert(User(
-            userData.id,
-            userData.storeId,
-            store.name,
-            store.regionCountry.currencySymbol,
-            userData.username,
-            userData.name,
-            sessionData.accessToken,
-            sessionData.refreshToken
-        ))
+            userDao.clear()
+            userDao.insert(
+                User(
+                    userData.id,
+                    userData.storeId,
+                    store.name,
+                    store.regionCountry.currencySymbol,
+                    userData.username,
+                    userData.name,
+                    sessionData.accessToken,
+                    sessionData.refreshToken
+                )
+            )
 
-        CoroutineScope(Dispatchers.IO).launch {
-            launch {
-                App.zoneRepository.fetchZonesAndTables(userData.storeId)
+            CoroutineScope(Dispatchers.IO).launch {
+                launch {
+                    App.zoneRepository.fetchZonesAndTables(userData.storeId)
+                }
+                launch {
+                    App.productRepository.insertAddOnGroups(
+                        Category(
+                            BEST_SELLERS_CATEGORY_ID,
+                            BEST_SELLERS_CATEGORY_NAME
+                        )
+                    )
+                }
+                launch {
+                    App.productRepository.fetchCategories(userData.storeId)
+                }
+                launch {
+                    App.productRepository.fetchProducts(userData.storeId)
+                }
+                launch {
+                    App.paymentChannelRepository.fetchPaymentChannels()
+                }
+                launch {
+                    App.productRepository.fetchBestSellers(userData.storeId)
+                }
             }
-            launch {
-                App.productRepository.insertAddOnGroups(Category(BEST_SELLERS_CATEGORY_ID, BEST_SELLERS_CATEGORY_NAME))
-            }
-            launch {
-                App.productRepository.fetchCategories(userData.storeId)
-            }
-            launch {
-                App.productRepository.fetchProducts(userData.storeId)
-            }
-            launch {
-                App.paymentChannelRepository.fetchPaymentChannels()
-            }
-            launch {
-                App.productRepository.fetchBestSellers(userData.storeId)
-            }
-        }
 
-        return true
+            return true
+        } catch (_: Throwable) {}
+        return false
     }
 
     fun logout() {

@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.*
 import com.symplified.ordertaker.databinding.FragmentZoneBinding
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.viewmodels.MenuViewModel
@@ -45,9 +46,18 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val width: Int = getScreenWidth()
-        val spanCount = if (width >= 2000) 6 else if (width >= 1200) 4 else 3
+        val spanCount = if (width >= 2000) 6 else if (width >= 1200) 4 else if (width > 720) 3 else 2
 
-        tablesRecyclerView.layoutManager = GridLayoutManager(view.context, spanCount)
+
+//        val layoutManager = GridLayoutManager(view.context, spanCount)
+        val layoutManager = FlexboxLayoutManager(view.context).apply {
+            justifyContent = JustifyContent.SPACE_EVENLY
+            alignItems = AlignItems.CENTER
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+        }
+        tablesRecyclerView.layoutManager = layoutManager
+
         val adapter = TableListAdapter(onTableClickListener = this)
         tablesRecyclerView.adapter = adapter
 
