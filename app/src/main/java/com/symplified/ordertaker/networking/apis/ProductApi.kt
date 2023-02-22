@@ -21,15 +21,24 @@ interface ProductApi {
     ): Response<CategoryResponseBody>
 
     @Headers("Authorization: Bearer accessToken")
-    @GET("stores/{storeId}/products?pageSize=1000000&sortByCol=created&sortingOrder=DESC&status=ACTIVE,OUTOFSTOCK&platformType=dinein")
+    @GET("stores/{storeId}/products?pageSize=1000000&sortByCol=created&sortingOrder=DESC" +
+            "&status=ACTIVE,OUTOFSTOCK&platformType=dinein")
     suspend fun getProductsByStoreIdAndCategoryId(
         @Path("storeId") storeId: String,
         @Query("categoryId") categoryId: String
     ): Response<ProductResponse>
 
     @Headers("Authorization: Bearer accessToken")
-    @GET("stores/{storeId}/products?pageSize=1000000&sortByCol=sequenceNumber&sortingOrder=ASC&status=ACTIVE,OUTOFSTOCK&platformType=dinein")
+    @GET("stores/{storeId}/products?pageSize=1000000&sortByCol=sequenceNumber&sortingOrder=ASC" +
+            "&status=ACTIVE,OUTOFSTOCK&platformType=dinein")
     suspend fun getProductsByStoreId(
+        @Path("storeId") storeId: String
+    ): Response<ProductResponse>
+
+    @Headers("Authorization: Bearer accessToken")
+    @GET("stores/{storeId}/products?pageSize=1000000&sortByCol=sequenceNumber&sortingOrder=ASC" +
+            "&status=ACTIVE,OUTOFSTOCK&platformType=dinein&showAllPrice=true&isCustomPrice=true")
+    suspend fun getOpenItemProductsByStoreId(
         @Path("storeId") storeId: String
     ): Response<ProductResponse>
 

@@ -30,6 +30,8 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
 
+    private var totalPrice = 0.0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,6 +44,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val cartItemsAdapter = CartItemsAdapter(onRemoveFromCartListener = this)
         val cartItemsList = binding.cartItemsList
+        var currencySymbol = "RM"
         cartItemsList.layoutManager = LinearLayoutManager(view.context);
         cartItemsList.adapter = cartItemsAdapter
 
@@ -50,6 +53,14 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
         val paymentChannelAdapter = PaymentChannelAdapter(this)
         binding.paymentTypeList.adapter = paymentChannelAdapter
 
+        cartViewModel.user.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                currencySymbol = user.currencySymbol
+                binding.serverName.text =
+                    "Served by: ${user.name}"
+            }
+        }
+
         cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { cartItemsWithAddOnsAndSubItems ->
 
             binding.placeOrderButton.isEnabled = cartItemsWithAddOnsAndSubItems.isNotEmpty()
@@ -57,7 +68,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
             cartItemsAdapter.updateItems(cartItemsWithAddOnsAndSubItems)
 
             lifecycleScope.launch(Dispatchers.Default) {
-                var totalPrice = 0.0
+                totalPrice = 0.0
                 cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
                     var itemPrice = cartItemWithAddOnsAndSubItems.cartItem.itemPrice
                     cartItemWithAddOnsAndSubItems.cartItemAddons.forEach { addOn ->
@@ -137,19 +148,22 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
                     binding.zoneNo.text = "Zone: ${zoneWithTables.zone.zoneName}"
 
                     binding.placeOrderButton.setOnClickListener {
-                        cartViewModel.placeOrder(zoneWithTables.zone, selectedTable)
+                        if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
+                            CashPaymentDialog(currencySymbol, totalPrice)
+                                .show(childFragmentManager, CashPaymentDialog.TAG)
+                        } else {
+                            cartViewModel.placeOrder(zoneWithTables.zone, selectedTable)
+                        }
                     }
                 }
             }
         }
 
         cartViewModel.user.observe(viewLifecycleOwner) { user ->
-            binding.serverName.text =
-                "Served by: ${user?.name ?: ""}"
+
         }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
-
     }
 
     override fun onDestroyView() {

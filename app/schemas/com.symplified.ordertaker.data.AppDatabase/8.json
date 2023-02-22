@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 6,
-    "identityHash": "4db517f2c07b390c5243eb792a707520",
+    "version": 8,
+    "identityHash": "04626bfbd440829d44803fdc371de940",
     "entities": [
       {
         "tableName": "tables",
@@ -270,7 +270,7 @@
       },
       {
         "tableName": "products",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `categoryId` TEXT NOT NULL, `isPackage` INTEGER NOT NULL, `hasAddOn` INTEGER NOT NULL, `thumbnailUrl` TEXT NOT NULL DEFAULT '', `sequenceNumber` INTEGER NOT NULL DEFAULT 0, `allowOutOfStockPurchases` INTEGER NOT NULL DEFAULT 1, `isCustomPrice` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `categoryId` TEXT NOT NULL, `isPackage` INTEGER NOT NULL, `hasAddOn` INTEGER NOT NULL, `thumbnailUrl` TEXT NOT NULL DEFAULT '', `sequenceNumber` INTEGER NOT NULL DEFAULT 0, `allowOutOfStockPurchases` INTEGER NOT NULL DEFAULT 1, `isCustomPrice` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -327,8 +327,7 @@
             "fieldPath": "isCustomPrice",
             "columnName": "isCustomPrice",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -817,7 +816,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4db517f2c07b390c5243eb792a707520')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '04626bfbd440829d44803fdc371de940')"
     ]
   }
 }

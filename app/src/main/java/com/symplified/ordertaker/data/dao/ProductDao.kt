@@ -18,6 +18,10 @@ interface ProductDao {
     fun getBestSellers(): LiveData<List<ProductWithDetails>>
 
     @Transaction
+    @Query("SELECT * FROM products WHERE isCustomPrice = 1")
+    fun getOpenItems(): Flow<List<ProductWithDetails>>
+
+    @Transaction
     @Query("SELECT * FROM products WHERE categoryId=:categoryId")
     fun getProductsWithCategoryId(categoryId: String) : LiveData<List<ProductWithDetails>>
 

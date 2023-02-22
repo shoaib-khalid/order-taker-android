@@ -3,18 +3,13 @@ package com.symplified.ordertaker.viewmodels
 import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
-import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
-import com.symplified.ordertaker.data.dao.BestSellerDao
-import com.symplified.ordertaker.models.bestsellers.BestSeller
+import com.symplified.ordertaker.data.dao.*
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.ZoneWithTables
-import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -26,6 +21,8 @@ class MenuViewModel : ViewModel() {
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 
     private val bestSellers = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
+//    private val openItems = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
+    private val openItems: LiveData<List<ProductWithDetails>> = App.productRepository.openItems.asLiveData()
 
     init {
         viewModelScope.launch {
@@ -44,17 +41,18 @@ class MenuViewModel : ViewModel() {
 
     val productsWithDetails: LiveData<List<ProductWithDetails>> =
         _selectedCategory.switchMap { category ->
-            if (category != null && category.id == BEST_SELLERS_CATEGORY_ID)
-                bestSellers
-            else
-                if (category != null)
-                App.productRepository.getProductsWithCategory(category)
+            if (category != null)
+                when (category.id) {
+                    BEST_SELLERS_CATEGORY_ID -> bestSellers
+                    OPEN_ITEMS_CATEGORY_ID -> openItems
+                    else -> App.productRepository.getProductsWithCategory(category)
+                }
             else
                 App.productRepository.allProductsWithDetails.asLiveData()
         }
 
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
-        App.productRepository.insertAddOnGroups(category)
+        App.productRepository.insertCategory(category)
     }
 
     fun selectCategory(category: Category) {
@@ -74,6 +72,7 @@ class MenuViewModel : ViewModel() {
         _isLoadingCategories.value = true
 
         CoroutineScope(Dispatchers.IO).launch {
+            insert(Category(OPEN_ITEMS_CATEGORY_ID, OPEN_ITEMS_CATEGORY_NAME))
             insert(Category(BEST_SELLERS_CATEGORY_ID, BEST_SELLERS_CATEGORY_NAME))
 
             App.userRepository.user.collect { user ->

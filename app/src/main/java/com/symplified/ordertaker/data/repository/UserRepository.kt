@@ -58,14 +58,6 @@ class UserRepository(private val userDao: UserDao) {
                     App.zoneRepository.fetchZonesAndTables(userData.storeId)
                 }
                 launch {
-                    App.productRepository.insertAddOnGroups(
-                        Category(
-                            BEST_SELLERS_CATEGORY_ID,
-                            BEST_SELLERS_CATEGORY_NAME
-                        )
-                    )
-                }
-                launch {
                     App.productRepository.fetchCategories(userData.storeId)
                 }
                 launch {
@@ -76,6 +68,9 @@ class UserRepository(private val userDao: UserDao) {
                 }
                 launch {
                     App.productRepository.fetchBestSellers(userData.storeId)
+                }
+                launch {
+                    App.productRepository.fetchOpenItemProducts(userData.storeId)
                 }
             }
 

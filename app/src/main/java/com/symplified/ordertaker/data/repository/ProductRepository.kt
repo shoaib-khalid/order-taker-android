@@ -34,17 +34,15 @@ class ProductRepository(
         categoryDao.getAllCategoriesWithProducts()
     val allCategories: Flow<List<Category>> = categoryDao.getAllCategories()
     val bestSellers: Flow<List<BestSellerProduct>> = bestSellerDao.getAllBestSellers()
+    val openItems: Flow<List<ProductWithDetails>> = productDao.getOpenItems()
 
-    suspend fun insertAddOnGroups(category: Category) = categoryDao.insert(category)
+    suspend fun insertCategory(category: Category) = categoryDao.insert(category)
 
     val allProductsWithDetails: Flow<List<ProductWithDetails>> =
         productDao.getAllProductsWithDetails()
 
     fun getProductsWithCategory(category: Category) =
-        if (category.id == BEST_SELLERS_CATEGORY_ID)
-            productDao.getBestSellers()
-        else
-            productDao.getProductsWithCategoryId(category.id)
+        productDao.getProductsWithCategoryId(category.id)
 
     private suspend fun insertProduct(product: Product) {
         productDao.insert(product)
@@ -66,7 +64,7 @@ class ProductRepository(
         }
     }
 
-    private suspend fun insertAddOnGroups(productAddOnGroups: List<ProductAddOnGroup>) {
+    private suspend fun insertCategory(productAddOnGroups: List<ProductAddOnGroup>) {
         productAddOnGroupDao.insert(productAddOnGroups)
         productAddOnGroups.forEach { addOnGroup ->
             productAddOnItemDetailsDao.insert(addOnGroup.productAddOnItemDetail)
@@ -114,6 +112,12 @@ class ProductRepository(
 
     suspend fun fetchCategories(storeId: String): Boolean {
         try {
+            categoryDao.insert(
+                listOf(
+                    Category(OPEN_ITEMS_CATEGORY_ID, OPEN_ITEMS_CATEGORY_NAME),
+                    Category(BEST_SELLERS_CATEGORY_ID, BEST_SELLERS_CATEGORY_NAME)
+                )
+            )
             val response =
                 ServiceGenerator.createProductService().getCategories(storeId)
             if (response.isSuccessful) {
@@ -145,7 +149,7 @@ class ProductRepository(
                                         addOnGroups.forEach { addOnGroup ->
                                             addOnGroup.productId = product.id
                                         }
-                                        insertAddOnGroups(addOnGroups)
+                                        insertCategory(addOnGroups)
                                     }
                                 } catch (_: Throwable) {
                                 }
@@ -183,7 +187,25 @@ class ProductRepository(
                 bestSellerDao.insert(responseBody.data)
                 return true
             }
-        } catch (_: Throwable) {}
+        } catch (_: Throwable) {
+        }
+        return false
+    }
+
+    suspend fun fetchOpenItemProducts(storeId: String): Boolean {
+        try {
+            val response = ServiceGenerator.createProductService()
+                .getOpenItemProductsByStoreId(storeId)
+            if (response.isSuccessful) {
+                response.body()?.let { productResponseBody ->
+                    productResponseBody.data.content.forEach {
+                        insertProduct(it)
+                    }
+                }
+                return true
+            }
+        } catch (_: Throwable) {
+        }
         return false
     }
 }

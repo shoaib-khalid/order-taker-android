@@ -1,18 +1,20 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
+import android.graphics.Insets
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
-import androidx.core.view.allViews
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.textfield.TextInputLayout
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.viewmodels.CartViewModel
+
 
 class ProductSelectionDialog(
     private val productWithDetails: ProductWithDetails,
@@ -40,13 +42,14 @@ class ProductSelectionDialog(
     ): View? {
 
         val view = inflater.inflate(
-            if (productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty()
-                || productWithDetails.product.hasAddOn
-                || productWithDetails.product.isPackage
-            )
-                R.layout.dialog_product_selection_with_variants
-            else
-                R.layout.dialog_product_selection,
+//            if (productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty()
+//                || productWithDetails.product.hasAddOn
+//                || productWithDetails.product.isPackage
+//            )
+            R.layout.dialog_product_selection_with_variants
+//            else
+//                R.layout.dialog_product_selection
+            ,
             container,
             false
         )
@@ -57,9 +60,15 @@ class ProductSelectionDialog(
         val incrementButton: TextView = view.findViewById(R.id.btn_add)
         val variantsLayout: LinearLayout = view.findViewById(R.id.product_variant_layout)
         val addToCartButton: Button = view.findViewById(R.id.btn_add_to_cart)
+        val productPriceInputLayout: TextInputLayout = view.findViewById(R.id.price_input_layout)
+        val productPriceEditText: EditText = view.findViewById(R.id.price_edit_text)
 
         decrementButton.setOnClickListener { dialogViewModel.decrementProductQuantity() }
         incrementButton.setOnClickListener { dialogViewModel.incrementProductQuantity() }
+
+        productPriceInputLayout.editText!!.doOnTextChanged { text, _, _, _ ->
+            dialogViewModel.setCustomPrice(text!!.toString())
+        }
 
         dialogViewModel.productQuantity.observe(viewLifecycleOwner) { quantity ->
             productQuantityTextView.text = quantity.toString()
@@ -72,6 +81,10 @@ class ProductSelectionDialog(
 
         dialogViewModel.productWithDetails.observe(viewLifecycleOwner) { productWithDetails ->
             productNameView.text = productWithDetails.product.name
+
+            if (productWithDetails.product.isCustomPrice) {
+                productPriceInputLayout.visibility = View.VISIBLE
+            }
 
             if (productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty()) {
                 val radioGroupLayout: View =
@@ -88,9 +101,10 @@ class ProductSelectionDialog(
 
                     inventory.inventoryItems.firstOrNull()?.let { item ->
                         val radioButton = RadioButton(view.context)
-                        radioButton.text = "${item.productVariantAvailable.value}...$currencySymbol${
-                            String.format("%.2f", inventory.productInventory.dineInPrice)
-                        }"
+                        radioButton.text =
+                            "${item.productVariantAvailable.value}...$currencySymbol${
+                                String.format("%.2f", inventory.productInventory.dineInPrice)
+                            }"
                         radioButton.id = inventoryIndex
                         radioGroup.addView(radioButton)
                         radioGroup.setOnCheckedChangeListener { group, checkedId ->
@@ -177,19 +191,19 @@ class ProductSelectionDialog(
         }
 
         dialogViewModel.addOnGroupsCountMap.observe(viewLifecycleOwner) { addOnGroupsCountMap ->
-            var isAddToCartButtonEnabled = true
+//            var isAddToCartButtonEnabled = true
             addOnGroupsCountMap.forEach { (groupId, selectionStats) ->
 
-                if (selectionStats.selected < selectionStats.minAllowed) {
-                    isAddToCartButtonEnabled = false
-                }
+//                if (selectionStats.selected < selectionStats.minAllowed) {
+//                    isAddToCartButtonEnabled = false
+//                }
 
                 addOnGroupsWithCheckboxes[groupId]?.forEach { checkbox ->
                     checkbox.isEnabled =
                         selectionStats.selected != selectionStats.maxAllowed || checkbox.isChecked
                 }
             }
-            addToCartButton.isEnabled = isAddToCartButtonEnabled
+//            addToCartButton.isEnabled = isAddToCartButtonEnabled
         }
 
         dialogViewModel.cartSubItems.observe(viewLifecycleOwner) { cartSubItems ->
@@ -215,5 +229,45 @@ class ProductSelectionDialog(
         }
 
         return view
+    }
+
+    override fun onResume() {
+        dialogViewModel.productWithDetails.observe(viewLifecycleOwner) { productWithDetails ->
+            val window = dialog!!.window!!
+            val heightMultiplier =
+                if (productWithDetails.product.hasAddOn ||
+                    productWithDetails.product.isPackage ||
+                    productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty()
+                )
+                    0.99
+                else if (productWithDetails.product.isCustomPrice)
+                    0.35
+                else
+                    0.25
+            val width: Int;
+            val height: Int;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowMetrics =
+                    requireActivity().windowManager.currentWindowMetrics
+                val insets: Insets = windowMetrics.windowInsets
+                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+                width = windowMetrics.bounds.width() - insets.left -
+                        insets.right
+                height = windowMetrics.bounds.height() - insets.top -
+                        insets.bottom
+
+            } else {
+                val size = Point()
+
+                val display = window.windowManager.defaultDisplay
+                display.getSize(size)
+                width = size.x
+                height = size.y
+            }
+
+            window.setLayout((width * 0.5).toInt(), (height * heightMultiplier).toInt())
+            window.setGravity(Gravity.CENTER)
+            super.onResume()
+        }
     }
 }

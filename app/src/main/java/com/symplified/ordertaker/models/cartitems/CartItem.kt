@@ -8,7 +8,7 @@ data class CartItem(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val itemName: String,
-    val itemPrice: Double,
+    var itemPrice: Double,
     val itemCode: String,
     val productId: String,
     var quantity: Int = 1

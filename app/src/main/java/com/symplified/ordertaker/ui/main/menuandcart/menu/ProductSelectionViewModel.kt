@@ -210,6 +210,10 @@ class ProductSelectionViewModel : ViewModel() {
     private fun validate() {
         var isCartItemValid = cartItem != null
 
+        if (_productWithDetails.value!!.product.isCustomPrice) {
+            isCartItemValid = cartItem!!.itemPrice > 0.00
+        }
+
         _addOnGroupsCountMap.value!!.forEach { (_, selectionStats) ->
             if (selectionStats.selected < selectionStats.minAllowed) {
                 isCartItemValid = false
@@ -243,6 +247,11 @@ class ProductSelectionViewModel : ViewModel() {
 
     fun addToCart() = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.insert(cartItem!!, cartItemAddOns, _cartSubItems.value!!)
+    }
+
+    fun setCustomPrice(price: String) {
+        cartItem?.itemPrice = price.toDoubleOrNull() ?: 0.00
+        validate()
     }
 
     data class GroupSelectionStats(

@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menuandcart.categories
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +35,8 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         binding.categoryList.layoutManager = LinearLayoutManager(view.context)
         binding.categoryList.adapter = CategoriesAdapter(onCategoryClickListener = this)
 
-
         menuViewModel.categories.observe(viewLifecycleOwner) { categories ->
-            isCategoriesEmpty = categories.size <= 1
+            isCategoriesEmpty = categories.size < 3
             if (isCategoriesEmpty) {
                 menuViewModel.fetchCategories()
             } else {

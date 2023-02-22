@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 const val BEST_SELLERS_CATEGORY_ID = "best_sellers"
 const val BEST_SELLERS_CATEGORY_NAME = "Best Sellers"
 
+const val OPEN_ITEMS_CATEGORY_ID = "open_items"
+const val OPEN_ITEMS_CATEGORY_NAME = "Open Items"
+
 @Dao
 interface CategoryDao {
 
@@ -24,6 +27,6 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(categories: List<Category>)
 
-    @Query("DELETE FROM categories WHERE id != '$BEST_SELLERS_CATEGORY_ID'")
+    @Query("DELETE FROM categories")
     fun clear()
 }
