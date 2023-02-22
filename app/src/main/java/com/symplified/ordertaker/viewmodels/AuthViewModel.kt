@@ -87,9 +87,9 @@ class AuthViewModel : ViewModel() {
                             )
 
                         withContext(Dispatchers.Main) {
-                            _isLoading.value = false
                             _isAuthenticated.value = isAuthenticated
                             if (!isAuthenticated) {
+                                _isLoading.value = false
                                 _errorMessage.value = "Username or password is incorrect."
                             }
                         }

@@ -48,10 +48,6 @@ class ProductRepository(
 
     private suspend fun insertProduct(product: Product) {
         productDao.insert(product)
-    }
-
-    private suspend fun insertAddOnGroups(product: Product) {
-        productDao.insert(product)
         product.productInventories.forEach { inventory ->
             productInventoryDao.insert(inventory)
             inventory.productInventoryItems.forEach { item ->
