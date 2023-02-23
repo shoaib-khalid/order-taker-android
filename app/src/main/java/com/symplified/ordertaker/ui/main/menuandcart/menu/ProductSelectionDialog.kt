@@ -102,11 +102,8 @@ class ProductSelectionDialog(
                     return
 
                 ignore = true
-                Log.d("niggers", "afterTextChanged: ${s.toString()}")
 
                 val newAmount = (currentAmount.toString().toDoubleOrNull() ?: 0.00) / 100
-                Log.d("niggers", newAmount.toString())
-
                 dialogViewModel.setCustomPrice(newAmount)
                 productPriceEditText.setText(formatter.format(newAmount), TextView.BufferType.EDITABLE)
 
