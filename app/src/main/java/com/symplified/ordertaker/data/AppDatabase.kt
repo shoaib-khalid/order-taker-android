@@ -25,7 +25,7 @@ import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 
 @Database(
-    version = 9,
+    version = 1,
     entities = [
         Table::class,
         Zone::class,
@@ -45,13 +45,6 @@ import com.symplified.ordertaker.models.zones.Zone
         PaymentChannel::class,
         User::class,
         BestSeller::class
-    ],
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3),
-        AutoMigration(from = 3, to = 4),
-        AutoMigration(from = 4, to = 5),
-        AutoMigration(from = 5, to = 9)
     ],
     exportSchema = true
 )
@@ -85,11 +78,6 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
-        val MIGRATION_5_9 = object : Migration(5, 9) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE products ADD COLUMN isCustomPrice INTEGER DEFAULT 0 NOT NULL")
-            }
-        }
 
         fun getDatabase(context: Context): AppDatabase {
             // if the INSTANCE is not null, then return it,
@@ -99,8 +87,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "order_taker_db"
-                ).addMigrations(MIGRATION_5_9)
-                    .build()
+                ).build()
                 INSTANCE = instance
                 instance
             }

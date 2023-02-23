@@ -1,5 +1,7 @@
 package com.symplified.ordertaker.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.TableDao
 import com.symplified.ordertaker.data.dao.ZoneDao
@@ -31,10 +33,8 @@ class ZoneRepository(
                     return true
                 }
             }
-            return false
-        } catch (_: Throwable) {
-            return false
-        }
+        } catch (_: Throwable) {}
+        return false
     }
 
     suspend fun insert(zones: List<Zone>) {

@@ -3,6 +3,7 @@ package com.symplified.ordertaker.ui.main.menuandcart.cart
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,7 @@ class CashPaymentDialog(
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
 
-    private var formatter: DecimalFormat = DecimalFormat("#,###0.00")
+    private var formatter: DecimalFormat = DecimalFormat("#,##0.00")
     private var changeDueText: TextView? = null
     private var confirmButton: Button? = null
     private var changeDue = 0.00
@@ -60,16 +61,50 @@ class CashPaymentDialog(
         changeDueTextView.text =
             getString(R.string.monetary_amount, currency, formatter.format(0.0))
 
-        editTextAmountPaid.doAfterTextChanged { editable ->
-            amountPaid = editable.toString().toDoubleOrNull() ?: 0.00
-            changeDue = amountPaid - totalAmount
-            changeDueTextView.text = getString(
-                R.string.monetary_amount,
-                currency,
-                if (changeDue >= 0) formatter.format(changeDue) else "0.00"
-            )
-            confirmButton.isEnabled = changeDue >= 0
-        }
+        editTextAmountPaid.addTextChangedListener(object: TextWatcher {
+            private var ignore = false
+            private var currentAmount = StringBuilder()
+            private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s!!.isEmpty()) {
+                    currentAmount.clear()
+                }
+
+                if (before == 0 && currentAmount.length < 8) {
+                    currentAmount.append(s[start])
+                } else if (count == 0 && currentAmount.isNotEmpty()) {
+                    currentAmount.deleteCharAt(currentAmount.length - 1)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (ignore)
+                    return
+
+                ignore = true
+                amountPaid = (currentAmount.toString().toDoubleOrNull() ?: 0.00) / 100
+
+                editTextAmountPaid.setText(formatter.format(amountPaid), TextView.BufferType.EDITABLE)
+
+                if (editTextAmountPaid.length() > 0) {
+                    editTextAmountPaid.setSelection(editTextAmountPaid.length())
+                }
+
+                changeDue = amountPaid - totalAmount
+                changeDueTextView.text = getString(
+                    R.string.monetary_amount,
+                    currency,
+                    if (changeDue >= 0) formatter.format(changeDue) else "0.00"
+                )
+                confirmButton.isEnabled = changeDue >= 0
+                ignore = false
+            }
+
+        })
 
         val selectedTable = menuViewModel.selectedTable!!
         val selectedZone = menuViewModel.zonesWithTables.value!!.first {

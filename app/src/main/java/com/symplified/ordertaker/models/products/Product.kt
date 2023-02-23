@@ -13,7 +13,7 @@ data class Product(
     @PrimaryKey
     val id: String,
     val name: String,
-    val categoryId: String,
+    var categoryId: String?,
     val isPackage: Boolean,
     val hasAddOn: Boolean,
     @ColumnInfo(typeAffinity = ColumnInfo.TEXT, defaultValue = "")
@@ -23,7 +23,7 @@ data class Product(
     @ColumnInfo(typeAffinity = ColumnInfo.INTEGER, defaultValue = "1")
     val allowOutOfStockPurchases: Boolean,
     @ColumnInfo(typeAffinity = ColumnInfo.INTEGER, defaultValue = "0")
-    val isCustomPrice: Boolean = false,
+    val isCustomPrice: Boolean,
     @Ignore
     val productInventories: List<ProductInventory>,
     @Ignore
@@ -34,13 +34,13 @@ data class Product(
     constructor(
         id: String,
         name: String,
-        categoryId: String,
+        categoryId: String?,
         isPackage: Boolean,
         hasAddOn: Boolean,
         thumbnailUrl: String,
         sequenceNumber: Int,
         allowOutOfStockPurchases: Boolean,
-        isCustomPrice: Boolean = false
+        isCustomPrice: Boolean
     ) : this(
         id,
         name,

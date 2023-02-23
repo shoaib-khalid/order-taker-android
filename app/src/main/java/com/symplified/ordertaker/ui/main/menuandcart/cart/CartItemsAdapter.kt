@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import kotlinx.coroutines.*
+import java.text.DecimalFormat
 
 class CartItemsAdapter(
     private val cartItemsWithAddOnsAndSubItems: MutableList<CartItemWithAddOnsAndSubItems>
@@ -16,6 +17,7 @@ class CartItemsAdapter(
     private val onRemoveFromCartListener: OnRemoveFromCartListener
 ) : RecyclerView.Adapter<CartItemsAdapter.ViewHolder>() {
 
+    private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
 
     interface OnRemoveFromCartListener {
         fun onItemRemoved(cartItem: CartItemWithAddOnsAndSubItems)
@@ -42,8 +44,8 @@ class CartItemsAdapter(
         viewHolder.itemName.text = cartItemsWithAddOnsAndSubItems[position].cartItem.itemName
 
         viewHolder.subItems.visibility =
-            if (cartItemsWithAddOnsAndSubItems[position].cartSubItems.isEmpty()
-                && cartItemsWithAddOnsAndSubItems[position].cartItemAddons.isEmpty()
+            if (cartItemsWithAddOnsAndSubItems[position].cartSubItems.isEmpty() &&
+                cartItemsWithAddOnsAndSubItems[position].cartItemAddons.isEmpty()
             )
                 View.GONE
             else
@@ -81,13 +83,14 @@ class CartItemsAdapter(
                 }
             }
 
+            val totalItemPrice = itemPrice * quantity
             withContext(Dispatchers.Main) {
                 if (subItemsText.isNotEmpty()) {
                     viewHolder.subItems.visibility = View.VISIBLE
                     viewHolder.subItems.text = subItemsText.toString()
                 }
 
-                viewHolder.itemPrice.text = "RM ${String.format("%.2f", itemPrice * quantity)}"
+                viewHolder.itemPrice.text = "RM ${formatter.format(totalItemPrice)}"
             }
         }
 

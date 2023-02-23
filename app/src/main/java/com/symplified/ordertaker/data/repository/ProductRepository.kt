@@ -162,8 +162,7 @@ class ProductRepository(
                                     val packageResponse =
                                         productApiService.getProductOptions(storeId, product.id)
                                     if (packageResponse.isSuccessful) {
-                                        val packages = packageResponse.body()!!.data
-                                        insertProductPackages(packages)
+                                        insertProductPackages(packageResponse.body()!!.data)
                                     }
                                 } catch (_: Throwable) {
                                 }
@@ -197,10 +196,8 @@ class ProductRepository(
             val response = ServiceGenerator.createProductService()
                 .getOpenItemProductsByStoreId(storeId)
             if (response.isSuccessful) {
-                response.body()?.let { productResponseBody ->
-                    productResponseBody.data.content.forEach {
-                        insertProduct(it)
-                    }
+                response.body()!!.data.content.forEach { product ->
+                    insertProduct(product)
                 }
                 return true
             }

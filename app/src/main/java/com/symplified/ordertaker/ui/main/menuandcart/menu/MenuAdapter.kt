@@ -47,7 +47,6 @@ class MenuAdapter(
 
         if (items[position].product.thumbnailUrl.isNotBlank()) {
                 val fullThumbnailUrl = "${assetUrl}/${items[position].product.thumbnailUrl}"
-                Log.d("menu-adapter", fullThumbnailUrl)
                 Glide.with(viewHolder.itemView.context)
                     .load(fullThumbnailUrl)
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)

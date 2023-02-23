@@ -28,7 +28,7 @@
     <string name="staging_mode">Staging mode</string>
     <string name="select_payment_type">Select Payment Type:</string>
     <string name="product_image">Product Image</string>
-    <string name="price_label">Price</string>
+    <string name="unit_price_label">Unit Price</string>
     <string name="cash_payment">Cash Payment</string>
     <string name="total">Total:</string>
     <string name="amount_paid">Amount Paid</string>

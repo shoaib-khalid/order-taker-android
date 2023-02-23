@@ -45,11 +45,6 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val width: Int = getScreenWidth()
-        val spanCount = if (width >= 2000) 6 else if (width >= 1200) 4 else if (width > 720) 3 else 2
-
-
-//        val layoutManager = GridLayoutManager(view.context, spanCount)
         val layoutManager = FlexboxLayoutManager(view.context).apply {
             justifyContent = JustifyContent.SPACE_EVENLY
             alignItems = AlignItems.CENTER

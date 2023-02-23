@@ -1,11 +1,20 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
+import android.content.Context
 import android.graphics.Insets
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
+import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +23,8 @@ import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.viewmodels.CartViewModel
+import java.text.DecimalFormat
+import java.util.regex.Pattern
 
 
 class ProductSelectionDialog(
@@ -61,14 +72,51 @@ class ProductSelectionDialog(
         val variantsLayout: LinearLayout = view.findViewById(R.id.product_variant_layout)
         val addToCartButton: Button = view.findViewById(R.id.btn_add_to_cart)
         val productPriceInputLayout: TextInputLayout = view.findViewById(R.id.price_input_layout)
-        val productPriceEditText: EditText = view.findViewById(R.id.price_edit_text)
+        val productPriceEditText: EditText = productPriceInputLayout.editText!!
 
         decrementButton.setOnClickListener { dialogViewModel.decrementProductQuantity() }
         incrementButton.setOnClickListener { dialogViewModel.incrementProductQuantity() }
 
-        productPriceInputLayout.editText!!.doOnTextChanged { text, _, _, _ ->
-            dialogViewModel.setCustomPrice(text!!.toString())
-        }
+        productPriceEditText.addTextChangedListener(object: TextWatcher {
+            private var ignore = false
+            private var currentAmount = StringBuilder()
+            private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s!!.isEmpty()) {
+                    currentAmount.clear()
+                }
+
+                if (before == 0 && currentAmount.length < 8) {
+                    currentAmount.append(s[start])
+                } else if (count == 0 && currentAmount.isNotEmpty()) {
+                    currentAmount.deleteCharAt(currentAmount.length - 1)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (ignore)
+                    return
+
+                ignore = true
+                Log.d("niggers", "afterTextChanged: ${s.toString()}")
+
+                val newAmount = (currentAmount.toString().toDoubleOrNull() ?: 0.00) / 100
+                Log.d("niggers", newAmount.toString())
+
+                dialogViewModel.setCustomPrice(newAmount)
+                productPriceEditText.setText(formatter.format(newAmount), TextView.BufferType.EDITABLE)
+
+                if (productPriceEditText.length() > 0) {
+                    productPriceEditText.setSelection(productPriceEditText.length())
+                }
+                ignore = false
+            }
+
+        })
 
         dialogViewModel.productQuantity.observe(viewLifecycleOwner) { quantity ->
             productQuantityTextView.text = quantity.toString()
@@ -84,6 +132,10 @@ class ProductSelectionDialog(
 
             if (productWithDetails.product.isCustomPrice) {
                 productPriceInputLayout.visibility = View.VISIBLE
+                productPriceEditText.requestFocus()
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(productPriceEditText, InputMethodManager.SHOW_IMPLICIT)
             }
 
             if (productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty()) {
@@ -255,7 +307,6 @@ class ProductSelectionDialog(
                         insets.right
                 height = windowMetrics.bounds.height() - insets.top -
                         insets.bottom
-
             } else {
                 val size = Point()
 

@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
 import android.util.Log
+import androidx.databinding.BaseObservable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -249,8 +250,8 @@ class ProductSelectionViewModel : ViewModel() {
         App.cartItemRepository.insert(cartItem!!, cartItemAddOns, _cartSubItems.value!!)
     }
 
-    fun setCustomPrice(price: String) {
-        cartItem?.itemPrice = price.toDoubleOrNull() ?: 0.00
+    fun setCustomPrice(price: Double) {
+        cartItem?.itemPrice = price
         validate()
     }
 

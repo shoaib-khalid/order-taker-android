@@ -18,6 +18,7 @@ import com.symplified.ordertaker.viewmodels.MenuViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.DecimalFormat
 
 class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
     PaymentChannelAdapter.OnPaymentTypeClickListener {
@@ -29,6 +30,8 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
 
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
+
+    private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
 
     private var totalPrice = 0.0
 
@@ -78,7 +81,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
                     totalPrice += (itemPrice * cartItemWithAddOnsAndSubItems.cartItem.quantity)
                 }
                 withContext(Dispatchers.Main) {
-                    binding.totalPriceCount.text = "RM ${String.format("%.2f", totalPrice)}"
+                    binding.totalPriceCount.text = "RM ${formatter.format(totalPrice)}"
                 }
             }
         }
