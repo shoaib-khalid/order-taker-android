@@ -290,11 +290,11 @@ class ProductSelectionDialog(
                 )
                     0.99
                 else if (productWithDetails.product.isCustomPrice)
-                    0.35
+                    0.45
                 else
                     0.25
-            val width: Int;
-            val height: Int;
+            val width: Int
+            val height: Int
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 val windowMetrics =
                     requireActivity().windowManager.currentWindowMetrics

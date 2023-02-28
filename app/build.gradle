@@ -16,8 +16,8 @@ android {
         applicationId "com.symplified.ordertaker"
         minSdk 23
         targetSdk 33
-        versionCode 14
-        versionName "0.1.7"
+        versionCode 17
+        versionName "0.1.91"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -57,11 +57,11 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Room components
     implementation "androidx.room:room-runtime:2.5.0"
     implementation "androidx.room:room-ktx:2.5.0"
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
     implementation 'androidx.databinding:databinding-runtime:7.1.2'
     kapt "androidx.room:room-compiler:2.5.0"

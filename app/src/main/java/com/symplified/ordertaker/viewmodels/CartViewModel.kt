@@ -90,6 +90,7 @@ class CartViewModel : ViewModel() {
                         itemCode = cartItemWithDetails.cartItem.itemCode,
                         productId = cartItemWithDetails.cartItem.productId,
                         quantity = cartItemWithDetails.cartItem.quantity,
+                        productPrice = cartItemWithDetails.cartItem.itemPrice,
                         cartSubItem = cartSubItemsRequestList.ifEmpty { null },
                         cartItemAddOn = cartItemAddOnRequestList.ifEmpty { null }
                     )
