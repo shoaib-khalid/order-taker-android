@@ -1,11 +1,8 @@
 package com.symplified.ordertaker.data.repository
 
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
-import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
 import com.symplified.ordertaker.data.dao.UserDao
 import com.symplified.ordertaker.models.auth.AuthRequest
-import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope

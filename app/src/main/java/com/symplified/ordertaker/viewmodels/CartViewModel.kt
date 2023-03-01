@@ -1,6 +1,5 @@
 package com.symplified.ordertaker.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.models.cartitems.*

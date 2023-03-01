@@ -6,16 +6,10 @@ import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputFilter
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doBeforeTextChanged
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputLayout
@@ -24,7 +18,6 @@ import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import java.text.DecimalFormat
-import java.util.regex.Pattern
 
 
 class ProductSelectionDialog(

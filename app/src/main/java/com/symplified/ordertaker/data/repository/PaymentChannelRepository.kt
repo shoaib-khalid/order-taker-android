@@ -1,6 +1,5 @@
 package com.symplified.ordertaker.data.repository
 
-import android.util.Log
 import com.symplified.ordertaker.data.dao.PaymentChannelDao
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.networking.ServiceGenerator

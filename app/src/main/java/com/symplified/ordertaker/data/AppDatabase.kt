@@ -1,9 +1,9 @@
 package com.symplified.ordertaker.data
 
 import android.content.Context
-import androidx.room.*
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.symplified.ordertaker.data.dao.*
 import com.symplified.ordertaker.models.bestsellers.BestSeller
 import com.symplified.ordertaker.models.cartitems.CartItem

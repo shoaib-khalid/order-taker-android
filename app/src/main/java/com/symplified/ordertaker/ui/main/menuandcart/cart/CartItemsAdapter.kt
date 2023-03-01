@@ -8,7 +8,10 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 
 class CartItemsAdapter(

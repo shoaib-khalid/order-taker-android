@@ -35,4 +35,5 @@
     <string name="cancel">Cancel</string>
     <string name="paid">Paid</string>
     <string name="monetary_amount">%1$s %2$s</string>
+    <string name="menu_test_print">Test Print</string>
 </resources>

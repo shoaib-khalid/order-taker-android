@@ -1,12 +1,13 @@
 package com.symplified.ordertaker.viewmodels
 
-import androidx.lifecycle.*
-import com.bumptech.glide.Glide
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.models.users.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

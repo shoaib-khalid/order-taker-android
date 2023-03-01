@@ -1,7 +1,6 @@
 package com.symplified.ordertaker.data.repository
 
 import android.util.Log
-import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.*
 import com.symplified.ordertaker.models.bestsellers.BestSellerProduct
 import com.symplified.ordertaker.models.categories.Category

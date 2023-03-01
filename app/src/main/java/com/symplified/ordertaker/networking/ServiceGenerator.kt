@@ -6,8 +6,6 @@ import com.symplified.ordertaker.networking.apis.AuthApi
 import com.symplified.ordertaker.networking.apis.LocationApi
 import com.symplified.ordertaker.networking.apis.OrderApi
 import com.symplified.ordertaker.networking.apis.ProductApi
-import kotlinx.coroutines.flow.collect
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

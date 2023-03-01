@@ -10,7 +10,6 @@ import android.view.WindowInsets
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.*
 import com.symplified.ordertaker.databinding.FragmentZoneBinding

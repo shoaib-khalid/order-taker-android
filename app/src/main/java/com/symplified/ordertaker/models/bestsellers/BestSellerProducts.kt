@@ -1,7 +1,6 @@
 package com.symplified.ordertaker.models.bestsellers
 
 import androidx.room.Embedded
-import androidx.room.Entity
 import androidx.room.Relation
 import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.products.ProductWithDetails

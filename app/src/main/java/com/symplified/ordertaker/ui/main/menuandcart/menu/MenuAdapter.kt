@@ -1,6 +1,5 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

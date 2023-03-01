@@ -1,9 +1,11 @@
 package com.symplified.ordertaker.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.data.dao.*
+import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
+import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
+import com.symplified.ordertaker.data.dao.OPEN_ITEMS_CATEGORY_ID
+import com.symplified.ordertaker.data.dao.OPEN_ITEMS_CATEGORY_NAME
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table

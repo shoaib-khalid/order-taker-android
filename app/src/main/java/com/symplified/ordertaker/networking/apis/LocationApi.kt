@@ -1,7 +1,6 @@
 package com.symplified.ordertaker.networking.apis
 
 import com.symplified.ordertaker.models.bestsellers.BestSellerResponse
-import com.symplified.ordertaker.models.products.ProductResponse
 import com.symplified.ordertaker.models.zones.ZonesResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
