@@ -1,7 +1,9 @@
 package com.symplified.ordertaker.models.users
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.symplified.ordertaker.models.stores.BusinessType
 
 @Entity(tableName = "users")
 data class User(
@@ -13,5 +15,7 @@ data class User(
     val username: String,
     val name: String,
     val accessToken: String,
-    val refreshToken: String
+    val refreshToken: String,
+    @ColumnInfo(defaultValue = "ECOMMERCE")
+    val businessType: BusinessType
 )

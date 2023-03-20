@@ -103,10 +103,9 @@ class CashPaymentDialog(
 
         })
 
-        val selectedTable = menuViewModel.selectedTable!!
-        val selectedZone = menuViewModel.zonesWithTables.value!!.first {
-            it.zone.id == selectedTable.zoneId
-        }.zone
+        val selectedTable = menuViewModel.selectedTable.value
+        val selectedZone = menuViewModel.zonesWithTables.value
+            ?.firstOrNull { it.zone.id == selectedTable?.zoneId }?.zone
         confirmButton.setOnClickListener {
             cartViewModel.placeOrder(selectedZone, selectedTable)
             dismiss()

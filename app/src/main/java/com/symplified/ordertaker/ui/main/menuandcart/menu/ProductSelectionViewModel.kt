@@ -1,9 +1,7 @@
 package com.symplified.ordertaker.ui.main.menuandcart.menu
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import android.util.Log
+import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.models.cartitems.CartItem
 import com.symplified.ordertaker.models.cartitems.CartItemAddOn
@@ -233,7 +231,8 @@ class ProductSelectionViewModel : ViewModel() {
             productWithDetails.productInventoriesWithItems.elementAtOrNull(inventoryIndex)
                 ?.let { inventoryWithItems ->
                     cartItem = CartItem(
-                        itemName = "${productWithDetails.product.name} - ${inventoryWithItems.inventoryItems[0].productVariantAvailable.value}",
+                        itemName = "${productWithDetails.product.name} - " +
+                                inventoryWithItems.inventoryItems[0].productVariantAvailable.value,
                         itemPrice = inventoryWithItems.productInventory.dineInPrice,
                         itemCode = inventoryWithItems.productInventory.itemCode,
                         productId = productWithDetails.product.id,
@@ -245,13 +244,61 @@ class ProductSelectionViewModel : ViewModel() {
     }
 
     fun addToCart() = CoroutineScope(Dispatchers.IO).launch {
-        App.cartItemRepository.insert(cartItem!!, cartItemAddOns, _cartSubItems.value!!)
+
+
+        val existingCartItems =
+            App.cartItemRepository.getCartItems(cartItem!!.itemCode, cartItem!!.productId)
+//            .collect().let { existingCartItems ->
+
+        var sameCartItemExists = false
+        val existingCartItem = existingCartItems.firstOrNull {
+            it.cartItem.itemCode == cartItem?.itemCode
+                    && it.cartItem.productId == cartItem?.productId
+                    && it.cartItem.itemPrice == cartItem?.itemPrice
+                    && it.cartItemAddons.map(::mapForComparison).toSet() == cartItemAddOns.map(::mapForComparison).toSet()
+                    && it.cartSubItems.map(::mapForComparison).toSet() == _cartSubItems.value!!.map(::mapForComparison).toSet()
+        }
+        Log.d("abcd", "CartItem already exists: ${existingCartItem != null}")
+        if (existingCartItem != null) {
+            existingCartItem.cartItem.quantity += cartItem!!.quantity
+            App.cartItemRepository.insert(existingCartItem.cartItem)
+        } else {
+            App.cartItemRepository.insert(cartItem!!, cartItemAddOns, _cartSubItems.value!!)
+
+        }
+
+        existingCartItems.forEach {
+            if (it.cartItem.itemCode == cartItem?.itemCode && it.cartItem.productId == cartItem?.productId) {
+                val areAddonsSame = it.cartItemAddons.map(::mapForComparison).toSet() ==
+                        cartItemAddOns.map(::mapForComparison).toSet()
+
+                val doSubItemsMatch = it.cartSubItems.map(::mapForComparison).toSet() ==
+                        _cartSubItems.value!!.map(::mapForComparison).toSet()
+
+                Log.d("abcd", "areAddonsSame: $areAddonsSame")
+                Log.d("abcd", "doSubItemsMatch: $doSubItemsMatch")
+            }
+        }
+//            }
     }
 
     fun setCustomPrice(price: Double) {
         cartItem?.itemPrice = price
         validate()
     }
+
+    private fun mapForComparison(subItem: CartSubItem) = CartSubItem(
+        SKU = subItem.SKU,
+        productName = subItem.productName,
+        itemCode = subItem.itemCode,
+        productPrice = subItem.productPrice,
+        productId = subItem.productId,
+        optionId = subItem.optionId,
+        packageGroupId = subItem.packageGroupId,
+        quantity = subItem.quantity
+    )
+
+    private fun mapForComparison(addOn: CartItemAddOn) = addOn.productAddOnId
 
     data class GroupSelectionStats(
         val minAllowed: Int,

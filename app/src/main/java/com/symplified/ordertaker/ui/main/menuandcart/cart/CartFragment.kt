@@ -10,9 +10,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
+import com.symplified.ordertaker.models.stores.BusinessType
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import kotlinx.coroutines.Dispatchers
@@ -59,30 +61,36 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
         cartViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 currencySymbol = user.currencySymbol
-                binding.serverName.text =
-                    "Served by: ${user.name}"
-            }
-        }
+                binding.serverName.text = getString(R.string.server_label, user.name)
 
-        cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { cartItemsWithAddOnsAndSubItems ->
+                cartViewModel.cartItemsWithAddOnsAndSubItems
+                    .observe(viewLifecycleOwner) { cartItemsWithAddOnsAndSubItems ->
 
-            binding.placeOrderButton.isEnabled = cartItemsWithAddOnsAndSubItems.isNotEmpty()
+                        binding.placeOrderButton.isEnabled =
+                            cartItemsWithAddOnsAndSubItems.isNotEmpty()
 
-            cartItemsAdapter.updateItems(cartItemsWithAddOnsAndSubItems)
+                        cartItemsAdapter.updateItems(cartItemsWithAddOnsAndSubItems)
 
-            lifecycleScope.launch(Dispatchers.Default) {
-                totalPrice = 0.0
-                cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
-                    var itemPrice = cartItemWithAddOnsAndSubItems.cartItem.itemPrice
-                    cartItemWithAddOnsAndSubItems.cartItemAddons.forEach { addOn ->
-                        itemPrice += addOn.price
+                        lifecycleScope.launch(Dispatchers.Default) {
+                            totalPrice = 0.0
+                            cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
+                                var itemPrice = cartItemWithAddOnsAndSubItems.cartItem.itemPrice
+                                cartItemWithAddOnsAndSubItems.cartItemAddons.forEach { addOn ->
+                                    itemPrice += addOn.price
+                                }
+
+                                totalPrice += (itemPrice * cartItemWithAddOnsAndSubItems.cartItem.quantity)
+                            }
+                            withContext(Dispatchers.Main) {
+                                binding.totalPriceCount.text =
+                                    getString(
+                                    R.string.monetary_amount,
+                                    user.currencySymbol,
+                                    formatter.format(totalPrice)
+                                )
+                            }
+                        }
                     }
-
-                    totalPrice += (itemPrice * cartItemWithAddOnsAndSubItems.cartItem.quantity)
-                }
-                withContext(Dispatchers.Main) {
-                    binding.totalPriceCount.text = "RM ${formatter.format(totalPrice)}"
-                }
             }
         }
 
@@ -98,7 +106,11 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
 
         cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
             if (isOrderSuccessful) {
-                findNavController().popBackStack()
+                cartViewModel.user.value.let { user ->
+                    if (user?.businessType == BusinessType.FNB) {
+                        findNavController().popBackStack()
+                    }
+                }
             }
         }
 
@@ -141,29 +153,41 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
             }
         }
 
-        menuViewModel.selectedTable?.let { selectedTable ->
-            binding.tableNo.text = "Table No.: ${selectedTable.combinationTableNumber}"
+        menuViewModel.selectedTable.value.let { selectedTable ->
+            if (selectedTable != null) {
+                binding.tableNo.text =
+                    getString(R.string.table_no_label, selectedTable.combinationTableNumber)
+                binding.tableNo.visibility = View.VISIBLE
 
-            menuViewModel.zonesWithTables.observe(viewLifecycleOwner) { zonesWithTables ->
-                zonesWithTables.firstOrNull { zoneWithTables ->
-                    zoneWithTables.zone.id == selectedTable.zoneId
-                }?.let { zoneWithTables ->
-                    binding.zoneNo.text = "Zone: ${zoneWithTables.zone.zoneName}"
+                menuViewModel.zonesWithTables.value?.let { zonesWithTables ->
+                    zonesWithTables.firstOrNull { zoneWithTables ->
+                        zoneWithTables.zone.id == selectedTable.zoneId
+                    }?.let { zoneWithTables ->
 
-                    binding.placeOrderButton.setOnClickListener {
-                        if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
-                            CashPaymentDialog(currencySymbol, totalPrice)
-                                .show(childFragmentManager, CashPaymentDialog.TAG)
-                        } else {
-                            cartViewModel.placeOrder(zoneWithTables.zone, selectedTable)
+                        binding.zoneNo.text =
+                            getString(R.string.zone_label, zoneWithTables.zone.zoneName)
+                        binding.zoneNo.visibility = View.VISIBLE
+
+                        binding.placeOrderButton.setOnClickListener {
+                            if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
+                                CashPaymentDialog(currencySymbol, totalPrice)
+                                    .show(childFragmentManager, CashPaymentDialog.TAG)
+                            } else {
+                                cartViewModel.placeOrder(zoneWithTables.zone, selectedTable)
+                            }
                         }
                     }
                 }
+            } else {
+                binding.placeOrderButton.setOnClickListener {
+                    if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
+                        CashPaymentDialog(currencySymbol, totalPrice)
+                            .show(childFragmentManager, CashPaymentDialog.TAG)
+                    } else {
+                        cartViewModel.placeOrder()
+                    }
+                }
             }
-        }
-
-        cartViewModel.user.observe(viewLifecycleOwner) { user ->
-
         }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }

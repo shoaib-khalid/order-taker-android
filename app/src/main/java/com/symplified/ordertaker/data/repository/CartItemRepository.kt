@@ -15,19 +15,25 @@ class CartItemRepository(
     private val cartItemAddOnDao: CartItemAddOnDao
 ) {
     val allItems: Flow<List<CartItemWithAddOnsAndSubItems>> =
-        cartItemDao.getAllCartItemWithAddOnsAndSubItems()
+        cartItemDao.getAllCartItemsWithDetails()
+
+    suspend fun getCartItems(
+        itemCode: String,
+        productId: String
+    ): List<CartItemWithAddOnsAndSubItems> =
+        cartItemDao.getCartItems(itemCode, productId)
 
     suspend fun insert(
         cartItem: CartItem,
-        cartItemAddOns: List<CartItemAddOn>,
-        cartSubItems: List<CartSubItem>
+        cartItemAddOns: List<CartItemAddOn> = listOf(),
+        cartSubItems: List<CartSubItem> = listOf()
     ) {
         val cartItemId = cartItemDao.insert(cartItem)
-        cartItemAddOns.forEach{ cartItemAddOn ->
+        cartItemAddOns.forEach { cartItemAddOn ->
             cartItemAddOn.cartItemId = cartItemId
             cartItemAddOnDao.insert(cartItemAddOn)
         }
-        cartSubItems.forEach{ cartSubItem ->
+        cartSubItems.forEach { cartSubItem ->
             cartSubItem.cartItemId = cartItemId
             cartSubItemDao.insert(cartSubItem)
         }

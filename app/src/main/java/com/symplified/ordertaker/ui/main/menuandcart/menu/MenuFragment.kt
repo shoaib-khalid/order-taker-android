@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,16 +40,18 @@ class MenuFragment : Fragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        val menuAdapter = MenuAdapter(SampleData.items(), this)
-//        val itemList = binding.itemList
-//        itemList.layoutManager = GridLayoutManager(context, 3);
-//        itemList.adapter = menuAdapter
         binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
 
+        val menuAdapter = MenuAdapter(listOf(), this)
+        binding.itemList.adapter = menuAdapter
+        var searchTerm = binding.textBoxSearch.editText?.text?.toString() ?: ""
+        binding.textBoxSearch.editText!!.doAfterTextChanged {
+            searchTerm = it.toString().trim().lowercase()
+            menuAdapter.filter(searchTerm)
+        }
         menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
-//            if (products.isEmpty()) { menuViewModel.fetchProducts() }
-
-            binding.itemList.adapter = MenuAdapter(products, this)
+            menuAdapter.setProducts(products)
+            menuAdapter.filter(searchTerm)
         }
 
         menuViewModel.isLoadingProducts.observe(viewLifecycleOwner) { isLoading ->

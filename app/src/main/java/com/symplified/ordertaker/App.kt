@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.os.Build
 import com.symplified.ordertaker.data.AppDatabase
 import com.symplified.ordertaker.data.repository.*
 
@@ -68,7 +69,11 @@ class App : Application() {
         fun isConnectedToInternet(): Boolean {
             val cm =
                 applicationContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
+            } else {
+                cm.activeNetworkInfo?.isConnected ?: false
+            }
         }
     }
 

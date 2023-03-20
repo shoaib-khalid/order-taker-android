@@ -12,6 +12,8 @@ data class Product(
     @PrimaryKey
     val id: String,
     val name: String,
+    @ColumnInfo(typeAffinity = ColumnInfo.TEXT, defaultValue = "")
+    val description: String,
     var categoryId: String?,
     val isPackage: Boolean,
     val hasAddOn: Boolean,
@@ -33,16 +35,18 @@ data class Product(
     constructor(
         id: String,
         name: String,
+        description: String,
         categoryId: String?,
         isPackage: Boolean,
         hasAddOn: Boolean,
         thumbnailUrl: String,
         sequenceNumber: Int,
         allowOutOfStockPurchases: Boolean,
-        isCustomPrice: Boolean
-    ) : this(
+        isCustomPrice: Boolean,
+        ) : this(
         id,
         name,
+        description,
         categoryId,
         isPackage,
         hasAddOn,

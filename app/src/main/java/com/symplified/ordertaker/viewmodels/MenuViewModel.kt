@@ -7,6 +7,7 @@ import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
 import com.symplified.ordertaker.data.dao.OPEN_ITEMS_CATEGORY_ID
 import com.symplified.ordertaker.data.dao.OPEN_ITEMS_CATEGORY_NAME
 import com.symplified.ordertaker.models.categories.Category
+import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.ZoneWithTables
@@ -23,8 +24,10 @@ class MenuViewModel : ViewModel() {
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 
     private val bestSellers = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
-//    private val openItems = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
-    private val openItems: LiveData<List<ProductWithDetails>> = App.productRepository.openItems.asLiveData()
+
+    //    private val openItems = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
+    private val openItems: LiveData<List<ProductWithDetails>> =
+        App.productRepository.openItems.asLiveData()
 
     init {
         viewModelScope.launch {
@@ -36,7 +39,12 @@ class MenuViewModel : ViewModel() {
         }
     }
 
-    var selectedTable: Table? = null
+    private val _selectedTable = MutableLiveData<Table?>().apply { value = null }
+    val selectedTable: LiveData<Table?> = _selectedTable
+
+    fun setSelectedTable(table: Table) {
+        _selectedTable.value = table
+    }
 
     private val _selectedCategory = MutableLiveData<Category?>().apply { value = null }
     val selectedCategory: LiveData<Category?> = _selectedCategory

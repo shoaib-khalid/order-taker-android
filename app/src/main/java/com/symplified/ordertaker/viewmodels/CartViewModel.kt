@@ -2,7 +2,12 @@ package com.symplified.ordertaker.viewmodels
 
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
-import com.symplified.ordertaker.models.cartitems.*
+import com.symplified.ordertaker.models.cartitems.CartItemAddOnRequest
+import com.symplified.ordertaker.models.cartitems.CartItemRequest
+import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
+import com.symplified.ordertaker.models.cartitems.CartSubItemRequest
+import com.symplified.ordertaker.models.order.OrderPaymentDetails
+import com.symplified.ordertaker.models.order.OrderRequest
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.models.zones.Table
@@ -40,6 +45,9 @@ class CartViewModel : ViewModel() {
     private val _isOrderSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val isOrderSuccessful: LiveData<Boolean> = _isOrderSuccessful
 
+    private val _orderReceipt: MutableLiveData<ByteArray> by lazy { MutableLiveData<ByteArray>() }
+    val orderReceipt: LiveData<ByteArray> = _orderReceipt
+
     fun delete(cartItem: CartItemWithAddOnsAndSubItems) = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.delete(cartItem)
     }
@@ -56,49 +64,54 @@ class CartViewModel : ViewModel() {
         }
     }
 
-    fun placeOrder(zone: Zone, table: Table) = CoroutineScope(Dispatchers.IO).launch {
+    fun placeOrder(
+        zone: Zone? = null,
+        table: Table? = null
+    ) = CoroutineScope(Dispatchers.IO).launch {
+        user.value?.let { user ->
 
-        withContext(Dispatchers.Main) { _isPlacingOrder.value = true }
-
-        App.userRepository.user.collect { user ->
+            withContext(Dispatchers.Main) { _isPlacingOrder.value = true }
 
             val cartItemRequests: MutableList<CartItemRequest> = mutableListOf()
-            cartItemsWithAddOnsAndSubItems.value?.let { cartItemsWithDetails ->
-                cartItemsWithDetails.forEach { cartItemWithDetails ->
+            val cartItemsWithDetails = cartItemsWithAddOnsAndSubItems.value!!
+            cartItemsWithDetails.forEach { cartItemWithDetails ->
 
-                    val cartSubItemsRequestList: MutableList<CartSubItemRequest> = mutableListOf()
-                    cartItemWithDetails.cartSubItems.forEach { subItem ->
-                        for (i in 1..subItem.quantity) {
-                            cartSubItemsRequestList.add(
-                                CartSubItemRequest(
-                                    SKU = subItem.SKU,
-                                    productName = subItem.productName,
-                                    productId = subItem.productId,
-                                    itemCode = subItem.itemCode
-                                )
+                val cartSubItemsRequestList: MutableList<CartSubItemRequest> = mutableListOf()
+                cartItemWithDetails.cartSubItems.forEach { subItem ->
+                    for (i in 1..subItem.quantity) {
+                        cartSubItemsRequestList.add(
+                            CartSubItemRequest(
+                                SKU = subItem.SKU,
+                                productName = subItem.productName,
+                                productId = subItem.productId,
+                                itemCode = subItem.itemCode
                             )
-                        }
+                        )
+                    }
+                }
+
+                val cartItemAddOnRequestList: List<CartItemAddOnRequest> =
+                    cartItemWithDetails.cartItemAddons.map { addOn ->
+                        CartItemAddOnRequest(addOn.productAddOnId)
                     }
 
-                    val cartItemAddOnRequestList: List<CartItemAddOnRequest> =
-                        cartItemWithDetails.cartItemAddons.map { addOn ->
-                            CartItemAddOnRequest(addOn.productAddOnId)
-                        }
-
-                    val cartItemRequest = CartItemRequest(
-                        itemCode = cartItemWithDetails.cartItem.itemCode,
-                        productId = cartItemWithDetails.cartItem.productId,
-                        quantity = cartItemWithDetails.cartItem.quantity,
-                        productPrice = cartItemWithDetails.cartItem.itemPrice,
-                        cartSubItem = cartSubItemsRequestList.ifEmpty { null },
-                        cartItemAddOn = cartItemAddOnRequestList.ifEmpty { null }
-                    )
-                    cartItemRequests.add(cartItemRequest)
-                }
+                val cartItemRequest = CartItemRequest(
+                    itemCode = cartItemWithDetails.cartItem.itemCode,
+                    productId = cartItemWithDetails.cartItem.productId,
+                    quantity = cartItemWithDetails.cartItem.quantity,
+                    productPrice = cartItemWithDetails.cartItem.itemPrice,
+                    cartSubItem = cartSubItemsRequestList.ifEmpty { null },
+                    cartItemAddOn = cartItemAddOnRequestList.ifEmpty { null }
+                )
+                cartItemRequests.add(cartItemRequest)
             }
 
-            val customerNotes =
-                "Zone: ${zone.zoneName},\nTable No. ${table.combinationTableNumber}\nServed by: ${user!!.name}"
+            var customerNotes = ""
+            if (zone != null && table != null) {
+                customerNotes =
+                    "${customerNotes}Zone: ${zone.zoneName},\nTable No. ${table.combinationTableNumber}\n"
+            }
+            customerNotes = "${customerNotes}Served by: ${user.name}"
             val orderRequest = listOf(
                 OrderRequest(
                     cartItemRequests,
@@ -109,23 +122,34 @@ class CartViewModel : ViewModel() {
             )
 
             try {
-                val response = ServiceGenerator
-                    .createOrderService()
-                    .placeOrder(table.zoneId, table.id, user.id, orderRequest)
+                val orderApi = ServiceGenerator.createOrderService()
+                val response =
+                    if (table != null)
+                        orderApi.placeOrderWithZoneIdAndTableId(
+                            table.zoneId,
+                            table.id,
+                            user.id,
+                            orderRequest
+                        )
+                    else orderApi.placeOrder(user.id, orderRequest)
                 withContext(Dispatchers.Main) {
                     _isPlacingOrder.value = false
-                    if (response.isSuccessful) {
-                        clearAll()
-                        _orderResultMessage.value = "Order placed successfully"
-                        _orderResultMessage.value = ""
-                        _isOrderSuccessful.value = true
-                        _isOrderSuccessful.value = false
-                    } else {
-                        _orderResultMessage.value =
-                            "An error occurred while placing order. Please try again"
-                    }
                 }
-            } catch (_: Throwable) {
+               withContext(Dispatchers.Main) {
+                   if (response.isSuccessful) {
+                       _orderResultMessage.value = "Order placed successfully"
+                       _orderResultMessage.value = ""
+
+                       _isOrderSuccessful.value = true
+                       _isOrderSuccessful.value = false
+
+                       clearAll()
+                   } else {
+                       _orderResultMessage.value =
+                           "An error occurred while placing order. Please try again"
+                   }
+                }
+            } catch (e: Throwable) {
                 withContext(Dispatchers.Main) {
                     _isPlacingOrder.value = false
                     _orderResultMessage.value =

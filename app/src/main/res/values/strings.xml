@@ -34,6 +34,10 @@
     <string name="amount_paid">Amount Paid</string>
     <string name="cancel">Cancel</string>
     <string name="paid">Paid</string>
+
     <string name="monetary_amount">%1$s %2$s</string>
-    <string name="menu_test_print">Test Print</string>
+    <string name="server_label">Served by: %1$s</string>
+    <string name="table_no_label">Table No. %1$s</string>
+    <string name="zone_label">Zone: %1$s</string>
+    <string name="hint_search">Search</string>
 </resources>

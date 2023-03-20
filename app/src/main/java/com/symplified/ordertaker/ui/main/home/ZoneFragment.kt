@@ -84,7 +84,7 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
     }
 
     override fun onTableClicked(table: Table) {
-        menuViewModel.selectedTable = table
+        menuViewModel.setSelectedTable(table)
         findNavController().navigate(
             HomeFragmentDirections
                 .actionNavHomeToMenuAndCartFragment()

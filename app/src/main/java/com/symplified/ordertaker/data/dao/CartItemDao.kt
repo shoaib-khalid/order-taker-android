@@ -13,9 +13,13 @@ interface CartItemDao {
 
     @Transaction
     @Query("SELECT * FROM cart_items")
-    fun getAllCartItemWithAddOnsAndSubItems(): Flow<List<CartItemWithAddOnsAndSubItems>>
+    fun getAllCartItemsWithDetails(): Flow<List<CartItemWithAddOnsAndSubItems>>
 
-    @Insert
+    @Transaction
+    @Query("SELECT * FROM cart_items WHERE itemCode=:itemCode AND productId=:productId")
+    fun getCartItems(itemCode: String, productId: String): List<CartItemWithAddOnsAndSubItems>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(cartItem: CartItem): Long
 
     @Delete

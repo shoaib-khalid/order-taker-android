@@ -35,9 +35,10 @@ interface ProductApi {
         @Path("storeId") storeId: String
     ): Response<ProductResponse>
 
+//    status=ACTIVE,OUTOFSTOCK
     @Headers("Authorization: Bearer accessToken")
     @GET("stores/{storeId}/products?pageSize=1000000&sortByCol=sequenceNumber&sortingOrder=ASC" +
-            "&status=ACTIVE,OUTOFSTOCK&platformType=dinein&showAllPrice=true&isCustomPrice=true")
+            "&status=ACTIVE&platformType=dinein&showAllPrice=true&isCustomPrice=true")
     suspend fun getOpenItemProductsByStoreId(
         @Path("storeId") storeId: String
     ): Response<ProductResponse>

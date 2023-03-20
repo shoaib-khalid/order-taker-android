@@ -1,4 +1,6 @@
-package com.symplified.ordertaker.models.cartitems
+package com.symplified.ordertaker.models.order
+
+import com.symplified.ordertaker.models.cartitems.CartItemRequest
 
 data class OrderRequest(
     val cartItems: List<CartItemRequest>,

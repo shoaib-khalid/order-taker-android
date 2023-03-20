@@ -46,7 +46,8 @@ class UserRepository(private val userDao: UserDao) {
                     userData.username,
                     userData.name,
                     sessionData.accessToken,
-                    sessionData.refreshToken
+                    sessionData.refreshToken,
+                    store.regionVertical.businessType
                 )
             )
 
@@ -84,5 +85,6 @@ class UserRepository(private val userDao: UserDao) {
 
     fun getRefreshToken(): String? = userDao.getRefreshToken()
 
-    fun setTokens(accessToken: String, refreshToken: String) = userDao.setTokens(accessToken, refreshToken)
+    fun setTokens(accessToken: String, refreshToken: String) =
+        userDao.setTokens(accessToken, refreshToken)
 }
