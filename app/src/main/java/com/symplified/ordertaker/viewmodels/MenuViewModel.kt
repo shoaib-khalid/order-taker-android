@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
@@ -29,6 +30,15 @@ class MenuViewModel : ViewModel() {
     private val openItems: LiveData<List<ProductWithDetails>> =
         App.productRepository.openItems.asLiveData()
 
+    private val _selectedTable = MutableLiveData<Table?>().apply { value = null }
+    val selectedTable: LiveData<Table?> = _selectedTable
+
+    private val _selectedCategory = MutableLiveData<Category?>().apply { value = null }
+    val selectedCategory: LiveData<Category?> = _selectedCategory
+
+    private val _scannedBarcode = MutableLiveData<String?>().apply { value = null }
+    val scannedBarcode: LiveData<String?> = _scannedBarcode
+
     init {
         viewModelScope.launch {
             App.productRepository.bestSellers.collect {
@@ -39,15 +49,9 @@ class MenuViewModel : ViewModel() {
         }
     }
 
-    private val _selectedTable = MutableLiveData<Table?>().apply { value = null }
-    val selectedTable: LiveData<Table?> = _selectedTable
-
     fun setSelectedTable(table: Table) {
         _selectedTable.value = table
     }
-
-    private val _selectedCategory = MutableLiveData<Category?>().apply { value = null }
-    val selectedCategory: LiveData<Category?> = _selectedCategory
 
     val productsWithDetails: LiveData<List<ProductWithDetails>> =
         _selectedCategory.switchMap { category ->
@@ -93,6 +97,13 @@ class MenuViewModel : ViewModel() {
                     _isLoadingCategories.value = false
                 }
             }
+        }
+    }
+
+    fun setScannedBarcode(barcode: String) {
+        viewModelScope.launch {
+            _scannedBarcode.value = barcode
+            _scannedBarcode.value = null
         }
     }
 

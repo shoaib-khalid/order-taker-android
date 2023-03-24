@@ -12,6 +12,9 @@ interface UserDao {
     @Query("SELECT * FROM users LIMIT 1")
     fun getUser(): Flow<User?>
 
+    @Query("SELECT storeId FROM users LIMIT 1")
+    fun getStoreId(): String?
+
     @Query("SELECT accessToken FROM users LIMIT 1")
     fun getAccessToken(): String?
 

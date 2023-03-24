@@ -1,7 +1,10 @@
 package com.symplified.ordertaker.data
 
 import android.content.Context
+import android.database.Cursor
+import android.util.Log
 import androidx.room.*
+import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.symplified.ordertaker.data.dao.*
@@ -48,7 +51,6 @@ import com.symplified.ordertaker.models.zones.Zone
     ],
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3)
     ],
     exportSchema = true
 )
@@ -86,7 +88,23 @@ abstract class AppDatabase : RoomDatabase() {
 
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE products ADD COLUMN description TEXT DEFAULT '' NOT NULL")
+                val res = database.query("PRAGMA table_info(products)")
+                res.moveToFirst()
+
+                var isColumnExists = false
+                do {
+                    Log.d("db-migration", res.getString(1))
+                    if (res.getString(1) == "description") {
+                        isColumnExists = true
+                    }
+                } while (res.moveToNext())
+
+                if (!isColumnExists) {
+                    database.execSQL(
+                        "ALTER TABLE products " +
+                                "ADD COLUMN description TEXT DEFAULT '' NOT NULL"
+                    )
+                }
             }
         }
 

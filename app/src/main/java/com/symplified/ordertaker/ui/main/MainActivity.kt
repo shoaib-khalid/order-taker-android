@@ -31,6 +31,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityMainBinding
@@ -115,6 +116,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_reload -> {
+            item.isVisible = false
+            Snackbar.make(binding.root, "Reloading data. Please wait", Snackbar.LENGTH_SHORT).show()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val successResponses: MutableList<Boolean> = mutableListOf()
+                App.userRepository.getStoreId()?.let { storeId ->
+                    successResponses.add(App.zoneRepository.fetchZonesAndTables(storeId))
+                    successResponses.add(App.productRepository.fetchCategories(storeId))
+                    successResponses.add(App.productRepository.fetchProducts(storeId))
+                    successResponses.add(App.paymentChannelRepository.fetchPaymentChannels())
+                    successResponses.add(App.productRepository.fetchBestSellers(storeId))
+                    successResponses.add(App.productRepository.fetchOpenItemProducts(storeId))
+                }
+
+                withContext(Dispatchers.Main) {
+                    Snackbar.make(
+                        binding.root,
+                        if (successResponses.any { !it })
+                            "An error occurred while reloading data. Please try again"
+                        else
+                            "All data successfully reloaded",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    item.isVisible = true
+                }
+            }
+            true
+        }
         R.id.action_logout -> {
             AlertDialog.Builder(this)
                 .setMessage(getString(R.string.action_logout_confirmation))

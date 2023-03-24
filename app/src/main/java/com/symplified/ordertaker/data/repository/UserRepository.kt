@@ -52,28 +52,17 @@ class UserRepository(private val userDao: UserDao) {
             )
 
             CoroutineScope(Dispatchers.IO).launch {
-                launch {
-                    App.zoneRepository.fetchZonesAndTables(userData.storeId)
-                }
-                launch {
-                    App.productRepository.fetchCategories(userData.storeId)
-                }
-                launch {
-                    App.productRepository.fetchProducts(userData.storeId)
-                }
-                launch {
-                    App.paymentChannelRepository.fetchPaymentChannels()
-                }
-                launch {
-                    App.productRepository.fetchBestSellers(userData.storeId)
-                }
-                launch {
-                    App.productRepository.fetchOpenItemProducts(userData.storeId)
-                }
+                launch { App.zoneRepository.fetchZonesAndTables(userData.storeId) }
+                launch { App.productRepository.fetchCategories(userData.storeId) }
+                launch { App.productRepository.fetchProducts(userData.storeId) }
+                launch { App.paymentChannelRepository.fetchPaymentChannels() }
+                launch { App.productRepository.fetchBestSellers(userData.storeId) }
+                launch { App.productRepository.fetchOpenItemProducts(userData.storeId) }
             }
 
             return true
-        } catch (_: Throwable) {}
+        } catch (_: Throwable) {
+        }
         return false
     }
 
@@ -87,4 +76,6 @@ class UserRepository(private val userDao: UserDao) {
 
     fun setTokens(accessToken: String, refreshToken: String) =
         userDao.setTokens(accessToken, refreshToken)
+
+    fun getStoreId() = userDao.getStoreId()
 }

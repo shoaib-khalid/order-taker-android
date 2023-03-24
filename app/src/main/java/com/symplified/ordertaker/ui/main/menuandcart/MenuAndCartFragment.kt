@@ -21,10 +21,10 @@ class MenuAndCartFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val orientation = activity?.resources?.configuration?.orientation
-        if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        }
+//        val orientation = activity?.resources?.configuration?.orientation
+//        if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
+//            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//        }
     }
 
     override fun onCreateView(

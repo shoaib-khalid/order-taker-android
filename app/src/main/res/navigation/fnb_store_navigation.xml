@@ -18,10 +18,19 @@
         android:id="@+id/menuAndCartFragment"
         android:name="com.symplified.ordertaker.ui.main.menuandcart.MenuAndCartFragment"
         android:label="Order For Table"
-        tools:layout="@layout/fragment_menu_and_cart" />
+        tools:layout="@layout/fragment_menu_and_cart" >
+        <action
+            android:id="@+id/action_menuAndCartFragment_to_barcodeScannerFragment"
+            app:destination="@id/barcodeScannerFragment" />
+    </fragment>
     <activity
         android:id="@+id/nav_logout"
         android:name="com.symplified.ordertaker.ui.login.LoginActivity"
         android:label="activity_login"
         tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/barcodeScannerFragment"
+        android:name="com.symplified.ordertaker.ui.main.menuandcart.BarcodeScannerFragment"
+        android:label="fragment_barcode_scanner"
+        tools:layout="@layout/fragment_barcode_scanner" />
 </navigation>
