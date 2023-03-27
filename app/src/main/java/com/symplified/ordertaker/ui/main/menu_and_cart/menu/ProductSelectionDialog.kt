@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.main.menuandcart.menu
+package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
 import android.content.Context
 import android.graphics.Insets
@@ -14,22 +14,11 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputLayout
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.models.cartitems.CartItem
-import com.symplified.ordertaker.models.products.ProductWithDetails
-import com.symplified.ordertaker.viewmodels.CartViewModel
 import java.text.DecimalFormat
 
 
-class ProductSelectionDialog(
-    private val productWithDetails: ProductWithDetails,
-    private val onAddToCartListener: OnAddToCartListener
-) : DialogFragment() {
+class ProductSelectionDialog : DialogFragment() {
 
-    interface OnAddToCartListener {
-        fun onItemAdded(cartItem: CartItem)
-    }
-
-    private val cartViewModel: CartViewModel by activityViewModels()
     private val dialogViewModel: ProductSelectionViewModel by activityViewModels()
 
     private val addOnGroupsWithCheckboxes: MutableMap<String, List<CheckBox>> = mutableMapOf()

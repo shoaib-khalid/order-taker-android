@@ -1,9 +1,10 @@
-package com.symplified.ordertaker.ui.main.menuandcart
+package com.symplified.ordertaker.ui.main.menu_and_cart
 
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +20,19 @@ class MenuAndCartFragment : Fragment() {
 
     private val menuViewModel: MenuViewModel by activityViewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("on-rotate", "onCreate")
+
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        val orientation = activity?.resources?.configuration?.orientation
-//        if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
-//            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-//        }
+        Log.d("on-rotate", "onAttach")
+        val orientation = activity?.resources?.configuration?.orientation
+        if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
     }
 
     override fun onCreateView(
@@ -32,7 +40,15 @@ class MenuAndCartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("on-rotate", "onCreateView")
+
         _binding = FragmentMenuAndCartBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d("on-rotate", "onViewCreated")
+
     }
 }

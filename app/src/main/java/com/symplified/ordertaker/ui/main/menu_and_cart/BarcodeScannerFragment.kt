@@ -1,18 +1,15 @@
-package com.symplified.ordertaker.ui.main.menuandcart
+package com.symplified.ordertaker.ui.main.menu_and_cart
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.util.isNotEmpty
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -21,15 +18,11 @@ import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.google.android.material.snackbar.Snackbar
-import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentBarcodeScannerBinding
 import com.symplified.ordertaker.viewmodels.MenuViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-class BarcodeScannerFragment : Fragment(), BarcodeListener {
+class BarcodeScannerFragment : Fragment() {
 
     private var _binding : FragmentBarcodeScannerBinding? = null
     private val binding get() = _binding!!
@@ -87,7 +80,6 @@ class BarcodeScannerFragment : Fragment(), BarcodeListener {
             }
         })
 
-        barcodeDetector.setProcessor(BarCodeDetector(this))
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
             override fun release() {
             }
@@ -95,29 +87,9 @@ class BarcodeScannerFragment : Fragment(), BarcodeListener {
             override fun receiveDetections(detections: Detector.Detections<Barcode>) {
                 val barcodes = detections.detectedItems
                 if (barcodes.isNotEmpty()) {
-                    Log.d("hateniggers", "Detector: Barcode scanned: ${barcodes.valueAt(0).displayValue}")
                     menuViewModel.setScannedBarcode(barcodes.valueAt(0).displayValue)
                 }
             }
         })
     }
-
-    class BarCodeDetector(private val barcodeListener: BarcodeListener) : Detector.Processor<Barcode> {
-        override fun release() {
-        }
-
-        override fun receiveDetections(detections: Detector.Detections<Barcode>) {
-            val barcodes = detections.detectedItems
-            if (barcodes.isNotEmpty()) {
-                barcodeListener.onBarcodeScanned(barcodes.valueAt(0).displayValue)
-            }
-        }
-    }
-
-    override fun onBarcodeScanned(barcode: String) {
-    }
-}
-
-interface BarcodeListener {
-    fun onBarcodeScanned(barcode: String)
 }

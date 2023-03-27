@@ -1,6 +1,5 @@
-package com.symplified.ordertaker.ui.main.menuandcart.menu
+package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +12,11 @@ import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.models.products.ProductWithDetails
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MenuAdapter(
-    private var items: List<ProductWithDetails>,
-    private val onMenuItemClickListener: OnMenuItemClickedListener
+    private val onMenuItemClickListener: OnMenuItemClickedListener,
+    private var items: List<ProductWithDetails> = listOf(),
+    private var currencySymbol: String = "RM",
 ) : RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
 
     private var itemsToShow: List<ProductWithDetails> = items
@@ -52,35 +48,34 @@ class MenuAdapter(
 
         viewHolder.itemName.text = item.product.name
 
-        if (item.product.thumbnailUrl.isNotBlank()) {
-            val fullThumbnailUrl = "${assetUrl}/${item.product.thumbnailUrl}"
-            Glide.with(viewHolder.itemView.context)
-                .load(fullThumbnailUrl)
-                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .into(viewHolder.itemImage)
-        }
+        if (item.product.isCustomPrice) {
+            viewHolder.itemPrice.text =
+                viewHolder.itemView.context.getString(R.string.set_custom_price)
+        } else {
+            val minimumDineInPrice = String.format(
+                "%.2f",
+                item.productInventoriesWithItems.minOfOrNull {
+                    it.productInventory.dineInPrice
+                } ?: 0.0
+            )
 
-        CoroutineScope(Dispatchers.IO).launch {
-            App.userRepository.user.collect { user ->
-                val minimumDineInPrice = String.format(
-                    "%.2f",
-                    item.productInventoriesWithItems.minOfOrNull {
-                        it.productInventory.dineInPrice
-                    } ?: 0.0
-                )
-
-                withContext(Dispatchers.Main) {
-                    viewHolder.itemPrice.text = viewHolder.itemView.context.getString(
-                        R.string.monetary_amount,
-                        user?.currencySymbol ?: "RM",
-                        minimumDineInPrice
-                    )
-                }
-            }
+            viewHolder.itemPrice.text = viewHolder.itemView.context.getString(
+                R.string.monetary_amount,
+                currencySymbol,
+                minimumDineInPrice
+            )
         }
 
         viewHolder.itemView.setOnClickListener {
             onMenuItemClickListener.onItemClicked(item)
+        }
+
+        if (item.product.thumbnailUrl.isNotBlank()) {
+            val fullThumbnailUrl = "${assetUrl}/${item.product.thumbnailUrl}"
+            Glide.with(viewHolder.itemView.context)
+                .load(fullThumbnailUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(viewHolder.itemImage)
         }
 
 //        if (
@@ -120,5 +115,10 @@ class MenuAdapter(
                         || skuMatches
             }
         notifyDataSetChanged()
+    }
+
+    fun setCurrencySymbol(currencySymbol: String) {
+        this.currencySymbol = currencySymbol
+        notifyItemRangeChanged(0, itemsToShow.size)
     }
 }

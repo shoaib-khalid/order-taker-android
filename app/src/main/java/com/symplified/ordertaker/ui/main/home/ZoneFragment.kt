@@ -44,13 +44,12 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val layoutManager = FlexboxLayoutManager(view.context).apply {
+        tablesRecyclerView.layoutManager = FlexboxLayoutManager(view.context).apply {
             justifyContent = JustifyContent.SPACE_EVENLY
             alignItems = AlignItems.CENTER
             flexDirection = FlexDirection.ROW
             flexWrap = FlexWrap.WRAP
         }
-        tablesRecyclerView.layoutManager = layoutManager
 
         val adapter = TableListAdapter(onTableClickListener = this)
         tablesRecyclerView.adapter = adapter

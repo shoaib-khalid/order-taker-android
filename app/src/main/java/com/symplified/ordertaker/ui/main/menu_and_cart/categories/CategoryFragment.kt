@@ -1,4 +1,4 @@
-package com.symplified.ordertaker.ui.main.menuandcart.categories
+package com.symplified.ordertaker.ui.main.menu_and_cart.categories
 
 import android.os.Bundle
 import android.view.LayoutInflater

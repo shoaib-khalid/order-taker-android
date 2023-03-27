@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.main.menuandcart.menu.MenuFragment">
+    tools:context=".ui.main.menu_and_cart.menu.MenuFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_box_search"
@@ -57,9 +57,9 @@
         android:contentDescription="@string/scan_barcode"
         android:src="@drawable/ic_qr_code_scanner"
         android:tooltipText="@string/scan_barcode"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:backgroundTint="?attr/colorPrimary"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

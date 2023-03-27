@@ -1,10 +1,8 @@
 package com.symplified.ordertaker.data
 
 import android.content.Context
-import android.database.Cursor
 import android.util.Log
 import androidx.room.*
-import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.symplified.ordertaker.data.dao.*

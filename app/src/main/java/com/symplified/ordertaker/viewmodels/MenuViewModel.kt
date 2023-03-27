@@ -1,6 +1,5 @@
 package com.symplified.ordertaker.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_ID
@@ -8,7 +7,6 @@ import com.symplified.ordertaker.data.dao.BEST_SELLERS_CATEGORY_NAME
 import com.symplified.ordertaker.data.dao.OPEN_ITEMS_CATEGORY_ID
 import com.symplified.ordertaker.data.dao.OPEN_ITEMS_CATEGORY_NAME
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.ZoneWithTables
@@ -21,6 +19,7 @@ const val TAG = "menu-view-model"
 
 class MenuViewModel : ViewModel() {
 
+    val currencySymbol: LiveData<String?> = App.userRepository.currencySymbol.asLiveData()
     val zonesWithTables: LiveData<List<ZoneWithTables>> = App.zoneRepository.allZones.asLiveData()
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 

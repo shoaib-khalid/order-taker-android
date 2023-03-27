@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="150dp"
     android:layout_height="250dp"
-    android:layout_gravity="center"
-    android:foreground="?attr/selectableItemBackground"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginVertical="5dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_margin="5dp"
+    app:cardElevation="10dp"
+    android:foreground="?attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,48 +14,47 @@
 
         <TextView
             android:id="@+id/item_name"
+            style="@style/TextAppearance.AppCompat.Menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Menu"
-            android:maxLines="2"
             android:ellipsize="end"
-            app:layout_constraintTop_toTopOf="parent"
+            android:maxLines="2"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/item_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_fastfood"
             android:contentDescription="@string/product_image"
-            app:layout_constraintTop_toBottomOf="@id/item_name"
-            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_fastfood"
+            app:layout_constraintBottom_toTopOf="@id/cart_item_price"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/cart_item_price" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_name" />
 
         <TextView
             android:id="@+id/cart_item_price"
+            style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            style="@style/TextAppearance.AppCompat.Menu"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/out_of_stock_overlay"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="@color/white"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:textStyle="bold"
+        android:background="#33000000"
         android:gravity="center"
         android:text="OUT OF STOCK"
-        android:background="#33000000"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:visibility="gone" />
 
 </androidx.cardview.widget.CardView>

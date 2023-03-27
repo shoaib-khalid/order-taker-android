@@ -4,25 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.menuandcart.MenuAndCartFragment">
+    tools:context=".ui.main.menu_and_cart.MenuAndCartFragment">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container_category"
-            android:name="com.symplified.ordertaker.ui.main.menuandcart.categories.CategoryFragment"
+            android:name="com.symplified.ordertaker.ui.main.menu_and_cart.categories.CategoryFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.15" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container_menu"
-            android:name="com.symplified.ordertaker.ui.main.menuandcart.menu.MenuFragment"
+            android:name="com.symplified.ordertaker.ui.main.menu_and_cart.menu.MenuFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.50" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container_cart"
-            android:name="com.symplified.ordertaker.ui.main.menuandcart.cart.CartFragment"
+            android:name="com.symplified.ordertaker.ui.main.menu_and_cart.cart.CartFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.35" />
