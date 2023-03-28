@@ -39,7 +39,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
             if (isCategoriesEmpty) {
                 menuViewModel.fetchCategories()
             } else {
-                binding.categoryList.adapter = CategoriesAdapter(categories, this)
+                binding.categoryList.adapter = CategoriesAdapter(this, categories)
             }
         }
         menuViewModel.isLoadingCategories.observe(viewLifecycleOwner) { isLoading ->
@@ -47,9 +47,8 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
                 if (isLoading && isCategoriesEmpty) View.VISIBLE else View.GONE
         }
         menuViewModel.selectedCategory.observe(viewLifecycleOwner) { category ->
-            category?.let {
-                (binding.categoryList.adapter as CategoriesAdapter).setSelectedCategory(category)
-            }
+                (binding.categoryList.adapter as CategoriesAdapter)
+                    .setSelectedCategory(category)
         }
     }
 

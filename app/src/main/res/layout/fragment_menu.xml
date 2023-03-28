@@ -57,6 +57,7 @@
         android:contentDescription="@string/scan_barcode"
         android:src="@drawable/ic_qr_code_scanner"
         android:tooltipText="@string/scan_barcode"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:backgroundTint="?attr/colorPrimary"

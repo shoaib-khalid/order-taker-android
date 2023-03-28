@@ -10,8 +10,8 @@ import com.symplified.ordertaker.R
 import com.symplified.ordertaker.models.categories.Category
 
 class CategoriesAdapter(
-    private var categories: List<Category> = mutableListOf(),
-    private val onCategoryClickListener: OnCategoryClickListener
+    private val onCategoryClickListener: OnCategoryClickListener,
+    private var categories: List<Category> = mutableListOf()
 ) : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
 
     private var selectedPosition = RecyclerView.NO_POSITION
@@ -47,8 +47,14 @@ class CategoriesAdapter(
 
     override fun getItemCount() = categories.size
 
-    fun setSelectedCategory(category: Category) {
-        selectedPosition = categories.indexOf(category)
+    fun setSelectedCategory(category: Category?) {
+        val previousPosition = selectedPosition
+        selectedPosition =
+            if (category != null)
+                categories.indexOf(category)
+            else
+                RecyclerView.NO_POSITION
+        notifyItemChanged(previousPosition)
         notifyItemChanged(selectedPosition)
     }
 }

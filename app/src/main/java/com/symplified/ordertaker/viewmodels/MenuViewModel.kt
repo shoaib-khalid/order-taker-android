@@ -108,20 +108,6 @@ class MenuViewModel : ViewModel() {
 
     private val _isLoadingProducts = MutableLiveData<Boolean>().apply { value = false }
     val isLoadingProducts: LiveData<Boolean> = _isLoadingProducts
-    private fun setIsLoadingProducts(status: Boolean) = CoroutineScope(Dispatchers.Main).launch {
-        _isLoadingProducts.value = status
-    }
-
-    fun fetchProducts() = CoroutineScope(Dispatchers.IO).launch {
-        setIsLoadingProducts(true)
-
-        App.userRepository.user.collect { user ->
-            user?.let {
-                App.productRepository.fetchProducts(user.storeId)
-            }
-            setIsLoadingProducts(false)
-        }
-    }
 
     fun fetchZonesAndTables() {
         _isLoadingZonesAndTables.value = true

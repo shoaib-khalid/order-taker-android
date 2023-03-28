@@ -71,28 +71,27 @@ class MenuFragment : Fragment(),
                 captureActivity = BarcodeScannerActivity::class.java
             }
             barCodeScanLauncher.launch(options)
-
         }
 
-        val menuAdapter = MenuAdapter(
-            this
-        )
+        val menuAdapter = MenuAdapter(this)
         binding.itemList.adapter = menuAdapter
 
         var searchTerm = binding.textBoxSearch.editText?.text?.toString() ?: ""
 
         lifecycleScope.launch {
-            menuViewModel.currencySymbol
-                .observe(viewLifecycleOwner) { currencySymbol ->
-                    if (currencySymbol != null) {
-                        menuAdapter.setCurrencySymbol(currencySymbol)
-                        menuAdapter.filter(searchTerm)
-                    }
+            menuViewModel.currencySymbol.observe(viewLifecycleOwner) { currencySymbol ->
+                if (currencySymbol != null) {
+                    menuAdapter.setCurrencySymbol(currencySymbol)
+                    menuAdapter.filter(searchTerm)
                 }
+            }
         }
 
         binding.textBoxSearch.editText!!.doAfterTextChanged {
-            searchTerm = it.toString().trim().lowercase()
+            if (it?.isNotBlank() == true) {
+                menuViewModel.clearSelectedCategory()
+            }
+            searchTerm = it.toString()
             menuAdapter.filter(searchTerm)
         }
 

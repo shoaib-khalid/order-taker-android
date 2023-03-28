@@ -103,15 +103,17 @@ class MenuAdapter(
     }
 
     fun filter(searchTerm: String) {
+        val normalizedSearchTerm = searchTerm.trim().lowercase()
+
         itemsToShow =
             items.filter {
                 val skuMatches = it.productInventoriesWithItems.any { invWithItems ->
                     invWithItems.productInventory.sku.replace("-", " ")
-                        .lowercase().contains(searchTerm)
+                        .lowercase().contains(normalizedSearchTerm)
                 }
 
-                it.product.name.lowercase().contains(searchTerm)
-                        || it.product.description.lowercase().contains(searchTerm)
+                it.product.name.lowercase().contains(normalizedSearchTerm)
+                        || it.product.description.lowercase().contains(normalizedSearchTerm)
                         || skuMatches
             }
         notifyDataSetChanged()
