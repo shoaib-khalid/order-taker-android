@@ -87,7 +87,9 @@ abstract class AppDatabase : RoomDatabase() {
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 val res = database.query("PRAGMA table_info(products)")
-                res.moveToFirst()
+                Log.d("db-migration", "res: ${res.count}")
+                val movedToFirst = res.moveToFirst()
+                Log.d("db-migration", "movedToFirst: $movedToFirst")
 
                 var isColumnExists = false
                 do {

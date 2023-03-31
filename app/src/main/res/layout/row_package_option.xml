@@ -9,12 +9,13 @@
     <TextView
         android:id="@+id/option_text_view"
         style="@style/TextAppearance.MaterialComponents.Body1"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="option"
+        android:textAlignment="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_decrement" />
 
     <ImageButton
         android:id="@+id/btn_decrement"
@@ -24,7 +25,8 @@
         android:src="@drawable/ic_minus_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/quantity_count"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/decrement"/>
 
     <TextView
         android:id="@+id/quantity_count"
@@ -44,6 +46,7 @@
         android:src="@drawable/ic_add_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/increment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

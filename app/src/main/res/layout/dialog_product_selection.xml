@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="500dp"
-    android:minHeight="130dp"
-    android:maxHeight="1000dp"
-    android:padding="15dp"
+    android:minHeight="500dp"
+    android:padding="10dp"
     tools:viewBindingIgnore="true">
 
     <TextView
@@ -17,8 +16,33 @@
         android:layout_height="wrap_content"
         android:text="Product name"
         android:textStyle="bold"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/price_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="5dp"
+        android:hint="@string/unit_price_label"
+        android:visibility="gone"
+        app:boxBackgroundColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/product_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/scroll_view">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/price_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="number" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <ScrollView
         android:id="@+id/scroll_view"
@@ -28,7 +52,7 @@
         app:layout_constraintBottom_toTopOf="@id/layout_quantity_selector"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_name">
+        app:layout_constraintTop_toBottomOf="@id/price_input_layout">
 
         <LinearLayout
             android:id="@+id/product_variant_layout"
@@ -36,6 +60,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:flexDirection="row"
+        app:alignItems="center"
+        app:justifyContent="space_between"
+        app:flexWrap="wrap"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+    </com.google.android.flexbox.FlexboxLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_quantity_selector"
@@ -86,11 +124,12 @@
         android:id="@+id/btn_add_to_cart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_add_shopping_cart"
+        android:drawableLeft="@drawable/ic_add_shopping_cart"
         android:paddingHorizontal="40dp"
-        android:paddingVertical="10dp"
-        android:text="@string/add_to_cart"
+        android:paddingVertical="15dp"
+        android:text="Add to Cart"
         android:textAllCaps="false"
+        app:layout_constraintTop_toTopOf="@id/layout_quantity_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

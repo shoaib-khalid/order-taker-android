@@ -1,5 +1,7 @@
 package com.symplified.ordertaker.ui.main.home
 
+import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -65,20 +67,6 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
                     adapter.setTables(newTables)
                 }
             }
-        }
-    }
-
-    private fun getScreenWidth(): Int {
-        return if (Build.VERSION.SDK_INT >= 30) {
-            val windowMetrics = requireActivity().windowManager.currentWindowMetrics
-            val insets = windowMetrics.windowInsets
-                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-
-            windowMetrics.bounds.width() - insets.left - insets.right
-        } else {
-            val displayMetrics = DisplayMetrics()
-            requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-            displayMetrics.widthPixels
         }
     }
 

@@ -31,7 +31,7 @@ class MenuAndCartFragment : Fragment() {
         Log.d("on-rotate", "onAttach")
         val orientation = activity?.resources?.configuration?.orientation
         if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
     }
 

@@ -5,4 +5,11 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="product_dialog_width">400dp</dimen>
+    <dimen name="product_dialog_height_default">150dp</dimen>
+    <dimen name="product_dialog_height_open_item">230dp</dimen>
+    <dimen name="product_dialog_height_variants">250dp</dimen>
+
+    <dimen name="product_card_width">190dp</dimen>
 </resources>

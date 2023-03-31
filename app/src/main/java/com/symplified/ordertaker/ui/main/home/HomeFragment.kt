@@ -26,7 +26,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -47,14 +46,8 @@ class HomeFragment : Fragment() {
         menuViewModel.isLoadingZonesAndTables.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility =
                 if (isLoading && isZonesEmpty) View.VISIBLE else View.GONE
-            if (!isLoading) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
         }
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            menuViewModel.fetchZonesAndTables()
-        }
     }
 
     override fun onDestroyView() {

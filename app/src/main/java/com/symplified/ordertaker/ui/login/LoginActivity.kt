@@ -80,6 +80,11 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authViewModel.isStaging.collect { isStaging ->
+                    binding.tvEmail.editText!!.text.clear()
+                    binding.tvEmail.error = null
+                    binding.tvPassword.editText!!.text.clear()
+                    binding.tvPassword.error = null
+
                     binding.btnSwitchToProduction.visibility =
                         if (isStaging) View.VISIBLE else View.GONE
                     binding.welcome.text =

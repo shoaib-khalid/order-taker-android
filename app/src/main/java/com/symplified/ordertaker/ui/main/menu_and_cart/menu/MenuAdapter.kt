@@ -39,7 +39,7 @@ class MenuAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.grid_menu_item, viewGroup, false)
+            .inflate(R.layout.grid_product, viewGroup, false)
         return ViewHolder(view)
     }
 

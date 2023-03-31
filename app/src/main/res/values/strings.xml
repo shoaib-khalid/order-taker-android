@@ -46,4 +46,6 @@
     <string name="menu_reload">Reload</string>
     <string name="set_custom_price">Custom Price</string>
     <string name="scan_barcode_here">Scan Barcode Here</string>
+    <string name="increment">Increment</string>
+    <string name="decrement">Decrement</string>
 </resources>

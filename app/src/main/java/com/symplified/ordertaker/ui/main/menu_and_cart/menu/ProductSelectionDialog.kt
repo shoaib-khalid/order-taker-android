@@ -1,9 +1,6 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
 import android.content.Context
-import android.graphics.Insets
-import android.graphics.Point
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -35,14 +32,7 @@ class ProductSelectionDialog : DialogFragment() {
     ): View? {
 
         val view = inflater.inflate(
-//            if (productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty()
-//                || productWithDetails.product.hasAddOn
-//                || productWithDetails.product.isPackage
-//            )
-            R.layout.dialog_product_selection_with_variants
-//            else
-//                R.layout.dialog_product_selection
-            ,
+            R.layout.dialog_product_selection,
             container,
             false
         )
@@ -59,7 +49,7 @@ class ProductSelectionDialog : DialogFragment() {
         decrementButton.setOnClickListener { dialogViewModel.decrementProductQuantity() }
         incrementButton.setOnClickListener { dialogViewModel.incrementProductQuantity() }
 
-        productPriceEditText.addTextChangedListener(object: TextWatcher {
+        productPriceEditText.addTextChangedListener(object : TextWatcher {
             private var ignore = false
             private var currentAmount = StringBuilder()
             private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
@@ -87,7 +77,10 @@ class ProductSelectionDialog : DialogFragment() {
 
                 val newAmount = (currentAmount.toString().toDoubleOrNull() ?: 0.00) / 100
                 dialogViewModel.setCustomPrice(newAmount)
-                productPriceEditText.setText(formatter.format(newAmount), TextView.BufferType.EDITABLE)
+                productPriceEditText.setText(
+                    formatter.format(newAmount),
+                    TextView.BufferType.EDITABLE
+                )
 
                 if (productPriceEditText.length() > 0) {
                     productPriceEditText.setSelection(productPriceEditText.length())
@@ -264,39 +257,25 @@ class ProductSelectionDialog : DialogFragment() {
 
     override fun onResume() {
         dialogViewModel.productWithDetails.observe(viewLifecycleOwner) { productWithDetails ->
-            val window = dialog!!.window!!
-            val heightMultiplier =
-                if (productWithDetails.product.hasAddOn ||
-                    productWithDetails.product.isPackage ||
-                    productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty()
-                )
-                    0.99
-                else if (productWithDetails.product.isCustomPrice)
-                    0.45
-                else
-                    0.25
-            val width: Int
-            val height: Int
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val windowMetrics =
-                    requireActivity().windowManager.currentWindowMetrics
-                val insets: Insets = windowMetrics.windowInsets
-                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-                width = windowMetrics.bounds.width() - insets.left -
-                        insets.right
-                height = windowMetrics.bounds.height() - insets.top -
-                        insets.bottom
-            } else {
-                val size = Point()
+            val height =
+                when {
+                    productWithDetails.product.hasAddOn || productWithDetails.product.isPackage ->
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    else ->
+                        requireActivity().resources.getDimension(
+                            when {
+                                productWithDetails.productVariantsWithVariantsAvailable.isNotEmpty() ->
+                                    R.dimen.product_dialog_height_variants
+                                productWithDetails.product.isCustomPrice -> R.dimen.product_dialog_height_open_item
+                                else -> R.dimen.product_dialog_height_default
+                            }
+                        ).toInt()
+                }
 
-                val display = window.windowManager.defaultDisplay
-                display.getSize(size)
-                width = size.x
-                height = size.y
-            }
-
-            window.setLayout((width * 0.5).toInt(), (height * heightMultiplier).toInt())
-            window.setGravity(Gravity.CENTER)
+            dialog!!.window!!.setLayout(
+                requireActivity().resources.getDimension(R.dimen.product_dialog_width).toInt(),
+                height
+            )
             super.onResume()
         }
     }

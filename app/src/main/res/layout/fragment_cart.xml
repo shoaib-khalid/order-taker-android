@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="3dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="50dp"
     tools:context=".ui.main.menu_and_cart.cart.CartFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -215,7 +218,5 @@
                 app:layout_constraintWidth_percent="0.40" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
