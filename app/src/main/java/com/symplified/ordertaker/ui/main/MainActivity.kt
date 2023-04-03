@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -25,6 +26,7 @@ import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.models.stores.BusinessType
 import com.symplified.ordertaker.ui.login.LoginActivity
+import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val mainViewModel: MainViewModel by viewModels()
+    private val cartViewModel: CartViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +75,6 @@ class MainActivity : AppCompatActivity() {
                 navHeaderTitle.text = user.storeName
                 navHeaderSubtitle.text = user.name
 
-                Log.d("business-type", "User business type: ${user.businessType}")
                 navController.graph = inflater.inflate(
                     if (user.businessType == BusinessType.ECOMMERCE)
                         R.navigation.ecommerce_store_navigation
@@ -87,6 +90,12 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.headerImageUrl.observe(this) { assetUrl ->
             Glide.with(this).load(assetUrl).into(navHeaderImage)
+        }
+
+        cartViewModel.orderResultMessage.observe(this) { message ->
+            if (message.isNotBlank()) {
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 

@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="5dp"
+    android:paddingVertical="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
@@ -21,6 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textSize="@dimen/cart_item_text_size"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/cart_item_no"
         app:layout_constraintRight_toLeftOf="@id/cart_item_quantity"
@@ -31,7 +32,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="NiggaNiggaNiggaNiggaNiggaNiggaNiggaNiggaNiggaNiggaNigga"
         app:layout_constraintTop_toBottomOf="@id/cart_item_name"
         app:layout_constraintLeft_toRightOf="@id/cart_item_no"
         app:layout_constraintRight_toLeftOf="@id/cart_item_quantity"
@@ -43,6 +43,7 @@
         android:layout_width="@dimen/cart_item_quantity_width"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textSize="@dimen/cart_item_text_size"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/cart_item_name"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -53,19 +54,21 @@
         android:layout_width="@dimen/cart_item_price_width"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textSize="@dimen/cart_item_text_size"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/cart_item_quantity"
-        app:layout_constraintRight_toLeftOf="@id/delete_btn"
+        app:layout_constraintRight_toLeftOf="@id/btn_close"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/delete_btn"
+        android:id="@+id/btn_close"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@android:color/transparent"
         android:foreground="?attr/selectableItemBackground"
         android:src="@drawable/ic_delete_white"
         android:tint="@color/blue_500"
+        android:padding="10dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

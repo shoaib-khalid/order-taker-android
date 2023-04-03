@@ -85,10 +85,10 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
                             withContext(Dispatchers.Main) {
                                 binding.totalPriceCount.text =
                                     getString(
-                                    R.string.monetary_amount,
-                                    user.currencySymbol,
-                                    formatter.format(totalPrice)
-                                )
+                                        R.string.monetary_amount,
+                                        user.currencySymbol,
+                                        formatter.format(totalPrice)
+                                    )
                             }
                         }
                     }
@@ -107,11 +107,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
 
         cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
             if (isOrderSuccessful) {
-                cartViewModel.user.value.let { user ->
-//                    if (user?.businessType == BusinessType.FNB) {
-                        findNavController().popBackStack(R.id.nav_home, false)
-//                    }
-                }
+                findNavController().popBackStack(R.id.nav_home, false)
             }
         }
 
@@ -154,6 +150,7 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
             }
         }
 
+        // TODO: This code can be improved
         menuViewModel.selectedTable.value.let { selectedTable ->
             if (selectedTable != null) {
                 binding.tableNo.text =

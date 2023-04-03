@@ -5,10 +5,12 @@ import android.os.Build
 import android.util.DisplayMetrics
 import android.view.Window
 import android.view.WindowManager
+import java.text.DecimalFormat
 
 object Utils {
 
     const val ASPECT_RATIO_TOLERANCE = 0.01f
+    val formatter: DecimalFormat = DecimalFormat("#,##0.00")
     private const val TAG = "Utils"
 
 //    /** Convert NV21 format byte buffer to bitmap. */
@@ -81,4 +83,6 @@ object Utils {
             displayMetrics.widthPixels
         } / activity.resources.displayMetrics.density
     }
+
+    fun formatPrice(price: Double) = formatter.format(price)
 }

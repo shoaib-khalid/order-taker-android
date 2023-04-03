@@ -79,6 +79,7 @@
                     android:id="@+id/product_action_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
                     android:text="Del"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"

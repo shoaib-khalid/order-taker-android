@@ -30,8 +30,6 @@ class CashPaymentDialog(
     private val cartViewModel: CartViewModel by activityViewModels()
 
     private var formatter: DecimalFormat = DecimalFormat("#,##0.00")
-    private var changeDueText: TextView? = null
-    private var confirmButton: Button? = null
     private var changeDue = 0.00
     private var amountPaid = 0.0
 
@@ -49,7 +47,6 @@ class CashPaymentDialog(
 
         val changeDueTextView = view.findViewById<TextView>(R.id.change_due_text)
         val totalSalesAmountText = view.findViewById<TextView>(R.id.total_sales_amount)
-        val layoutAmountPaid = view.findViewById<TextInputLayout>(R.id.amount_text_input)
         val editTextAmountPaid = view.findViewById<EditText>(R.id.amount_edit_text)
         val confirmButton = view.findViewById<Button>(R.id.confirm_button)
 

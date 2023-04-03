@@ -250,13 +250,9 @@ class ProductSelectionViewModel : ViewModel() {
     }
 
     fun addToCart() = CoroutineScope(Dispatchers.IO).launch {
-
-
         val existingCartItems =
             App.cartItemRepository.getCartItems(cartItem!!.itemCode, cartItem!!.productId)
-//            .collect().let { existingCartItems ->
 
-        var sameCartItemExists = false
         val existingCartItem = existingCartItems.firstOrNull {
             it.cartItem.itemCode == cartItem?.itemCode
                     && it.cartItem.productId == cartItem?.productId
@@ -264,28 +260,12 @@ class ProductSelectionViewModel : ViewModel() {
                     && it.cartItemAddons.map(::mapForComparison).toSet() == cartItemAddOns.map(::mapForComparison).toSet()
                     && it.cartSubItems.map(::mapForComparison).toSet() == _cartSubItems.value!!.map(::mapForComparison).toSet()
         }
-        Log.d("abcd", "CartItem already exists: ${existingCartItem != null}")
         if (existingCartItem != null) {
             existingCartItem.cartItem.quantity += cartItem!!.quantity
             App.cartItemRepository.insert(existingCartItem.cartItem)
         } else {
             App.cartItemRepository.insert(cartItem!!, cartItemAddOns, _cartSubItems.value!!)
-
         }
-
-        existingCartItems.forEach {
-            if (it.cartItem.itemCode == cartItem?.itemCode && it.cartItem.productId == cartItem?.productId) {
-                val areAddonsSame = it.cartItemAddons.map(::mapForComparison).toSet() ==
-                        cartItemAddOns.map(::mapForComparison).toSet()
-
-                val doSubItemsMatch = it.cartSubItems.map(::mapForComparison).toSet() ==
-                        _cartSubItems.value!!.map(::mapForComparison).toSet()
-
-                Log.d("abcd", "areAddonsSame: $areAddonsSame")
-                Log.d("abcd", "doSubItemsMatch: $doSubItemsMatch")
-            }
-        }
-//            }
     }
 
     fun setCustomPrice(price: Double) {

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingVertical="10dp"
+        android:paddingVertical="15dp"
         android:paddingHorizontal="10dp"
         style="@style/TextAppearance.AppCompat.Menu"
         app:layout_constraintTop_toTopOf="parent"

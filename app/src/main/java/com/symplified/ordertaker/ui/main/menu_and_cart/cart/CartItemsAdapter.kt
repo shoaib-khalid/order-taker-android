@@ -32,7 +32,7 @@ class CartItemsAdapter(
         val subItems: TextView = view.findViewById(R.id.cart_sub_items_text)
         val itemQuantity: TextView = view.findViewById(R.id.cart_item_quantity)
         val itemPrice: TextView = view.findViewById(R.id.cart_item_price)
-        val deleteBtn: AppCompatImageButton = view.findViewById(R.id.delete_btn)
+        val deleteBtn: AppCompatImageButton = view.findViewById(R.id.btn_close)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {

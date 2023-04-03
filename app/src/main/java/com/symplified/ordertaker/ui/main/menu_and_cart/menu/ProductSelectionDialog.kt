@@ -51,6 +51,10 @@ class ProductSelectionDialog : DialogFragment() {
         decrementButton.setOnClickListener { dialogViewModel.decrementProductQuantity() }
         incrementButton.setOnClickListener { dialogViewModel.incrementProductQuantity() }
 
+        (view.findViewById(R.id.btn_close) as ImageButton).setOnClickListener {
+            dismiss()
+        }
+
         productPriceEditText.addTextChangedListener(object : TextWatcher {
             private var ignore = false
             private var currentAmount = StringBuilder()
@@ -121,19 +125,29 @@ class ProductSelectionDialog : DialogFragment() {
                 productWithDetails.productInventoriesWithItems.forEachIndexed { inventoryIndex, inventory ->
 
                     if (inventoryIndex in 0..productWithDetails.productVariantsWithVariantsAvailable.lastIndex) {
-                        groupTitle.text =
-                            "${productWithDetails.productVariantsWithVariantsAvailable[inventoryIndex].productVariant.name}:"
+                        groupTitle.text = getString(
+                            R.string.variant_title,
+                            productWithDetails.productVariantsWithVariantsAvailable[inventoryIndex]
+                                .productVariant.name
+                        )
                     }
 
                     inventory.inventoryItems.firstOrNull()?.let { item ->
-                        val radioButton = RadioButton(view.context)
-                        radioButton.text =
-                            "${item.productVariantAvailable.value}...$currencySymbol${
-                                String.format("%.2f", inventory.productInventory.dineInPrice)
-                            }"
-                        radioButton.id = inventoryIndex
-                        radioGroup.addView(radioButton)
-                        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+                        RadioButton(view.context).apply {
+//                        text =
+//                            "${item.productVariantAvailable.value}...$currencySymbol${
+//                                String.format("%.2f", inventory.productInventory.dineInPrice)
+//                            }"
+                            text = getString(
+                                R.string.variant_option,
+                                item.productVariantAvailable.value,
+                                currencySymbol,
+                                Utils.formatPrice(inventory.productInventory.dineInPrice)
+                            )
+                            id = inventoryIndex
+                            radioGroup.addView(this)
+                        }
+                        radioGroup.setOnCheckedChangeListener { _, checkedId ->
                             dialogViewModel.setCartItemWithVariant(checkedId)
                         }
                         if (inventoryIndex == 0) {
@@ -150,13 +164,15 @@ class ProductSelectionDialog : DialogFragment() {
                 val checkboxes: MutableList<CheckBox> = mutableListOf()
 
                 val addOnGroup = addOnGroupWithDetails.productAddOnGroup
-                val titleText = "${addOnGroup.title} " +
-                        "(${
-                            if (addOnGroup.minAllowed == 0) "Optional"
-                            else "Select at least ${addOnGroup.minAllowed}"
-                        }) Max. ${addOnGroup.maxAllowed}"
                 (addOnLayout.findViewById(R.id.checkbox_group_title) as TextView).text =
-                    titleText
+                    getString(
+                        R.string.add_on_group_title,
+                        addOnGroup.title,
+                        if (addOnGroup.minAllowed == 0) "Optional"
+                        else "Select at least ${addOnGroup.minAllowed}",
+                        addOnGroup.maxAllowed
+                    )
+
                 addOnGroupWithDetails.addOnDetails.forEachIndexed { detailsIndex, addOnDetails ->
                     val addOnView: View =
                         inflater.inflate(R.layout.row_addon_option, container, false)
@@ -174,8 +190,12 @@ class ProductSelectionDialog : DialogFragment() {
                     }
 
                     (addOnView.findViewById(R.id.price_text_view) as TextView).text =
-                        "+$currencySymbol${String.format("%.2f", addOnDetails.dineInPrice)}"
-
+                        getString(
+                            R.string.add_on_price,
+                            currencySymbol,
+                            Utils.formatPrice(addOnDetails.dineInPrice)
+                        )
+//                    "+$currencySymbol${String.format("%.2f", addOnDetails.dineInPrice)}"
                     checkboxes.add(checkbox)
                     (addOnLayout.rootView as LinearLayout).addView(addOnView)
                 }
@@ -192,7 +212,12 @@ class ProductSelectionDialog : DialogFragment() {
                 val minAmount = packageGroup.minAllow
                 val maxAmount = packageGroup.totalAllow
                 (packageLayout.findViewById(R.id.checkbox_group_title) as TextView).text =
-                    "Select at least $minAmount of $maxAmount"
+                    getString(
+                        R.string.package_group_title,
+                        packageGroup.minAllow,
+                        packageGroup.totalAllow
+                    )
+//                    "Select at least $minAmount of $maxAmount"
 
                 productPackageWithOptionDetails.productPackageOptionDetails.forEach { optionDetails ->
                     val optionView: View =
@@ -217,23 +242,15 @@ class ProductSelectionDialog : DialogFragment() {
         }
 
         dialogViewModel.addOnGroupsCountMap.observe(viewLifecycleOwner) { addOnGroupsCountMap ->
-//            var isAddToCartButtonEnabled = true
             addOnGroupsCountMap.forEach { (groupId, selectionStats) ->
-
-//                if (selectionStats.selected < selectionStats.minAllowed) {
-//                    isAddToCartButtonEnabled = false
-//                }
-
                 addOnGroupsWithCheckboxes[groupId]?.forEach { checkbox ->
                     checkbox.isEnabled =
                         selectionStats.selected != selectionStats.maxAllowed || checkbox.isChecked
                 }
             }
-//            addToCartButton.isEnabled = isAddToCartButtonEnabled
         }
 
         dialogViewModel.cartSubItems.observe(viewLifecycleOwner) { cartSubItems ->
-
             productPackagesWithOptionViews.forEach { (_, packageOptionsWithViews) ->
                 packageOptionsWithViews.forEach { (optionId, optionView) ->
                     (optionView.findViewById(R.id.quantity_count) as TextView).text =
@@ -274,8 +291,8 @@ class ProductSelectionDialog : DialogFragment() {
                         ).toInt()
                 }
 
-            val presetDialogWidth = requireActivity().resources.getDimension(R.dimen.product_dialog_width)
-
+            val presetDialogWidth =
+                requireActivity().resources.getDimension(R.dimen.product_dialog_width)
             val screenWidth = Utils.getScreenWidthInDp(requireActivity())
             val width =
                 if (screenWidth > presetDialogWidth)
@@ -283,7 +300,6 @@ class ProductSelectionDialog : DialogFragment() {
                 else
                     ViewGroup.LayoutParams.MATCH_PARENT
 
-            Log.d("screen-width", "Preset dialog width: ${presetDialogWidth} Screen width: $screenWidth, dialogWidth: $width")
             dialog!!.window!!.setLayout(width, height)
             super.onResume()
         }
