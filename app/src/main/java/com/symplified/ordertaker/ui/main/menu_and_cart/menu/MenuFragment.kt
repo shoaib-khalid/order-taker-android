@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +11,23 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.*
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeDrawable.BadgeGravity
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
+import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.products.ProductWithDetails
+import com.symplified.ordertaker.ui.main.menu_and_cart.MenuAndCartFragmentDirections
+import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import kotlinx.coroutines.launch
 
+@ExperimentalBadgeUtils
 class MenuFragment : Fragment(),
     MenuAdapter.OnMenuItemClickedListener {
 
@@ -29,6 +39,7 @@ class MenuFragment : Fragment(),
 
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val dialogViewModel: ProductSelectionViewModel by activityViewModels()
+    private val cartViewModel: CartViewModel by activityViewModels()
 
     private val barCodeScanLauncher: ActivityResultLauncher<ScanOptions> =
         registerForActivityResult(ScanContract()) { result ->
@@ -89,6 +100,21 @@ class MenuFragment : Fragment(),
 
         menuViewModel.isLoadingProducts.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        if (resources.getBoolean(R.bool.isPhone)) {
+            binding.checkoutButton.apply {
+                setOnClickListener {
+                    findNavController().navigate(
+                        MenuAndCartFragmentDirections.actionMenuAndCartFragmentToCartFragment()
+                    )
+                }
+                cartViewModel.cartItemsWithAddOnsAndSubItems
+                    .observe(viewLifecycleOwner) { cartItems ->
+                        visibility = if (cartItems.isEmpty()) View.GONE else View.VISIBLE
+                        text = cartItems.size.toString()
+                    }
+            }
         }
     }
 

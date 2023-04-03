@@ -11,5 +11,7 @@
     <dimen name="product_dialog_height_open_item">230dp</dimen>
     <dimen name="product_dialog_height_variants">250dp</dimen>
 
-    <dimen name="product_card_width">190dp</dimen>
+    <dimen name="product_card_width">150dp</dimen>
+    <dimen name="cart_item_price_width">60dp</dimen>
+    <dimen name="cart_item_quantity_width">40dp</dimen>
 </resources>

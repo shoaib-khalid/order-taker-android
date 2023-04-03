@@ -48,4 +48,6 @@
     <string name="scan_barcode_here">Scan Barcode Here</string>
     <string name="increment">Increment</string>
     <string name="decrement">Decrement</string>
+    <string name="select_table_no">Select Table No.:</string>
+    <string name="checkout">Checkout</string>
 </resources>

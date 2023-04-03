@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -11,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputLayout
 import com.symplified.ordertaker.R
+import com.symplified.ordertaker.utils.Utils
 import java.text.DecimalFormat
 
 
@@ -272,10 +274,17 @@ class ProductSelectionDialog : DialogFragment() {
                         ).toInt()
                 }
 
-            dialog!!.window!!.setLayout(
-                requireActivity().resources.getDimension(R.dimen.product_dialog_width).toInt(),
-                height
-            )
+            val presetDialogWidth = requireActivity().resources.getDimension(R.dimen.product_dialog_width)
+
+            val screenWidth = Utils.getScreenWidthInDp(requireActivity())
+            val width =
+                if (screenWidth > presetDialogWidth)
+                    presetDialogWidth.toInt()
+                else
+                    ViewGroup.LayoutParams.MATCH_PARENT
+
+            Log.d("screen-width", "Preset dialog width: ${presetDialogWidth} Screen width: $screenWidth, dialogWidth: $width")
+            dialog!!.window!!.setLayout(width, height)
             super.onResume()
         }
     }

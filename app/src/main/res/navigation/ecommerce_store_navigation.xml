@@ -13,11 +13,19 @@
         <action
             android:id="@+id/action_menuAndCartFragment_to_barcodeScannerFragment"
             app:destination="@id/barcodeScannerFragment" />
+        <action
+            android:id="@+id/action_menuAndCartFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
     </fragment>
     <fragment
         android:id="@+id/barcodeScannerFragment"
         android:name="com.symplified.ordertaker.ui.main.menu_and_cart.BarcodeScannerFragment"
         android:label="fragment_barcode_scanner"
         tools:layout="@layout/fragment_barcode_scanner" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.cart.CartFragment"
+        android:label="Checkout"
+        tools:layout="@layout/fragment_cart" />
 
 </navigation>

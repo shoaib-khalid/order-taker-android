@@ -49,58 +49,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/light_grey"
-                android:paddingVertical="2dp"
+                android:paddingVertical="3dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/product_name_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Product Name"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="@id/product_quantity_title"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.60" />
-
-                <TextView
                     android:id="@+id/product_quantity_title"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/cart_item_quantity_width"
                     android:layout_height="wrap_content"
                     android:text="Qty"
                     android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/product_name_title"
                     app:layout_constraintRight_toLeftOf="@id/product_price_title"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.10" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/product_price_title"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/cart_item_price_width"
                     android:layout_height="wrap_content"
                     android:text="Price"
+                    android:layout_marginHorizontal="5dp"
                     android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/product_quantity_title"
                     app:layout_constraintRight_toLeftOf="@id/product_action_header"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.10" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/product_action_header"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Del"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/product_price_title"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.20" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -200,22 +183,25 @@
             <Button
                 android:id="@+id/clear_cart_button"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:text="Clear Cart"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginHorizontal="2dp"
+                android:paddingVertical="10dp"
+                app:layout_constraintTop_toTopOf="@id/place_order_button"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/place_order_button"
-                app:layout_constraintWidth_percent="0.40" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <Button
                 android:id="@+id/place_order_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Place Order"
+                android:layout_marginHorizontal="2dp"
+                android:paddingVertical="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/clear_cart_button"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintWidth_percent="0.40" />
+                app:layout_constraintRight_toRightOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

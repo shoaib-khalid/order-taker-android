@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.symplified.ordertaker.databinding.FragmentMenuAndCartBinding
@@ -20,35 +21,22 @@ class MenuAndCartFragment : Fragment() {
 
     private val menuViewModel: MenuViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("on-rotate", "onCreate")
-
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.d("on-rotate", "onAttach")
-        val orientation = activity?.resources?.configuration?.orientation
-        if (orientation != Configuration.ORIENTATION_LANDSCAPE) {
-//            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.d("on-rotate", "onCreateView")
-
         _binding = FragmentMenuAndCartBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("on-rotate", "onViewCreated")
-
+        menuViewModel.selectedTable.observe(viewLifecycleOwner) { table ->
+            if (table != null) {
+                (requireActivity() as AppCompatActivity)
+                    .supportActionBar?.title = "Order for ${table.combinationTableNumber}"
+            }
+        }
     }
 }

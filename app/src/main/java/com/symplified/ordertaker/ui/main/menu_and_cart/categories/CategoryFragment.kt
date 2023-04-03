@@ -35,8 +35,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
     private var isCategoriesEmpty = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.categoryList.apply {
-            Log.d("screen-width", "Screen width: ${Utils.getScreenWidth(requireActivity())}")
-
             layoutManager = LinearLayoutManager(
                 view.context,
                 if (resources.getBoolean(R.bool.isTablet))

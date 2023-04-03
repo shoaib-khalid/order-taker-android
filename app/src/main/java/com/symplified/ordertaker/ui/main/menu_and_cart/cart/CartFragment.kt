@@ -15,6 +15,7 @@ import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.stores.BusinessType
+import com.symplified.ordertaker.ui.main.menu_and_cart.MenuAndCartFragmentDirections
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import kotlinx.coroutines.Dispatchers
@@ -107,9 +108,9 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
         cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
             if (isOrderSuccessful) {
                 cartViewModel.user.value.let { user ->
-                    if (user?.businessType == BusinessType.FNB) {
-                        findNavController().popBackStack()
-                    }
+//                    if (user?.businessType == BusinessType.FNB) {
+                        findNavController().popBackStack(R.id.nav_home, false)
+//                    }
                 }
             }
         }

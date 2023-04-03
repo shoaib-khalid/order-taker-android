@@ -3,7 +3,8 @@ package com.symplified.ordertaker.utils
 import android.app.Activity
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.WindowInsets
+import android.view.Window
+import android.view.WindowManager
 
 object Utils {
 
@@ -71,7 +72,7 @@ object Utils {
 //        return validPreviewSizes
 //    }
 
-    fun getScreenWidth(activity: Activity): Float {
+    fun getScreenWidthInDp(activity: Activity): Float {
         return if (Build.VERSION.SDK_INT >= 30) {
             activity.windowManager.currentWindowMetrics.bounds.width()
         } else {
