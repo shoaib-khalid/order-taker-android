@@ -105,23 +105,4 @@ class MenuViewModel : ViewModel() {
             _scannedBarcode.value = null
         }
     }
-
-    private val _isLoadingProducts = MutableLiveData<Boolean>().apply { value = false }
-    val isLoadingProducts: LiveData<Boolean> = _isLoadingProducts
-
-    fun fetchZonesAndTables() {
-        _isLoadingZonesAndTables.value = true
-
-        CoroutineScope(Dispatchers.IO).launch {
-            App.userRepository.user.collect { user ->
-                if (user != null) {
-                    App.zoneRepository.fetchZonesAndTables(user.storeId)
-                }
-
-                withContext(Dispatchers.Main) {
-                    _isLoadingZonesAndTables.value = false
-                }
-            }
-        }
-    }
 }

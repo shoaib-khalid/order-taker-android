@@ -50,7 +50,7 @@ class MenuAdapter(
 
         if (item.product.isCustomPrice) {
             viewHolder.itemPrice.text =
-                viewHolder.itemView.context.getString(R.string.set_custom_price)
+                viewHolder.itemView.context.getString(R.string.custom_price)
         } else {
             val minimumDineInPrice = String.format(
                 "%.2f",

@@ -98,10 +98,6 @@ class MenuFragment : Fragment(),
             menuAdapter.filter(searchTerm)
         }
 
-        menuViewModel.isLoadingProducts.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
         if (resources.getBoolean(R.bool.isPhone)) {
             binding.checkoutButton.apply {
                 setOnClickListener {

@@ -15,7 +15,9 @@ import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.stores.BusinessType
+import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.ui.main.menu_and_cart.MenuAndCartFragmentDirections
+import com.symplified.ordertaker.utils.Utils
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,18 +25,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 
-class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
+class CartFragment : Fragment(),
+    CartItemsAdapter.OnRemoveFromCartListener,
     PaymentChannelAdapter.OnPaymentTypeClickListener {
-    private var _binding: FragmentCartBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
 
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
-
-    private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
 
     private var totalPrice = 0.0
 
@@ -48,50 +47,85 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val cartItemsAdapter = CartItemsAdapter(onRemoveFromCartListener = this)
-        val cartItemsList = binding.cartItemsList
-        var currencySymbol = "RM"
-        cartItemsList.layoutManager = LinearLayoutManager(view.context);
-        cartItemsList.adapter = cartItemsAdapter
 
-        binding.paymentTypeList.layoutManager =
-            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         val paymentChannelAdapter = PaymentChannelAdapter(this)
-        binding.paymentTypeList.adapter = paymentChannelAdapter
+        binding.paymentTypeList.apply {
+            layoutManager = LinearLayoutManager(
+                view.context, LinearLayoutManager.HORIZONTAL, false
+            )
+            adapter = paymentChannelAdapter
+        }
 
         cartViewModel.user.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                currencySymbol = user.currencySymbol
-                binding.serverName.text = getString(R.string.server_label, user.name)
+            if (user == null) {
+                return@observe
+            }
 
-                cartViewModel.cartItemsWithAddOnsAndSubItems
-                    .observe(viewLifecycleOwner) { cartItemsWithAddOnsAndSubItems ->
+            binding.productPriceHeader.text = getString(R.string.price_header, user.currencySymbol)
 
-                        binding.placeOrderButton.isEnabled =
-                            cartItemsWithAddOnsAndSubItems.isNotEmpty()
+            val cartItemsAdapter = CartItemsAdapter(user.currencySymbol, this)
+            binding.cartItemsList.apply {
+                layoutManager = LinearLayoutManager(view.context)
+                adapter = cartItemsAdapter
+            }
 
-                        cartItemsAdapter.updateItems(cartItemsWithAddOnsAndSubItems)
+            binding.serverName.text = getString(R.string.server_label, user.name)
 
-                        lifecycleScope.launch(Dispatchers.Default) {
-                            totalPrice = 0.0
-                            cartItemsWithAddOnsAndSubItems.forEach { cartItemWithAddOnsAndSubItems ->
-                                var itemPrice = cartItemWithAddOnsAndSubItems.cartItem.itemPrice
-                                cartItemWithAddOnsAndSubItems.cartItemAddons.forEach { addOn ->
-                                    itemPrice += addOn.price
-                                }
+            cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { items ->
 
-                                totalPrice += (itemPrice * cartItemWithAddOnsAndSubItems.cartItem.quantity)
+                    binding.placeOrderButton.isEnabled = items.isNotEmpty()
+                    cartItemsAdapter.updateItems(items)
+
+                    lifecycleScope.launch(Dispatchers.Default) {
+                        totalPrice = 0.0
+                        items.forEach { item ->
+                            var itemPrice = item.cartItem.itemPrice
+                            item.cartItemAddons.forEach { addOn ->
+                                itemPrice += addOn.price
                             }
-                            withContext(Dispatchers.Main) {
-                                binding.totalPriceCount.text =
-                                    getString(
-                                        R.string.monetary_amount,
-                                        user.currencySymbol,
-                                        formatter.format(totalPrice)
-                                    )
-                            }
+
+                            totalPrice += (itemPrice * item.cartItem.quantity)
+                        }
+                        withContext(Dispatchers.Main) {
+                            binding.totalPriceText.text =
+                                getString(
+                                    R.string.total_price,
+                                    user.currencySymbol,
+                                    Utils.formatPrice(totalPrice)
+                                )
                         }
                     }
+                }
+
+            menuViewModel.selectedTable.observe(viewLifecycleOwner) { selectedTable ->
+                var selectedZoneWithTables: ZoneWithTables? = null
+
+                if (selectedTable != null) {
+                    binding.tableNo.text =
+                        getString(R.string.table_no_label, selectedTable.combinationTableNumber)
+                    binding.tableNo.visibility = View.VISIBLE
+
+                    menuViewModel.zonesWithTables.value?.let { zonesWithTables ->
+                        selectedZoneWithTables = zonesWithTables.firstOrNull { zoneWithTables ->
+                            zoneWithTables.zone.id == selectedTable.zoneId
+                        }
+                        if (selectedZoneWithTables != null) {
+                            binding.zoneNo.text = getString(
+                                R.string.zone_label,
+                                selectedZoneWithTables!!.zone.zoneName
+                            )
+                            binding.zoneNo.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                binding.placeOrderButton.setOnClickListener {
+                    if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
+                        CashPaymentDialog(user.currencySymbol, totalPrice)
+                            .show(childFragmentManager, CashPaymentDialog.TAG)
+                    } else {
+                        cartViewModel.placeOrder(selectedZoneWithTables?.zone, selectedTable)
+                    }
+                }
             }
         }
 
@@ -108,12 +142,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
         cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
             if (isOrderSuccessful) {
                 findNavController().popBackStack(R.id.nav_home, false)
-            }
-        }
-
-        cartViewModel.orderResultMessage.observe(viewLifecycleOwner) { message ->
-            if (message.isNotBlank()) {
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -147,44 +175,6 @@ class CartFragment : Fragment(), CartItemsAdapter.OnRemoveFromCartListener,
             if (isLoading) {
                 binding.paymentTypeErrorText.visibility = View.GONE
                 binding.paymentTypeRetryButton.visibility = View.GONE
-            }
-        }
-
-        // TODO: This code can be improved
-        menuViewModel.selectedTable.value.let { selectedTable ->
-            if (selectedTable != null) {
-                binding.tableNo.text =
-                    getString(R.string.table_no_label, selectedTable.combinationTableNumber)
-                binding.tableNo.visibility = View.VISIBLE
-
-                menuViewModel.zonesWithTables.value?.let { zonesWithTables ->
-                    zonesWithTables.firstOrNull { zoneWithTables ->
-                        zoneWithTables.zone.id == selectedTable.zoneId
-                    }?.let { zoneWithTables ->
-
-                        binding.zoneNo.text =
-                            getString(R.string.zone_label, zoneWithTables.zone.zoneName)
-                        binding.zoneNo.visibility = View.VISIBLE
-
-                        binding.placeOrderButton.setOnClickListener {
-                            if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
-                                CashPaymentDialog(currencySymbol, totalPrice)
-                                    .show(childFragmentManager, CashPaymentDialog.TAG)
-                            } else {
-                                cartViewModel.placeOrder(zoneWithTables.zone, selectedTable)
-                            }
-                        }
-                    }
-                }
-            } else {
-                binding.placeOrderButton.setOnClickListener {
-                    if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
-                        CashPaymentDialog(currencySymbol, totalPrice)
-                            .show(childFragmentManager, CashPaymentDialog.TAG)
-                    } else {
-                        cartViewModel.placeOrder()
-                    }
-                }
             }
         }
 

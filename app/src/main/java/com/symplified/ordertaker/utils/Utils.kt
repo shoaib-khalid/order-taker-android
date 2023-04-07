@@ -10,7 +10,7 @@ import java.text.DecimalFormat
 object Utils {
 
     const val ASPECT_RATIO_TOLERANCE = 0.01f
-    val formatter: DecimalFormat = DecimalFormat("#,##0.00")
+    private val formatter: DecimalFormat = DecimalFormat("#,##0.00")
     private const val TAG = "Utils"
 
 //    /** Convert NV21 format byte buffer to bitmap. */
@@ -84,5 +84,5 @@ object Utils {
         } / activity.resources.displayMetrics.density
     }
 
-    fun formatPrice(price: Double) = formatter.format(price)
+    fun formatPrice(price: Double): String = formatter.format(price)
 }

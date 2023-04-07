@@ -45,9 +45,6 @@ class CartViewModel : ViewModel() {
     private val _isOrderSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val isOrderSuccessful: LiveData<Boolean> = _isOrderSuccessful
 
-    private val _orderReceipt: MutableLiveData<ByteArray> by lazy { MutableLiveData<ByteArray>() }
-    val orderReceipt: LiveData<ByteArray> = _orderReceipt
-
     fun delete(cartItem: CartItemWithAddOnsAndSubItems) = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.delete(cartItem)
     }
@@ -75,7 +72,6 @@ class CartViewModel : ViewModel() {
             val cartItemRequests: MutableList<CartItemRequest> = mutableListOf()
             val cartItemsWithDetails = cartItemsWithAddOnsAndSubItems.value!!
             cartItemsWithDetails.forEach { cartItemWithDetails ->
-
                 val cartSubItemsRequestList: MutableList<CartSubItemRequest> = mutableListOf()
                 cartItemWithDetails.cartSubItems.forEach { subItem ->
                     for (i in 1..subItem.quantity) {
@@ -107,11 +103,14 @@ class CartViewModel : ViewModel() {
             }
 
             var customerNotes = ""
-            if (zone != null && table != null) {
-                customerNotes =
-                    "${customerNotes}Zone: ${zone.zoneName},\nTable No. ${table.combinationTableNumber}\n"
+            if (zone != null) {
+                customerNotes = "${customerNotes}Zone: ${zone.zoneName},\n"
+            }
+            if (table != null) {
+                customerNotes = "${customerNotes}Table No. ${table.combinationTableNumber}\n"
             }
             customerNotes = "${customerNotes}Served by: ${user.name}"
+
             val orderRequest = listOf(
                 OrderRequest(
                     cartItemRequests,

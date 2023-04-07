@@ -16,8 +16,8 @@ android {
         applicationId "com.symplified.ordertaker"
         minSdk 24
         targetSdk 33
-        versionCode 34
-        versionName "0.1.944"
+        versionCode 35
+        versionName "0.1.945"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

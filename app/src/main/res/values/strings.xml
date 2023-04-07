@@ -9,19 +9,20 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Order for Customer</string>
+    <string name="action_logout_confirmation">Are you sure you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
-    <string name="hint_email">Username</string>
+    <string name="menu_home">Order for Customer</string>
+    <string name="select_table_no">Select Table No.:</string>
+
+    <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="login_text">Login</string>
     <string name="production_mode_text">Switch to Production</string>
     <string name="menu_logout">Log Out</string>
     <string name="add_to_cart">Add to Cart</string>
     <string name="payment_type_failure_text">Failed to load payment types</string>
-
-    <string name="action_logout_confirmation">Are you sure you want to log out?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
 
     <string name="variant_title">%1$s:</string>
     <string name="variant_option">%1$s…%2$s %3$s</string>
@@ -46,10 +47,19 @@
     <string name="hint_search">Search</string>
     <string name="scan_barcode">Scan Barcode</string>
     <string name="menu_reload">Reload</string>
-    <string name="set_custom_price">Custom Price</string>
+    <string name="custom_price">Custom Price</string>
     <string name="scan_barcode_here">Scan Barcode Here</string>
     <string name="increment">Increment</string>
     <string name="decrement">Decrement</string>
-    <string name="select_table_no">Select Table No.:</string>
+
     <string name="checkout">Checkout</string>
+    <string name="price_header">Price (%1$s)</string>
+    <string name="total_price">Total: %1$s %2$s</string>
+    <string name="item">Item</string>
+    <string name="quantity">Qty</string>
+    <string name="price">Price</string>
+    <string name="del">Del</string>
+    <string name="retry">Retry</string>
+    <string name="clear_cart">Clear Cart</string>
+    <string name="place_order">Place Order</string>
 </resources>
