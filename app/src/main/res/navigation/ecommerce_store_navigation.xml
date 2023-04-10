@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_menuAndCartFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
     </fragment>
     <fragment
         android:id="@+id/barcodeScannerFragment"
@@ -26,6 +29,15 @@
         android:id="@+id/cartFragment"
         android:name="com.symplified.ordertaker.ui.main.menu_and_cart.cart.CartFragment"
         android:label="Checkout"
-        tools:layout="@layout/fragment_cart" />
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_paymentFragment2"
+            app:destination="@id/paymentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.PaymentFragment"
+        android:label="fragment_payment"
+        tools:layout="@layout/fragment_payment" />
 
 </navigation>

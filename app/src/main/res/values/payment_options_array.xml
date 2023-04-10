@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="payment_options_array">
-        <item>Cash</item>
-        <item>Touch \'n Go eWallet</item>
-        <item>Grab Pay</item>
-        <item>Others</item>
-    </string-array>
-</resources>

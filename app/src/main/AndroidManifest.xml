@@ -4,10 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<!--    <uses-permission android:name="android.permission.CAMERA" />-->
-
-<!--    <uses-feature android:name="android.hardware.camera.flash" />-->
-<!--    <uses-feature android:name="android.hardware.camera.autofocus" />-->
 
     <application
         android:name=".App"
@@ -20,6 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OrderTaker"
         tools:targetApi="33">
+        <activity
+            android:name=".ui.main.menu_and_cart.PaymentActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"

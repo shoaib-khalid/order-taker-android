@@ -6,24 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
-import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
-import com.symplified.ordertaker.models.stores.BusinessType
+import com.symplified.ordertaker.models.paymentchannel.PaymentOption
 import com.symplified.ordertaker.models.zones.ZoneWithTables
-import com.symplified.ordertaker.ui.main.menu_and_cart.MenuAndCartFragmentDirections
 import com.symplified.ordertaker.utils.Utils
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
+import com.symplified.ordertaker.viewmodels.OrderResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
 
 class CartFragment : Fragment(),
     CartItemsAdapter.OnRemoveFromCartListener,
@@ -73,29 +72,29 @@ class CartFragment : Fragment(),
 
             cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { items ->
 
-                    binding.placeOrderButton.isEnabled = items.isNotEmpty()
-                    cartItemsAdapter.updateItems(items)
+                binding.placeOrderButton.isEnabled = items.isNotEmpty()
+                cartItemsAdapter.updateItems(items)
 
-                    lifecycleScope.launch(Dispatchers.Default) {
-                        totalPrice = 0.0
-                        items.forEach { item ->
-                            var itemPrice = item.cartItem.itemPrice
-                            item.cartItemAddons.forEach { addOn ->
-                                itemPrice += addOn.price
-                            }
+                lifecycleScope.launch(Dispatchers.Default) {
+                    totalPrice = 0.0
+                    items.forEach { item ->
+                        var itemPrice = item.cartItem.itemPrice
+                        item.cartItemAddons.forEach { addOn ->
+                            itemPrice += addOn.price
+                        }
 
-                            totalPrice += (itemPrice * item.cartItem.quantity)
-                        }
-                        withContext(Dispatchers.Main) {
-                            binding.totalPriceText.text =
-                                getString(
-                                    R.string.total_price,
-                                    user.currencySymbol,
-                                    Utils.formatPrice(totalPrice)
-                                )
-                        }
+                        totalPrice += (itemPrice * item.cartItem.quantity)
+                    }
+                    withContext(Dispatchers.Main) {
+                        binding.totalPriceText.text =
+                            getString(
+                                R.string.total_price,
+                                user.currencySymbol,
+                                Utils.formatPrice(totalPrice)
+                            )
                     }
                 }
+            }
 
             menuViewModel.selectedTable.observe(viewLifecycleOwner) { selectedTable ->
                 var selectedZoneWithTables: ZoneWithTables? = null
@@ -119,7 +118,7 @@ class CartFragment : Fragment(),
                     }
                 }
                 binding.placeOrderButton.setOnClickListener {
-                    if (cartViewModel.selectedPaymentChannel.value!!.channelCode == "CASH") {
+                    if (cartViewModel.selectedPaymentOption.value!! == PaymentOption.CASH) {
                         CashPaymentDialog(user.currencySymbol, totalPrice)
                             .show(childFragmentManager, CashPaymentDialog.TAG)
                     } else {
@@ -139,43 +138,23 @@ class CartFragment : Fragment(),
             }
         }
 
-        cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
-            if (isOrderSuccessful) {
-                findNavController().popBackStack(R.id.nav_home, false)
+//        cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
+//            if (isOrderSuccessful) {
+//                findNavController().popBackStack(R.id.nav_home, false)
+//            }
+//        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cartViewModel.orderResult.collect { orderResult ->
+                    if (orderResult is OrderResult.Success) {
+                        findNavController().popBackStack(R.id.nav_home, false)
+                    }
+                }
             }
         }
 
-        binding.paymentTypeRetryButton.setOnClickListener {
-            cartViewModel.fetchPaymentChannels()
-        }
-
-        var isPaymentChannelsEmpty = false
-        cartViewModel.paymentChannels.observe(viewLifecycleOwner) { paymentChannels ->
-            isPaymentChannelsEmpty = paymentChannels.isEmpty()
-
-            paymentChannelAdapter.updatePaymentChannels(paymentChannels)
-            paymentChannelAdapter.selectPaymentChannel(cartViewModel.selectedPaymentChannel.value!!)
-            if (paymentChannels.isEmpty()) {
-                cartViewModel.fetchPaymentChannels()
-            }
-        }
-
-        cartViewModel.selectedPaymentChannel.observe(viewLifecycleOwner) { selectedPaymentChannel ->
-            paymentChannelAdapter.selectPaymentChannel(selectedPaymentChannel)
-        }
-
-        cartViewModel.isPaymentChannelsReceived.observe(viewLifecycleOwner) { isReceived ->
-            binding.paymentTypeErrorText.visibility = if (isReceived) View.GONE else View.VISIBLE
-            binding.paymentTypeRetryButton.visibility = if (isReceived) View.GONE else View.VISIBLE
-        }
-
-        cartViewModel.isLoadingPaymentChannels.observe(viewLifecycleOwner) { isLoading ->
-            binding.paymentTypeProgressBar.visibility =
-                if (isLoading && isPaymentChannelsEmpty) View.VISIBLE else View.GONE
-            if (isLoading) {
-                binding.paymentTypeErrorText.visibility = View.GONE
-                binding.paymentTypeRetryButton.visibility = View.GONE
-            }
+        cartViewModel.selectedPaymentOption.observe(viewLifecycleOwner) { selectedPaymentChannel ->
+            paymentChannelAdapter.selectPaymentOption(selectedPaymentChannel)
         }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
@@ -190,7 +169,7 @@ class CartFragment : Fragment(),
         cartViewModel.delete(cartItem)
     }
 
-    override fun onPaymentTypeClicked(paymentChannel: PaymentChannel) {
-        cartViewModel.setSelectedPaymentChannel(paymentChannel)
+    override fun onPaymentTypeClicked(paymentOption: PaymentOption) {
+        cartViewModel.setSelectedPaymentOption(paymentOption)
     }
 }

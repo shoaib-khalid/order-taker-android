@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -12,6 +13,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -26,10 +30,13 @@ import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.models.stores.BusinessType
 import com.symplified.ordertaker.ui.login.LoginActivity
+import com.symplified.ordertaker.ui.main.menu_and_cart.PaymentActivity
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MainViewModel
+import com.symplified.ordertaker.viewmodels.OrderResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -92,11 +99,37 @@ class MainActivity : AppCompatActivity() {
             Glide.with(this).load(assetUrl).into(navHeaderImage)
         }
 
-        cartViewModel.orderResultMessage.observe(this) { message ->
-            if (message.isNotBlank()) {
-                Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cartViewModel.orderResult.collect { orderResult ->
+                    if (orderResult is OrderResult.Success || orderResult is OrderResult.Failure) {
+                        showSnackBar(orderResult.message)
+
+                        if (orderResult is OrderResult.Success && orderResult.paymentUrl != null) {
+                            Log.d("payment-activity", orderResult.paymentUrl)
+//                            startActivity(Intent(Intent.ACTION_VIEW).apply {
+//                                data = Uri.parse(orderResult.paymentUrl)
+//                            })
+                            startActivity(Intent(
+                                this@MainActivity,
+                                PaymentActivity::class.java
+                            ).apply {
+                                putExtra(PaymentActivity.URL, orderResult.paymentUrl)
+                            })
+                        }
+
+                        cartViewModel.clearOrderResult()
+                    }
+                }
             }
         }
+
+//        startActivity(Intent(
+//            this@MainActivity,
+//            PaymentActivity::class.java
+//        ).apply {
+//            putExtra(PaymentActivity.URL, "https://paymentv2.dev-my.symplified.ai/online-payment?storeId=c9315221-a003-4830-9e28-c26c3d044dff&orderId=21ef207f-9605-4468-92f8-996676d50380")
+//        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -127,14 +160,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    Snackbar.make(
-                        binding.root,
+                    showSnackBar(
                         if (successResponses.any { !it })
                             "An error occurred while reloading data. Please try again"
                         else
                             "All data successfully reloaded",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    )
                     item.isVisible = true
                 }
             }
@@ -152,4 +183,10 @@ class MainActivity : AppCompatActivity() {
             super.onOptionsItemSelected(item)
         }
     }
+
+    private fun showSnackBar(message: String) = Snackbar.make(
+        binding.root,
+        message,
+        Snackbar.LENGTH_SHORT
+    ).show()
 }

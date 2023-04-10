@@ -2,6 +2,7 @@ package com.symplified.ordertaker.viewmodels
 
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
+import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.models.cartitems.CartItemAddOnRequest
 import com.symplified.ordertaker.models.cartitems.CartItemRequest
 import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
@@ -9,41 +10,34 @@ import com.symplified.ordertaker.models.cartitems.CartSubItemRequest
 import com.symplified.ordertaker.models.order.OrderPaymentDetails
 import com.symplified.ordertaker.models.order.OrderRequest
 import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
+import com.symplified.ordertaker.models.paymentchannel.PaymentOption
 import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.networking.ServiceGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CartViewModel : ViewModel() {
     val cartItemsWithAddOnsAndSubItems: LiveData<List<CartItemWithAddOnsAndSubItems>> =
         App.cartItemRepository.allItems.asLiveData()
-    val paymentChannels: LiveData<List<PaymentChannel>> =
-        App.paymentChannelRepository.allPaymentChannels.asLiveData()
     val user: LiveData<User?> = App.userRepository.user.asLiveData()
 
-    private val _selectedPaymentChannel = MutableLiveData<PaymentChannel>().apply {
-        value = PaymentChannel("CASH", "Cash")
+    private val _selectedPaymentOption = MutableLiveData<PaymentOption>().apply {
+        value = PaymentOption.CASH
     }
-    val selectedPaymentChannel: LiveData<PaymentChannel> = _selectedPaymentChannel
-
-    private val _isLoadingPaymentChannels: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val isLoadingPaymentChannels: LiveData<Boolean> = _isLoadingPaymentChannels
-
-    private val _isPaymentChannelsReceived: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val isPaymentChannelsReceived: LiveData<Boolean> = _isPaymentChannelsReceived
+    val selectedPaymentOption: LiveData<PaymentOption> = _selectedPaymentOption
 
     private val _isPlacingOrder: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val isPlacingOrder: LiveData<Boolean> = _isPlacingOrder
 
-    private val _orderResultMessage: MutableLiveData<String> by lazy { MutableLiveData<String>() }
-    val orderResultMessage: LiveData<String> = _orderResultMessage
-
-    private val _isOrderSuccessful: MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-    val isOrderSuccessful: LiveData<Boolean> = _isOrderSuccessful
+    private val _orderResult: MutableStateFlow<OrderResult?> =
+        MutableStateFlow(null)
+    val orderResult: StateFlow<OrderResult?> = _orderResult
 
     fun delete(cartItem: CartItemWithAddOnsAndSubItems) = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.delete(cartItem)
@@ -52,13 +46,11 @@ class CartViewModel : ViewModel() {
     fun clearAll() = CoroutineScope(Dispatchers.IO).launch {
         App.cartItemRepository.clear()
         App.cartSubItemRepository.clear()
-        setSelectedPaymentChannel(PaymentChannel("CASH", "Cash"))
+        setSelectedPaymentOption(PaymentOption.CASH)
     }
 
-    fun setSelectedPaymentChannel(paymentType: PaymentChannel) {
-        viewModelScope.launch {
-            _selectedPaymentChannel.value = paymentType
-        }
+    fun setSelectedPaymentOption(paymentType: PaymentOption) = viewModelScope.launch {
+        _selectedPaymentOption.value = paymentType
     }
 
     fun placeOrder(
@@ -111,11 +103,12 @@ class CartViewModel : ViewModel() {
             }
             customerNotes = "${customerNotes}Served by: ${user.name}"
 
+            val selectedPaymentType = _selectedPaymentOption.value!!
             val orderRequest = listOf(
                 OrderRequest(
                     cartItemRequests,
                     user.storeId,
-                    OrderPaymentDetails(_selectedPaymentChannel.value!!.channelCode),
+                    OrderPaymentDetails(selectedPaymentType.name),
                     customerNotes
                 )
             )
@@ -134,39 +127,54 @@ class CartViewModel : ViewModel() {
                 withContext(Dispatchers.Main) {
                     _isPlacingOrder.value = false
                 }
-               withContext(Dispatchers.Main) {
-                   if (response.isSuccessful) {
-                       _orderResultMessage.value = "Order placed successfully"
-                       _orderResultMessage.value = ""
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        val orderId = response.body()?.data?.orderList?.getOrNull(0)?.id
+                        val basePaymentUrl = when (
+                            App.sharedPreferences().getBoolean(SharedPrefsKey.IS_STAGING, false)
+                        ) {
+                            true -> STAGING_PAYMENT_URL
+                            false -> PRODUCTION_PAYMENT_URL
+                        }
 
-                       _isOrderSuccessful.value = true
-                       _isOrderSuccessful.value = false
+                        _orderResult.value =
+                            OrderResult.Success(
+                                paymentUrl = if (orderId != null && selectedPaymentType != PaymentOption.CASH)
+                                    "$basePaymentUrl${selectedPaymentType.endpoint}?storeId=" +
+                                            "${user.storeId}&orderId=${orderId}"
+                                else null
+                            )
 
-                       clearAll()
-                   } else {
-                       _orderResultMessage.value =
-                           "An error occurred while placing order. Please try again"
-                   }
+                        clearAll()
+                    } else {
+                        _orderResult.value = OrderResult.Failure()
+                    }
                 }
             } catch (e: Throwable) {
                 withContext(Dispatchers.Main) {
+                    _orderResult.value = OrderResult.Failure()
                     _isPlacingOrder.value = false
-                    _orderResultMessage.value =
-                        "An error occurred while placing order. Please try again"
                 }
             }
         }
     }
 
-    fun fetchPaymentChannels() = CoroutineScope(Dispatchers.IO).launch {
-        withContext(Dispatchers.Main) {
-            _isLoadingPaymentChannels.value = true
-        }
-        val isPaymentChannelsReceived = App.paymentChannelRepository.fetchPaymentChannels()
-        withContext(Dispatchers.Main) {
-            _isPaymentChannelsReceived.value = isPaymentChannelsReceived
-            _isLoadingPaymentChannels.value = false
-        }
+    fun clearOrderResult() {
+        _orderResult.value = null
     }
 
+    companion object {
+        private const val STAGING_PAYMENT_URL = "https://paymentv2.dev-my.symplified.ai/"
+        private const val PRODUCTION_PAYMENT_URL = "https://paymentv2.deliverin.my/"
+    }
+}
+
+sealed class OrderResult(open val message: String) {
+    data class Success(
+        override val message: String = "Order placed successfully",
+        val paymentUrl: String? = null
+    ) : OrderResult(message)
+
+    data class Failure(override val message: String = "An error occurred while placing order. Please try again") :
+        OrderResult(message)
 }

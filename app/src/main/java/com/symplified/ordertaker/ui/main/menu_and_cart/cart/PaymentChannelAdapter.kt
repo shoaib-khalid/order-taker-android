@@ -7,18 +7,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.symplified.ordertaker.R
-import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
+import com.symplified.ordertaker.models.paymentchannel.PaymentOption
 
 class PaymentChannelAdapter(
     private val onPaymentTypeClickListener: OnPaymentTypeClickListener
 ) : RecyclerView.Adapter<PaymentChannelAdapter.ViewHolder>() {
 
-    private val paymentChannels: MutableList<PaymentChannel> =
-        mutableListOf()
+    private val paymentOptions: Array<PaymentOption> =
+        enumValues()
     private var selectedPosition = RecyclerView.NO_POSITION
 
     interface OnPaymentTypeClickListener {
-        fun onPaymentTypeClicked(paymentChannel: PaymentChannel)
+        fun onPaymentTypeClicked(paymentOption: PaymentOption)
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -38,38 +38,28 @@ class PaymentChannelAdapter(
 
         viewHolder.textView.setTextColor(Color.parseColor(if (isSelected) "#FFFFFFFF" else "#FF000000"))
 
-        viewHolder.textView.text = paymentChannels[position].channelName
+        viewHolder.textView.text = paymentOptions[position].displayName
         viewHolder.itemView.setOnClickListener {
             val previousPosition = selectedPosition
             selectedPosition = viewHolder.adapterPosition
             notifyItemChanged(previousPosition)
             notifyItemChanged(selectedPosition)
-            onPaymentTypeClickListener.onPaymentTypeClicked(paymentChannels[selectedPosition])
+            onPaymentTypeClickListener.onPaymentTypeClicked(paymentOptions[selectedPosition])
         }
     }
 
-    override fun getItemCount() = paymentChannels.size
+    override fun getItemCount() = paymentOptions.size
 
-    fun updatePaymentChannels(updatedPaymentChannels: List<PaymentChannel>) {
-        if (paymentChannels.isNotEmpty()) {
-            val originalSize = paymentChannels.size
-            paymentChannels.clear()
-            notifyItemRangeRemoved(0, originalSize)
-        }
-        paymentChannels.addAll(updatedPaymentChannels)
-        notifyItemRangeInserted(0, paymentChannels.size)
-    }
-
-    fun selectPaymentChannel(selectedPaymentChannel: PaymentChannel) {
-        clearSelectedPaymentChannel()
-        val indexOfSelected = paymentChannels.indexOf(selectedPaymentChannel)
+    fun selectPaymentOption(selectedPaymentOption: PaymentOption) {
+        clearSelectedPaymentOption()
+        val indexOfSelected = paymentOptions.indexOf(selectedPaymentOption)
         if (indexOfSelected != -1) {
             selectedPosition = indexOfSelected
             notifyItemChanged(indexOfSelected)
         }
     }
 
-    fun clearSelectedPaymentChannel() {
+    private fun clearSelectedPaymentOption() {
         val previouslySelected = selectedPosition
         selectedPosition = RecyclerView.NO_POSITION
         if (previouslySelected != RecyclerView.NO_POSITION) {
