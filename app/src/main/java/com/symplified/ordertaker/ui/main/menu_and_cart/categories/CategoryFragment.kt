@@ -1,10 +1,12 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.categories
 
+import android.content.Context.WINDOW_SERVICE
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,7 +39,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         binding.categoryList.apply {
             layoutManager = LinearLayoutManager(
                 view.context,
-                if (resources.getBoolean(R.bool.isTablet))
+                if (resources.getBoolean(R.bool.isTablet) && resources.getBoolean(R.bool.isLandscapeOriented))
                     LinearLayoutManager.VERTICAL
                 else LinearLayoutManager.HORIZONTAL,
                 false

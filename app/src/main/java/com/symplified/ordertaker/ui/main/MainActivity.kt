@@ -3,6 +3,7 @@ package com.symplified.ordertaker.ui.main
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -45,10 +47,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     private val mainViewModel: MainViewModel by viewModels()
     private val cartViewModel: CartViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
                     as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
         val inflater = navController.navInflater
 
         val headerView = navView.getHeaderView(0)
@@ -89,6 +91,12 @@ class MainActivity : AppCompatActivity() {
                 )
                 setupActionBarWithNavController(navController, appBarConfiguration)
                 navView.setupWithNavController(navController)
+                savedInstanceState?.getInt(NAV_ID, -1)?.let { currentNavId ->
+                    Log.d("navigation", "Current nav id: $currentNavId")
+                    if (currentNavId != -1) {
+                        navController.navigate(currentNavId)
+                    }
+                }
             } else {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
@@ -102,14 +110,12 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cartViewModel.orderResult.collect { orderResult ->
-                    if (orderResult is OrderResult.Success || orderResult is OrderResult.Failure) {
+                    if (orderResult is OrderResult.Success
+                        || orderResult is OrderResult.Failure
+                    ) {
                         showSnackBar(orderResult.message)
 
                         if (orderResult is OrderResult.Success && orderResult.paymentUrl != null) {
-                            Log.d("payment-activity", orderResult.paymentUrl)
-//                            startActivity(Intent(Intent.ACTION_VIEW).apply {
-//                                data = Uri.parse(orderResult.paymentUrl)
-//                            })
                             startActivity(Intent(
                                 this@MainActivity,
                                 PaymentActivity::class.java
@@ -117,8 +123,6 @@ class MainActivity : AppCompatActivity() {
                                 putExtra(PaymentActivity.URL, orderResult.paymentUrl)
                             })
                         }
-
-                        cartViewModel.clearOrderResult()
                     }
                 }
             }
@@ -184,9 +188,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(NAV_ID, navController.currentDestination?.id ?: -1)
+    }
+
     private fun showSnackBar(message: String) = Snackbar.make(
         binding.root,
         message,
         Snackbar.LENGTH_SHORT
     ).show()
+
+    companion object {
+        private const val NAV_ID = "nav_id"
+    }
 }

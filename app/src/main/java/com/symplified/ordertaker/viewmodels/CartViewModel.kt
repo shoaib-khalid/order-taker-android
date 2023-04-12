@@ -47,6 +47,7 @@ class CartViewModel : ViewModel() {
         App.cartItemRepository.clear()
         App.cartSubItemRepository.clear()
         setSelectedPaymentOption(PaymentOption.CASH)
+        _orderResult.value = null
     }
 
     fun setSelectedPaymentOption(paymentType: PaymentOption) = viewModelScope.launch {
@@ -141,7 +142,7 @@ class CartViewModel : ViewModel() {
                             OrderResult.Success(
                                 paymentUrl = if (orderId != null && selectedPaymentType != PaymentOption.CASH)
                                     "$basePaymentUrl${selectedPaymentType.endpoint}?storeId=" +
-                                            "${user.storeId}&orderId=${orderId}"
+                                            "${user.storeId}&orderId=$orderId"
                                 else null
                             )
 
@@ -157,10 +158,6 @@ class CartViewModel : ViewModel() {
                 }
             }
         }
-    }
-
-    fun clearOrderResult() {
-        _orderResult.value = null
     }
 
     companion object {

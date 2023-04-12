@@ -68,7 +68,7 @@ class ProductSelectionDialog : DialogFragment() {
                     currentAmount.clear()
                 }
 
-                if (before == 0 && currentAmount.length < 8) {
+                if (before == 0 && currentAmount.length < 8 && s.getOrNull(start) != null) {
                     currentAmount.append(s[start])
                 } else if (count == 0 && currentAmount.isNotEmpty()) {
                     currentAmount.deleteCharAt(currentAmount.length - 1)

@@ -10,11 +10,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
+import com.symplified.ordertaker.BuildConfig
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityLoginBinding
 import com.symplified.ordertaker.ui.main.MainActivity
 import com.symplified.ordertaker.viewmodels.AuthViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class LoginActivity : AppCompatActivity() {
 
@@ -84,14 +86,22 @@ class LoginActivity : AppCompatActivity() {
                     binding.tvEmail.error = null
                     binding.tvPassword.editText!!.text.clear()
                     binding.tvPassword.error = null
+                    binding.tvEmail.requestFocus()
 
                     binding.btnSwitchToProduction.visibility =
                         if (isStaging) View.VISIBLE else View.GONE
                     binding.welcome.text =
                         if (isStaging) getString(R.string.staging_mode) else getString(R.string.welcome_message)
+
                 }
             }
         }
+
+//        binding.appVersionText!!.text = getString(
+//            R.string.version_indicator,
+//            "1234",
+//            BuildConfig.VERSION_NAME
+//        )
 
         binding.btnSwitchToProduction.setOnClickListener {
             authViewModel.switchToProduction()

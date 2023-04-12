@@ -32,9 +32,9 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+<!--        android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"-->
         <activity
             android:name=".ui.main.MainActivity"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:theme="@style/Theme.OrderTaker.NoActionBar">
             <intent-filter>
