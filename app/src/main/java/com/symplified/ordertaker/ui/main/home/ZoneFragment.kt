@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.flexbox.*
 import com.symplified.ordertaker.databinding.FragmentZoneBinding
 import com.symplified.ordertaker.models.zones.Table
@@ -19,12 +19,9 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
         const val ZONE_ID = "ZONE_ID"
     }
 
-    private var _binding: FragmentZoneBinding? = null
+    private lateinit var binding: FragmentZoneBinding
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-    private lateinit var tablesRecyclerView: RecyclerView
+//    private lateinit var tablesRecyclerView: RecyclerView
     private lateinit var zoneName: String
 
     private val menuViewModel: MenuViewModel by activityViewModels()
@@ -34,22 +31,24 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentZoneBinding.inflate(inflater, container, false)
-        tablesRecyclerView = binding.tablesList
+        binding = FragmentZoneBinding.inflate(inflater, container, false)
+//        tablesRecyclerView = binding.tablesList
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        tablesRecyclerView.layoutManager = FlexboxLayoutManager(view.context).apply {
-            justifyContent = JustifyContent.SPACE_EVENLY
-            alignItems = AlignItems.CENTER
-            flexDirection = FlexDirection.ROW
-            flexWrap = FlexWrap.WRAP
-        }
+        val tablesAdapter = TableListAdapter(onTableClickListener = this)
+        binding.tablesList.apply {
+            adapter = tablesAdapter
 
-        val adapter = TableListAdapter(onTableClickListener = this)
-        tablesRecyclerView.adapter = adapter
+            layoutManager = FlexboxLayoutManager(view.context).apply {
+                justifyContent = JustifyContent.SPACE_EVENLY
+                alignItems = AlignItems.CENTER
+                flexDirection = FlexDirection.ROW
+                flexWrap = FlexWrap.WRAP
+            }
+        }
 
         arguments?.takeIf { it.containsKey(ZONE_ID) }?.apply {
             val zoneId = getInt(ZONE_ID)
@@ -59,7 +58,7 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
                 }?.let { currentZone ->
                     zoneName = currentZone.zone.zoneName
                     val newTables = currentZone.tables
-                    adapter.setTables(newTables)
+                    tablesAdapter.setTables(newTables)
                 }
             }
         }

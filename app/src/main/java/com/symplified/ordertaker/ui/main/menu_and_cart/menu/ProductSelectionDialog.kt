@@ -210,15 +210,12 @@ class ProductSelectionDialog : DialogFragment() {
                 val packageOptionsWithViews: MutableMap<String, View> = mutableMapOf()
 
                 val packageGroup = productPackageWithOptionDetails.productPackage
-                val minAmount = packageGroup.minAllow
-                val maxAmount = packageGroup.totalAllow
                 (packageLayout.findViewById(R.id.checkbox_group_title) as TextView).text =
                     getString(
                         R.string.package_group_title,
                         packageGroup.minAllow,
                         packageGroup.totalAllow
                     )
-//                    "Select at least $minAmount of $maxAmount"
 
                 productPackageWithOptionDetails.productPackageOptionDetails.forEach { optionDetails ->
                     val optionView: View =

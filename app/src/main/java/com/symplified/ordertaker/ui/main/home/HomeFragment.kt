@@ -12,11 +12,7 @@ import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentHomeBinding
 
     private val menuViewModel: MenuViewModel by activityViewModels()
 
@@ -25,7 +21,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -47,10 +43,5 @@ class HomeFragment : Fragment() {
                 if (isLoading && isZonesEmpty) View.VISIBLE else View.GONE
         }
 
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

@@ -4,11 +4,9 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="version_indicator">Symplified %1$s | Ver. %2$s </string>
+    <string name="version_indicator">Symplified %1$d | Ver. %2$s </string>
 
     <string name="action_logout_confirmation">Are you sure you want to log out?</string>
     <string name="yes">Yes</string>

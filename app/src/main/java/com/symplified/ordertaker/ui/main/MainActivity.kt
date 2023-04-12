@@ -38,6 +38,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import java.util.Calendar
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,12 +61,6 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appVersionText.text = getString(
-            R.string.version_indicator,
-            "2023",
-            BuildConfig.VERSION_NAME
-        )
-
         val drawerLayout: DrawerLayout = binding.drawerLayout
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -81,6 +79,12 @@ class MainActivity : AppCompatActivity() {
         val navHeaderTitle: TextView = headerView.findViewById(R.id.nav_header_title)
         val navHeaderSubtitle: TextView = headerView.findViewById(R.id.nav_header_subtitle)
         val navHeaderImage: ImageView = headerView.findViewById(R.id.imageView)
+        (headerView.findViewById(R.id.app_version_text) as TextView)
+            .text = getString(
+            R.string.version_indicator,
+            Calendar.getInstance().get(Calendar.YEAR),
+            BuildConfig.VERSION_NAME
+        )
 
         mainViewModel.user.observe(this) { user ->
             if (user != null) {
@@ -95,9 +99,8 @@ class MainActivity : AppCompatActivity() {
                 setupActionBarWithNavController(navController, appBarConfiguration)
                 navView.setupWithNavController(navController)
                 savedInstanceState?.getInt(NAV_ID, -1)?.let { currentNavId ->
-                    Log.d("navigation", "Current nav id: $currentNavId")
                     if (currentNavId != -1) {
-                        navController.navigate(currentNavId)
+//                        navController.navigate(currentNavId)
                     }
                 }
             } else {
@@ -130,13 +133,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-//        startActivity(Intent(
-//            this@MainActivity,
-//            PaymentActivity::class.java
-//        ).apply {
-//            putExtra(PaymentActivity.URL, "https://paymentv2.dev-my.symplified.ai/online-payment?storeId=c9315221-a003-4830-9e28-c26c3d044dff&orderId=21ef207f-9605-4468-92f8-996676d50380")
-//        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

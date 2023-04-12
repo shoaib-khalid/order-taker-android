@@ -18,6 +18,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
 
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/fnb_store_navigation" />
+        app:defaultNavHost="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>

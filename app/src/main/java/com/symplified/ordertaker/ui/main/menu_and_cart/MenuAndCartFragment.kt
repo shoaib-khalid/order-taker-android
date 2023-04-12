@@ -12,8 +12,7 @@ import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class MenuAndCartFragment : Fragment() {
 
-    private var _binding: FragmentMenuAndCartBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentMenuAndCartBinding
 
     private val menuViewModel: MenuViewModel by activityViewModels()
 
@@ -22,7 +21,7 @@ class MenuAndCartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMenuAndCartBinding.inflate(inflater, container, false)
+        binding = FragmentMenuAndCartBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.flexbox.*
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.symplified.ordertaker.R
@@ -23,11 +24,7 @@ import kotlinx.coroutines.launch
 class MenuFragment : Fragment(),
     MenuAdapter.OnMenuItemClickedListener {
 
-    private var _binding: FragmentMenuBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentMenuBinding
 
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val dialogViewModel: ProductSelectionViewModel by activityViewModels()
@@ -38,22 +35,22 @@ class MenuFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMenuBinding.inflate(inflater, container, false)
+        binding = FragmentMenuBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-//        binding.itemList.layoutManager = GridLayoutManager(view.context, 3)
-        binding.itemList.layoutManager = FlexboxLayoutManager(view.context).apply {
-            justifyContent = JustifyContent.CENTER
-            alignItems = AlignItems.CENTER
-            flexDirection = FlexDirection.ROW
-            flexWrap = FlexWrap.WRAP
-        }
-
         val menuAdapter = MenuAdapter(this)
-        binding.itemList.adapter = menuAdapter
+        binding.itemList.apply {
+            adapter = menuAdapter
+            layoutManager = FlexboxLayoutManager(view.context).apply {
+                justifyContent = JustifyContent.CENTER
+                alignItems = AlignItems.CENTER
+                flexDirection = FlexDirection.ROW
+                flexWrap = FlexWrap.WRAP
+            }
+        }
 
         var searchTerm = binding.textBoxSearch.editText?.text?.toString() ?: ""
 
@@ -93,11 +90,6 @@ class MenuFragment : Fragment(),
                     }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onItemClicked(item: ProductWithDetails) {

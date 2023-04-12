@@ -16,6 +16,7 @@ import com.symplified.ordertaker.databinding.ActivityLoginBinding
 import com.symplified.ordertaker.ui.main.MainActivity
 import com.symplified.ordertaker.viewmodels.AuthViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -98,7 +99,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.appVersionText?.text = getString(
             R.string.version_indicator,
-            "1234",
+            Calendar.getInstance().get(Calendar.YEAR),
             BuildConfig.VERSION_NAME
         )
 

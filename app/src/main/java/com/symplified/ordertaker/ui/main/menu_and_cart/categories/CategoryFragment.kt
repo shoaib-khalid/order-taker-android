@@ -14,11 +14,7 @@ import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 
-    private var _binding: FragmentCategoryBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCategoryBinding
 
     private val menuViewModel: MenuViewModel by activityViewModels()
 
@@ -26,7 +22,7 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCategoryBinding.inflate(inflater, container, false)
+        binding = FragmentCategoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -59,11 +55,6 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
             (binding.categoryList.adapter as CategoriesAdapter)
                 .setSelectedCategory(category)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onCategoryClicked(category: Category) {

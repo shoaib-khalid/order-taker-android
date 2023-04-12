@@ -10,18 +10,13 @@ import com.symplified.ordertaker.databinding.FragmentPaymentBinding
 
 class PaymentFragment : Fragment() {
 
-    private var _binding: FragmentPaymentBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var binding: FragmentPaymentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_payment, container, false)
+        binding = FragmentPaymentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 }

@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.cart
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +29,7 @@ class CartFragment : Fragment(),
     CartItemsAdapter.OnRemoveFromCartListener,
     PaymentChannelAdapter.OnPaymentTypeClickListener {
 
-    private var _binding: FragmentCartBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCartBinding
 
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
@@ -41,7 +41,7 @@ class CartFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCartBinding.inflate(inflater, container, false)
+        binding = FragmentCartBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -158,11 +158,6 @@ class CartFragment : Fragment(),
         }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onItemRemoved(cartItem: CartItemWithAddOnsAndSubItems) {

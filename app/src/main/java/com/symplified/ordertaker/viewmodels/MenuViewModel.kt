@@ -24,8 +24,6 @@ class MenuViewModel : ViewModel() {
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 
     private val bestSellers = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
-
-    //    private val openItems = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
     private val openItems: LiveData<List<ProductWithDetails>> =
         App.productRepository.openItems.asLiveData()
 
