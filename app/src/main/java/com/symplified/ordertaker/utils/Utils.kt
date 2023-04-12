@@ -3,8 +3,6 @@ package com.symplified.ordertaker.utils
 import android.app.Activity
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.Window
-import android.view.WindowManager
 import java.text.DecimalFormat
 
 object Utils {

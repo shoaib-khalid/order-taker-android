@@ -1,19 +1,15 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.categories
 
-import android.content.Context.WINDOW_SERVICE
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
 import com.symplified.ordertaker.models.categories.Category
-import com.symplified.ordertaker.utils.Utils
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
 class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {

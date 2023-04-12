@@ -1,10 +1,6 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart
 
-import android.content.Context
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

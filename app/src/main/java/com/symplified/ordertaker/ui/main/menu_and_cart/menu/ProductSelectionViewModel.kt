@@ -1,6 +1,5 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

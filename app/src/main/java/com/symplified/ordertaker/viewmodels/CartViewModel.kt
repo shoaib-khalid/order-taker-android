@@ -9,7 +9,6 @@ import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.models.cartitems.CartSubItemRequest
 import com.symplified.ordertaker.models.order.OrderPaymentDetails
 import com.symplified.ordertaker.models.order.OrderRequest
-import com.symplified.ordertaker.models.paymentchannel.PaymentChannel
 import com.symplified.ordertaker.models.paymentchannel.PaymentOption
 import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.models.zones.Table

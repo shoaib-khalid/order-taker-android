@@ -1,9 +1,7 @@
 package com.symplified.ordertaker.ui.main
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -13,7 +11,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -28,6 +25,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.symplified.ordertaker.App
+import com.symplified.ordertaker.BuildConfig
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.ActivityMainBinding
 import com.symplified.ordertaker.models.stores.BusinessType
@@ -38,7 +36,6 @@ import com.symplified.ordertaker.viewmodels.MainViewModel
 import com.symplified.ordertaker.viewmodels.OrderResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -59,6 +56,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarMain.toolbar)
+
+        binding.appVersionText.text = getString(
+            R.string.version_indicator,
+            "2023",
+            BuildConfig.VERSION_NAME
+        )
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         // Passing each menu ID as a set of Ids because each

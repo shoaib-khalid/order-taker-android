@@ -1,10 +1,10 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentPaymentBinding
 

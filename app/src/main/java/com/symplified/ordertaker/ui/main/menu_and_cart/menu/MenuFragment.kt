@@ -1,24 +1,16 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.*
-import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.badge.BadgeDrawable.BadgeGravity
-import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.ExperimentalBadgeUtils
-import com.journeyapps.barcodescanner.ScanContract
-import com.journeyapps.barcodescanner.ScanOptions
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentMenuBinding
 import com.symplified.ordertaker.models.products.ProductWithDetails
@@ -40,17 +32,6 @@ class MenuFragment : Fragment(),
     private val menuViewModel: MenuViewModel by activityViewModels()
     private val dialogViewModel: ProductSelectionViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
-
-    private val barCodeScanLauncher: ActivityResultLauncher<ScanOptions> =
-        registerForActivityResult(ScanContract()) { result ->
-            result.contents?.let { contents ->
-                Toast.makeText(
-                    requireActivity(),
-                    "Barcode scanned: $contents",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater,

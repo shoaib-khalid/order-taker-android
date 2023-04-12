@@ -16,10 +16,7 @@ class App : Application() {
 
     companion object {
 
-        // Shared Preferences key names
-//        const val testStoreId = "c9315221-a003-4830-9e28-c26c3d044dff"
-        const val SHARED_PREFS_FILENAME = "Symplified Order Taker Shared Preferences File"
-        const val DEV_TAG = "dev-logging"
+        private const val SHARED_PREFS_FILENAME = "Symplified Order Taker Shared Preferences File"
 
         const val ASSET_URL_PRODUCTION = "https://assets.symplified.biz/product-assets"
         const val ASSET_URL_STAGING = "https://assets.symplified.it/product-assets"
@@ -72,6 +69,7 @@ class App : Application() {
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null
             } else {
+                @Suppress("DEPRECATION")
                 cm.activeNetworkInfo?.isConnected ?: false
             }
         }
