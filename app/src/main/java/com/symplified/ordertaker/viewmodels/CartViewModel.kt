@@ -106,10 +106,10 @@ class CartViewModel : ViewModel() {
             val selectedPaymentType = _selectedPaymentOption.value!!
             val orderRequest = listOf(
                 OrderRequest(
-                    cartItemRequests,
-                    user.storeId,
-                    OrderPaymentDetails(selectedPaymentType.name),
-                    customerNotes
+                    storeId = user.storeId,
+                    orderPaymentDetails = OrderPaymentDetails(selectedPaymentType.name),
+                    customerNotes = customerNotes,
+                    cartItems = cartItemRequests
                 )
             )
 

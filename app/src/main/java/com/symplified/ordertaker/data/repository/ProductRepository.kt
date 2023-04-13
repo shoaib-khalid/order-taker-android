@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.data.repository
 
 import android.util.Log
+import androidx.lifecycle.asLiveData
 import com.symplified.ordertaker.data.dao.*
 import com.symplified.ordertaker.models.bestsellers.BestSellerProduct
 import com.symplified.ordertaker.models.categories.Category
@@ -41,7 +42,9 @@ class ProductRepository(
         productDao.getAllProductsWithDetails()
 
     fun getProductsWithCategory(category: Category) =
-        productDao.getProductsWithCategoryId(category.id)
+        productDao.getProductsWithCategoryId(category.id).asLiveData()
+
+    fun getProductsWithCategory2(category: Category) = productDao.getProductsWithCategoryId(category.id)
 
     private suspend fun insertProduct(product: Product) {
         productDao.insert(product)

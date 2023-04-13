@@ -23,7 +23,7 @@ interface ProductDao {
 
     @Transaction
     @Query("SELECT * FROM products WHERE categoryId=:categoryId")
-    fun getProductsWithCategoryId(categoryId: String) : LiveData<List<ProductWithDetails>>
+    fun getProductsWithCategoryId(categoryId: String) : Flow<List<ProductWithDetails>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(product: Product)

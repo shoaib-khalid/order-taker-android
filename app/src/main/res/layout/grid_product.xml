@@ -30,13 +30,13 @@
             android:layout_margin="5dp"
             android:contentDescription="@string/product_image"
             android:src="@drawable/ic_fastfood"
-            app:layout_constraintBottom_toTopOf="@id/cart_item_price"
+            app:layout_constraintBottom_toTopOf="@id/item_price"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_name" />
 
         <TextView
-            android:id="@+id/cart_item_price"
+            android:id="@+id/item_price"
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

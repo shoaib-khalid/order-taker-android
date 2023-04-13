@@ -28,7 +28,7 @@ class CartItemsAdapter(
         val itemName: TextView = view.findViewById(R.id.cart_item_name)
         val subItems: TextView = view.findViewById(R.id.cart_sub_items_text)
         val itemQuantity: TextView = view.findViewById(R.id.cart_item_quantity)
-        val itemPrice: TextView = view.findViewById(R.id.cart_item_price)
+        val itemPrice: TextView = view.findViewById(R.id.item_price)
         val deleteBtn: AppCompatImageButton = view.findViewById(R.id.btn_close)
     }
 

@@ -12,6 +12,7 @@ import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.ZoneWithTables
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -32,6 +33,9 @@ class MenuViewModel : ViewModel() {
 
     private val _selectedCategory = MutableLiveData<Category?>().apply { value = null }
     val selectedCategory: LiveData<Category?> = _selectedCategory
+
+    private val _selectedCategory2: MutableStateFlow<Category?> = MutableStateFlow(null)
+    val selectedCategory2: StateFlow<Category?> = _selectedCategory2
 
     private val _scannedBarcode = MutableLiveData<String?>().apply { value = null }
     val scannedBarcode: LiveData<String?> = _scannedBarcode
@@ -61,6 +65,13 @@ class MenuViewModel : ViewModel() {
             else
                 App.productRepository.allProductsWithDetails.asLiveData()
         }
+
+    //    App.productRepository.allProductsWithDetails
+//    val productsWithDetails2: Flow<List<ProductWithDetails>> = _selectedCategory2.mapLatest {
+//        if (it != null) App.productRepository.allProductsWithDetails
+//        else App.productRepository.getProductsWithCategory2(it)
+//    }
+
 
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {
         App.productRepository.insertCategory(category)

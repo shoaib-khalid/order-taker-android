@@ -13,11 +13,11 @@ import com.symplified.ordertaker.R
 import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.models.products.ProductWithDetails
 
-class MenuAdapter(
+class ProductsAdapter(
     private val onMenuItemClickListener: OnMenuItemClickedListener,
     private var items: List<ProductWithDetails> = listOf(),
     private var currencySymbol: String = "RM",
-) : RecyclerView.Adapter<MenuAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
 
     private var itemsToShow: List<ProductWithDetails> = items
 
@@ -33,7 +33,7 @@ class MenuAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val itemName: TextView = view.findViewById(R.id.item_name)
         val itemImage: ImageView = view.findViewById(R.id.item_image)
-        val itemPrice: TextView = view.findViewById(R.id.cart_item_price)
+        val itemPrice: TextView = view.findViewById(R.id.item_price)
         val outOfStockOverlay: TextView = view.findViewById(R.id.out_of_stock_overlay)
     }
 

@@ -39,7 +39,7 @@
 
     <TextView
         style="@style/TextAppearance.AppCompat.Body1"
-        android:id="@+id/cart_item_price"
+        android:id="@+id/item_price"
         android:layout_width="@dimen/cart_item_price_width"
         android:layout_height="wrap_content"
         android:gravity="end"

@@ -2,7 +2,6 @@ package com.symplified.ordertaker.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -38,9 +37,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.util.Calendar
 
 
@@ -98,11 +94,6 @@ class MainActivity : AppCompatActivity() {
                 )
                 setupActionBarWithNavController(navController, appBarConfiguration)
                 navView.setupWithNavController(navController)
-                savedInstanceState?.getInt(NAV_ID, -1)?.let { currentNavId ->
-                    if (currentNavId != -1) {
-//                        navController.navigate(currentNavId)
-                    }
-                }
             } else {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
@@ -182,14 +173,7 @@ class MainActivity : AppCompatActivity() {
                 .show()
             true
         }
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(NAV_ID, navController.currentDestination?.id ?: -1)
+        else -> super.onOptionsItemSelected(item)
     }
 
     private fun showSnackBar(message: String) = Snackbar.make(
@@ -197,8 +181,4 @@ class MainActivity : AppCompatActivity() {
         message,
         Snackbar.LENGTH_SHORT
     ).show()
-
-    companion object {
-        private const val NAV_ID = "nav_id"
-    }
 }

@@ -16,8 +16,8 @@ android {
         applicationId "com.symplified.ordertaker"
         minSdk 21
         targetSdk 33
-        versionCode 38
-        versionName "0.1.948"
+        versionCode 40
+        versionName "0.1.95"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -55,10 +55,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-
-    // Date/time
-    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 
     // Room components
     implementation "androidx.room:room-runtime:2.5.1"

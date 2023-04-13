@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.flexbox.*
 import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.symplified.ordertaker.R
@@ -18,11 +18,13 @@ import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.ui.main.menu_and_cart.MenuAndCartFragmentDirections
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @ExperimentalBadgeUtils
 class MenuFragment : Fragment(),
-    MenuAdapter.OnMenuItemClickedListener {
+    ProductsAdapter.OnMenuItemClickedListener {
 
     private lateinit var binding: FragmentMenuBinding
 
@@ -41,9 +43,14 @@ class MenuFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val menuAdapter = MenuAdapter(this)
+        val productsAdapter = ProductsAdapter(this)
+        val productsAdapter2 = ProductsAdapter2({
+            dialogViewModel.setSelectedProduct(it)
+            ProductSelectionDialog()
+                .show(childFragmentManager, "MenuItemSelectionBottomSheet")
+        })
         binding.itemList.apply {
-            adapter = menuAdapter
+            adapter = productsAdapter
             layoutManager = FlexboxLayoutManager(view.context).apply {
                 justifyContent = JustifyContent.CENTER
                 alignItems = AlignItems.CENTER
@@ -57,8 +64,8 @@ class MenuFragment : Fragment(),
         lifecycleScope.launch {
             menuViewModel.currencySymbol.observe(viewLifecycleOwner) { currencySymbol ->
                 if (currencySymbol != null) {
-                    menuAdapter.setCurrencySymbol(currencySymbol)
-                    menuAdapter.filter(searchTerm)
+//                    productsAdapter.setCurrencySymbol(currencySymbol)
+                    productsAdapter.filter(searchTerm)
                 }
             }
         }
@@ -68,13 +75,19 @@ class MenuFragment : Fragment(),
                 menuViewModel.clearSelectedCategory()
             }
             searchTerm = it.toString()
-            menuAdapter.filter(searchTerm)
+            productsAdapter.filter(searchTerm)
         }
 
         menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
-            menuAdapter.setProducts(products)
-            menuAdapter.filter(searchTerm)
+            productsAdapter.setProducts(products)
+            productsAdapter.filter(searchTerm)
         }
+
+//        lifecycleScope.launch {
+//            menuViewModel.productsWithDetails2.collect {
+//                productsAdapter2.submitList(it)
+//            }
+//        }
 
         if (resources.getBoolean(R.bool.isPhone)) {
             binding.checkoutButton.apply {
