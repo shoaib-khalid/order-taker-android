@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,20 +81,10 @@ class ProductsAdapter(
                 .into(viewHolder.itemImage)
         }
 
-//        if (
-//            !item.product.allowOutOfStockPurchases
-//            && item.productInventoriesWithItems[0].productInventory.quantity <= 0
-//            && position == viewHolder.adapterPosition
-//        ) {
-//            Log.d(
-//                "out-of-stock",
-//                "${item.product.name} ${item.product.id} at position ${viewHolder.adapterPosition} is out of stock. " +
-//                        "allowOutOfStockPurchases: ${item.product.allowOutOfStockPurchases}. " +
-//                        "quantity: ${item.productInventoriesWithItems[0].productInventory.quantity}."
-//            )
-//            viewHolder.itemView.isEnabled = false
-//            viewHolder.outOfStockOverlay.visibility = View.VISIBLE
-//        }
+        val isOutOfStock = !item.product.allowOutOfStockPurchases
+                && item.productInventoriesWithItems[0].productInventory.quantity <= 0
+        viewHolder.itemView.isEnabled = !isOutOfStock
+        viewHolder.outOfStockOverlay.visibility = if (isOutOfStock) View.VISIBLE else View.GONE
     }
 
     override fun getItemCount() = itemsToShow.size

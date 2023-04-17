@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -33,19 +34,15 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initViews()
-    }
+//        binding.tvEmail.editText!!.doOnTextChanged { text, _, _, _ -> authViewModel.setUsername(text!!.toString()) }
+//        binding.tvPassword.editText!!.doOnTextChanged { text, _, _, _ ->
+//            authViewModel.setPassword(
+//                text!!.toString()
+//            )
+//        }
 
-    private fun initViews() {
-
-        authViewModel.logout()
-
-        binding.tvEmail.editText!!.doOnTextChanged { text, _, _, _ -> authViewModel.setUsername(text!!.toString()) }
-        binding.tvPassword.editText!!.doOnTextChanged { text, _, _, _ ->
-            authViewModel.setPassword(
-                text!!.toString()
-            )
-        }
+        binding.tvEmail.editText!!.doAfterTextChanged { authViewModel.setUsername(it.toString()) }
+        binding.tvPassword.editText!!.doAfterTextChanged { authViewModel.setPassword(it.toString()) }
 
         binding.btnLogin.setOnClickListener {
             authViewModel.tryLogin()
@@ -86,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
                     binding.tvEmail.error = null
                     binding.tvPassword.editText!!.text.clear()
                     binding.tvPassword.error = null
-                    binding.tvEmail.requestFocus()
+//                    binding.tvEmail.requestFocus()
 
                     binding.btnSwitchToProduction.visibility =
                         if (isStaging) View.VISIBLE else View.GONE
@@ -97,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        binding.appVersionText?.text = getString(
+        binding.appVersionText!!.text = getString(
             R.string.version_indicator,
             Calendar.getInstance().get(Calendar.YEAR),
             BuildConfig.VERSION_NAME
