@@ -92,10 +92,12 @@ class MenuFragment : Fragment(),
                         MenuAndCartFragmentDirections.actionMenuAndCartFragmentToCartFragment()
                     )
                 }
-                cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { cartItems ->
+                lifecycleScope.launch {
+                    cartViewModel.cartItemsWithAddOnsAndSubItems.collect { cartItems ->
                         visibility = if (cartItems.isEmpty()) View.GONE else View.VISIBLE
                         text = cartItems.size.toString()
                     }
+                }
             }
         }
     }

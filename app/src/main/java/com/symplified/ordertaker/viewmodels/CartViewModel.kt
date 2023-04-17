@@ -1,5 +1,6 @@
 package com.symplified.ordertaker.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.constants.SharedPrefsKey
@@ -14,16 +15,15 @@ import com.symplified.ordertaker.models.users.User
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.Zone
 import com.symplified.ordertaker.networking.ServiceGenerator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.collect
 
 class CartViewModel : ViewModel() {
-    val cartItemsWithAddOnsAndSubItems: LiveData<List<CartItemWithAddOnsAndSubItems>> =
-        App.cartItemRepository.allItems.asLiveData()
+    val cartItemsWithAddOnsAndSubItems: Flow<List<CartItemWithAddOnsAndSubItems>> =
+        App.cartItemRepository.allItems
     val user: LiveData<User?> = App.userRepository.user.asLiveData()
 
     private val _selectedPaymentOption = MutableLiveData<PaymentOption>().apply {
@@ -62,8 +62,8 @@ class CartViewModel : ViewModel() {
             withContext(Dispatchers.Main) { _isPlacingOrder.value = true }
 
             val cartItemRequests: MutableList<CartItemRequest> = mutableListOf()
-            val cartItemsWithDetails = cartItemsWithAddOnsAndSubItems.value!!
-            cartItemsWithDetails.forEach { cartItemWithDetails ->
+
+            App.cartItemRepository.getCartItems().forEach { cartItemWithDetails ->
                 val cartSubItemsRequestList: MutableList<CartSubItemRequest> = mutableListOf()
                 cartItemWithDetails.cartSubItems.forEach { subItem ->
                     for (i in 1..subItem.quantity) {

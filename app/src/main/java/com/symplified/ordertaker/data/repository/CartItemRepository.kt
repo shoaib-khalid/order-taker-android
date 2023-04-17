@@ -15,13 +15,14 @@ class CartItemRepository(
     private val cartItemAddOnDao: CartItemAddOnDao
 ) {
     val allItems: Flow<List<CartItemWithAddOnsAndSubItems>> =
-        cartItemDao.getAllCartItemsWithDetails()
+        cartItemDao.getAllCartItemsWithDetailsFlow()
+
+    fun getCartItems(): List<CartItemWithAddOnsAndSubItems> = cartItemDao.getAllCartItemsWithDetails()
 
     suspend fun getCartItems(
         itemCode: String,
         productId: String
-    ): List<CartItemWithAddOnsAndSubItems> =
-        cartItemDao.getCartItems(itemCode, productId)
+    ): List<CartItemWithAddOnsAndSubItems> = cartItemDao.getCartItems(itemCode, productId)
 
     suspend fun insert(
         cartItem: CartItem,

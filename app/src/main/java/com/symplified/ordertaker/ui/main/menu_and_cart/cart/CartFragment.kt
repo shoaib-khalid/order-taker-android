@@ -67,12 +67,11 @@ class CartFragment : Fragment(),
 
             binding.serverName.text = getString(R.string.server_label, user.name)
 
-            cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { items ->
+            lifecycleScope.launch {
+                cartViewModel.cartItemsWithAddOnsAndSubItems.collect { items ->
+                    binding.placeOrderButton.isEnabled = items.isNotEmpty()
+                    cartItemsAdapter.submitList(items)
 
-                binding.placeOrderButton.isEnabled = items.isNotEmpty()
-                cartItemsAdapter.submitList(items)
-
-                lifecycleScope.launch(Dispatchers.Default) {
                     totalPrice = 0.0
                     items.forEach { item ->
                         var itemPrice = item.cartItem.itemPrice
@@ -82,14 +81,12 @@ class CartFragment : Fragment(),
 
                         totalPrice += (itemPrice * item.cartItem.quantity)
                     }
-                    withContext(Dispatchers.Main) {
-                        binding.totalPriceText.text =
-                            getString(
-                                R.string.total_price,
-                                user.currencySymbol,
-                                Utils.formatPrice(totalPrice)
-                            )
-                    }
+                    binding.totalPriceText.text =
+                        getString(
+                            R.string.total_price,
+                            user.currencySymbol,
+                            Utils.formatPrice(totalPrice)
+                        )
                 }
             }
 

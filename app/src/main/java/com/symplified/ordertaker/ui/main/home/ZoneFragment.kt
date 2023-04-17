@@ -13,16 +13,13 @@ import com.symplified.ordertaker.databinding.FragmentZoneBinding
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.viewmodels.MenuViewModel
 
-class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
+class ZoneFragment : Fragment() {
 
     companion object {
         const val ZONE_ID = "ZONE_ID"
     }
 
     private lateinit var binding: FragmentZoneBinding
-
-//    private lateinit var tablesRecyclerView: RecyclerView
-    private lateinit var zoneName: String
 
     private val menuViewModel: MenuViewModel by activityViewModels()
 
@@ -32,15 +29,20 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentZoneBinding.inflate(inflater, container, false)
-//        tablesRecyclerView = binding.tablesList
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val tablesAdapter = TableListAdapter(onTableClickListener = this)
+        val tablesAdapter2 = TablesAdapter2 { table ->
+            menuViewModel.setSelectedTable(table)
+            findNavController().navigate(
+                HomeFragmentDirections
+                    .actionNavHomeToMenuAndCartFragment()
+            )
+        }
         binding.tablesList.apply {
-            adapter = tablesAdapter
+            adapter = tablesAdapter2
 
             layoutManager = FlexboxLayoutManager(view.context).apply {
                 justifyContent = JustifyContent.SPACE_EVENLY
@@ -56,19 +58,10 @@ class ZoneFragment : Fragment(), TableListAdapter.OnTableClickListener {
                 zonesWithTables.firstOrNull { zoneWithTables ->
                     zoneWithTables.zone.id == zoneId
                 }?.let { currentZone ->
-                    zoneName = currentZone.zone.zoneName
-                    val newTables = currentZone.tables
-                    tablesAdapter.setTables(newTables)
+                    tablesAdapter2.submitList(currentZone.tables)
                 }
             }
         }
     }
 
-    override fun onTableClicked(table: Table) {
-        menuViewModel.setSelectedTable(table)
-        findNavController().navigate(
-            HomeFragmentDirections
-                .actionNavHomeToMenuAndCartFragment()
-        )
-    }
 }

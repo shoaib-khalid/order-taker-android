@@ -47,7 +47,7 @@ class CartItemsAdapter(
         holder.bind(getItem(position))
 
     class CartItemViewHolder(
-        private var binding: RowCartItemBinding,
+        private val binding: RowCartItemBinding,
         private val currencySymbol: String
     ) :
         RecyclerView.ViewHolder(binding.root) {

@@ -13,7 +13,11 @@ interface CartItemDao {
 
     @Transaction
     @Query("SELECT * FROM cart_items")
-    fun getAllCartItemsWithDetails(): Flow<List<CartItemWithAddOnsAndSubItems>>
+    fun getAllCartItemsWithDetailsFlow(): Flow<List<CartItemWithAddOnsAndSubItems>>
+
+    @Transaction
+    @Query("SELECT * FROM cart_items")
+    fun getAllCartItemsWithDetails(): List<CartItemWithAddOnsAndSubItems>
 
     @Transaction
     @Query("SELECT * FROM cart_items WHERE itemCode=:itemCode AND productId=:productId")
