@@ -43,7 +43,7 @@ data class Product(
         sequenceNumber: Int,
         allowOutOfStockPurchases: Boolean,
         isCustomPrice: Boolean,
-        ) : this(
+    ) : this(
         id,
         name,
         description,

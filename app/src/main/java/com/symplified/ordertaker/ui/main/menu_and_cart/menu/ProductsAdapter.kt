@@ -70,7 +70,9 @@ class ProductsAdapter(
             onMenuItemClickListener.onItemClicked(item)
         }
 
-        if (item.product.thumbnailUrl.isNotBlank()) {
+        if (item.product.thumbnailUrl.isBlank()) {
+            viewHolder.itemImage.setImageResource(R.drawable.ic_fastfood)
+        } else {
             val fullThumbnailUrl = "${assetUrl}/${item.product.thumbnailUrl}"
             Glide.with(viewHolder.itemView.context)
                 .load(fullThumbnailUrl)
