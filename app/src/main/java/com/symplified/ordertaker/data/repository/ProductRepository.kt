@@ -44,7 +44,7 @@ class ProductRepository(
     fun getProductsWithCategory(category: Category) =
         productDao.getProductsWithCategoryId(category.id).asLiveData()
 
-    fun getProductsWithCategory2(category: Category) = productDao.getProductsWithCategoryId(category.id)
+    fun getProductsWithCategory2(category: Category): Flow<List<ProductWithDetails>> = productDao.getProductsWithCategoryId(category.id)
 
     private suspend fun insertProduct(product: Product) {
         productDao.insert(product)

@@ -10,32 +10,27 @@ import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.models.zones.Table
 import com.symplified.ordertaker.models.zones.ZoneWithTables
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 const val TAG = "menu-view-model"
 
 class MenuViewModel : ViewModel() {
 
-    val currencySymbol: LiveData<String?> = App.userRepository.currencySymbol.asLiveData()
+    val currencySymbol = App.userRepository.currencySymbol
     val zonesWithTables: LiveData<List<ZoneWithTables>> = App.zoneRepository.allZones.asLiveData()
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 
-    private val bestSellers = MutableLiveData<List<ProductWithDetails>>().apply { value = listOf() }
-    private val openItems: LiveData<List<ProductWithDetails>> =
-        App.productRepository.openItems.asLiveData()
+    private val bestSellers: MutableStateFlow<List<ProductWithDetails>> = MutableStateFlow(listOf())
+
+    private val _searchTerm: MutableStateFlow<String> = MutableStateFlow("")
+    val searchTerm: StateFlow<String> = _searchTerm
 
     private val _selectedTable = MutableLiveData<Table?>().apply { value = null }
     val selectedTable: LiveData<Table?> = _selectedTable
 
-    private val _selectedCategory = MutableLiveData<Category?>().apply { value = null }
-    val selectedCategory: LiveData<Category?> = _selectedCategory
-
-    private val _selectedCategory2: MutableStateFlow<Category?> = MutableStateFlow(null)
-    val selectedCategory2: StateFlow<Category?> = _selectedCategory2
+    private val _selectedCategory: MutableStateFlow<Category?> = MutableStateFlow(null)
+    val selectedCategory: StateFlow<Category?> = _selectedCategory
 
     private val _scannedBarcode = MutableLiveData<String?>().apply { value = null }
     val scannedBarcode: LiveData<String?> = _scannedBarcode
@@ -54,23 +49,31 @@ class MenuViewModel : ViewModel() {
         _selectedTable.value = table
     }
 
-    val productsWithDetails: LiveData<List<ProductWithDetails>> =
-        _selectedCategory.switchMap { category ->
+//    val productsWithDetails: LiveData<List<ProductWithDetails>> =
+//        _selectedCategory.switchMap { category ->
+//            if (category != null)
+//                when (category.id) {
+//                    BEST_SELLERS_CATEGORY_ID -> bestSellers
+//                    OPEN_ITEMS_CATEGORY_ID -> App.productRepository.openItems
+//                    else -> App.productRepository.getProductsWithCategory(category)
+//                }
+//            else
+//                App.productRepository.allProductsWithDetails.asLiveData()
+//        }
+
+    //        App.productRepository.allProductsWithDetails
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val productsWithDetails2: Flow<List<ProductWithDetails>> =
+        _selectedCategory.flatMapLatest { category ->
             if (category != null)
                 when (category.id) {
                     BEST_SELLERS_CATEGORY_ID -> bestSellers
-                    OPEN_ITEMS_CATEGORY_ID -> openItems
-                    else -> App.productRepository.getProductsWithCategory(category)
+                    OPEN_ITEMS_CATEGORY_ID -> App.productRepository.openItems
+                    else -> App.productRepository.getProductsWithCategory2(category)
                 }
             else
-                App.productRepository.allProductsWithDetails.asLiveData()
+                App.productRepository.allProductsWithDetails
         }
-
-    //    App.productRepository.allProductsWithDetails
-//    val productsWithDetails2: Flow<List<ProductWithDetails>> = _selectedCategory2.mapLatest {
-//        if (it != null) App.productRepository.allProductsWithDetails
-//        else App.productRepository.getProductsWithCategory2(it)
-//    }
 
 
     fun insert(category: Category) = CoroutineScope(Dispatchers.IO).launch {

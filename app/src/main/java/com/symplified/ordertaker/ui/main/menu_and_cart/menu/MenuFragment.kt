@@ -1,13 +1,13 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.*
@@ -18,8 +18,6 @@ import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.ui.main.menu_and_cart.MenuAndCartFragmentDirections
 import com.symplified.ordertaker.viewmodels.CartViewModel
 import com.symplified.ordertaker.viewmodels.MenuViewModel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @ExperimentalBadgeUtils
@@ -43,12 +41,8 @@ class MenuFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val productsAdapter = ProductsAdapter(this)
-        val productsAdapter2 = ProductsAdapter2({
-            dialogViewModel.setSelectedProduct(it)
-            ProductSelectionDialog()
-                .show(childFragmentManager, "MenuItemSelectionBottomSheet")
-        })
+        var searchTerm = binding.textBoxSearch.editText?.text?.toString() ?: ""
+        val productsAdapter = ProductsAdapter(this@MenuFragment)
         binding.itemList.apply {
             adapter = productsAdapter
             layoutManager = FlexboxLayoutManager(view.context).apply {
@@ -58,35 +52,37 @@ class MenuFragment : Fragment(),
                 flexWrap = FlexWrap.WRAP
             }
         }
-
-        var searchTerm = binding.textBoxSearch.editText?.text?.toString() ?: ""
-
-        lifecycleScope.launch {
-            menuViewModel.currencySymbol.observe(viewLifecycleOwner) { currencySymbol ->
-                if (currencySymbol != null) {
-//                    productsAdapter.setCurrencySymbol(currencySymbol)
-                    productsAdapter.filter(searchTerm)
-                }
-            }
-        }
-
         binding.textBoxSearch.editText!!.doAfterTextChanged {
             if (it?.isNotBlank() == true) {
                 menuViewModel.clearSelectedCategory()
             }
-            searchTerm = it.toString()
+            searchTerm = it?.toString() ?: ""
             productsAdapter.filter(searchTerm)
         }
 
-        menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
-            productsAdapter.setProducts(products)
-            productsAdapter.filter(searchTerm)
+        lifecycleScope.launch {
+            menuViewModel.currencySymbol.collect { currencySymbol ->
+                currencySymbol?.let {
+                    productsAdapter.setCurrencySymbol(it)
+                }
+
+                menuViewModel.productsWithDetails2.collect {
+//            productsAdapter2.submitList(it)
+                    productsAdapter.setProducts(it)
+                    productsAdapter.filter(searchTerm)
+                }
+
+                val productsAdapter2 = ProductsAdapter2({
+                    dialogViewModel.setSelectedProduct(it)
+                    ProductSelectionDialog()
+                        .show(childFragmentManager, "MenuItemSelectionBottomSheet")
+                }, currencySymbol)
+            }
         }
 
-//        lifecycleScope.launch {
-//            menuViewModel.productsWithDetails2.collect {
-//                productsAdapter2.submitList(it)
-//            }
+//        menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
+//            productsAdapter.setProducts(products)
+//            productsAdapter.filter(searchTerm)
 //        }
 
         if (resources.getBoolean(R.bool.isPhone)) {
@@ -96,8 +92,7 @@ class MenuFragment : Fragment(),
                         MenuAndCartFragmentDirections.actionMenuAndCartFragmentToCartFragment()
                     )
                 }
-                cartViewModel.cartItemsWithAddOnsAndSubItems
-                    .observe(viewLifecycleOwner) { cartItems ->
+                cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { cartItems ->
                         visibility = if (cartItems.isEmpty()) View.GONE else View.VISIBLE
                         text = cartItems.size.toString()
                     }

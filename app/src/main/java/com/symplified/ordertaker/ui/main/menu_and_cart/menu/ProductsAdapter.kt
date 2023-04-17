@@ -1,6 +1,5 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import com.symplified.ordertaker.models.products.ProductWithDetails
 class ProductsAdapter(
     private val onMenuItemClickListener: OnMenuItemClickedListener,
     private var items: List<ProductWithDetails> = listOf(),
-    private var currencySymbol: String = "RM",
+    private var currencySymbol: String? = "RM",
 ) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
 
     private var itemsToShow: List<ProductWithDetails> = items

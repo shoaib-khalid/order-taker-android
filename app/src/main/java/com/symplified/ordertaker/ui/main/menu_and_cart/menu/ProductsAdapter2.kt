@@ -1,6 +1,7 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -11,13 +12,12 @@ import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.constants.SharedPrefsKey
 import com.symplified.ordertaker.databinding.GridProductBinding
-import com.symplified.ordertaker.models.products.Product
 import com.symplified.ordertaker.models.products.ProductWithDetails
 import com.symplified.ordertaker.utils.Utils
 
 class ProductsAdapter2(
     private val onItemClicked: (ProductWithDetails) -> Unit,
-    private var currencySymbol: String = "RM"
+    private var currencySymbol: String? = "RM"
 ) : ListAdapter<ProductWithDetails, ProductsAdapter2.ProductViewHolder>(DiffCallback) {
 
     companion object {
@@ -50,8 +50,7 @@ class ProductsAdapter2(
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: ProductViewHolder, position: Int)
-    {
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
@@ -71,12 +70,6 @@ class ProductsAdapter2(
                         } ?: 0.0
                     )
 
-//                    binding.root.context.getString(
-//                        R.string.monetary_amount,
-//                        currencySymbol,
-//                        minimumDineInPrice
-//                    )
-
                     binding.root.context.getString(
                         R.string.monetary_amount,
                         "RM",
@@ -84,13 +77,20 @@ class ProductsAdapter2(
                     )
                 }
 
-            if (productWithDetails.product.thumbnailUrl.isNotBlank()) {
+            if (productWithDetails.product.thumbnailUrl.isBlank()) {
+                binding.itemImage.setImageResource(R.drawable.ic_fastfood)
+            } else {
                 val fullThumbnailUrl = "${assetUrl}/${productWithDetails.product.thumbnailUrl}"
                 Glide.with(binding.root.context)
                     .load(fullThumbnailUrl)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(binding.itemImage)
             }
+
+            val isOutOfStock =
+                !product.allowOutOfStockPurchases && productWithDetails.productInventoriesWithItems[0].productInventory.quantity <= 0
+            binding.root.isEnabled = !isOutOfStock
+            binding.outOfStockOverlay.visibility = if (isOutOfStock) View.VISIBLE else View.GONE
         }
     }
 }

@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCategoryBinding
 import com.symplified.ordertaker.models.categories.Category
 import com.symplified.ordertaker.viewmodels.MenuViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
 
@@ -51,9 +54,11 @@ class CategoryFragment : Fragment(), CategoriesAdapter.OnCategoryClickListener {
             binding.progressBar.visibility =
                 if (isLoading && isCategoriesEmpty) View.VISIBLE else View.GONE
         }
-        menuViewModel.selectedCategory.observe(viewLifecycleOwner) { category ->
-            (binding.categoryList.adapter as CategoriesAdapter)
-                .setSelectedCategory(category)
+
+        lifecycleScope.launch {
+            menuViewModel.selectedCategory.collect { category ->
+                (binding.categoryList.adapter as CategoriesAdapter).setSelectedCategory(category)
+            }
         }
     }
 
