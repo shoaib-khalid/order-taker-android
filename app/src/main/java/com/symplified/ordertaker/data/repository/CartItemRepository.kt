@@ -40,9 +40,9 @@ class CartItemRepository(
     }
 
     suspend fun delete(cartItemWithAddOnsAndSubItems: CartItemWithAddOnsAndSubItems) {
-        cartItemDao.delete(cartItemWithAddOnsAndSubItems.cartItem)
         cartItemAddOnDao.deleteByCartItemId(cartItemWithAddOnsAndSubItems.cartItem.id)
         cartSubItemDao.deleteByCartItemId(cartItemWithAddOnsAndSubItems.cartItem.id)
+        cartItemDao.delete(cartItemWithAddOnsAndSubItems.cartItem)
     }
 
     suspend fun clear() {

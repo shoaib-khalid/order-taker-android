@@ -1,7 +1,6 @@
 package com.symplified.ordertaker.ui.main.menu_and_cart.cart
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCartBinding
-import com.symplified.ordertaker.models.cartitems.CartItemWithAddOnsAndSubItems
 import com.symplified.ordertaker.models.paymentchannel.PaymentOption
 import com.symplified.ordertaker.models.zones.ZoneWithTables
 import com.symplified.ordertaker.utils.Utils
@@ -26,7 +24,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CartFragment : Fragment(),
-    CartItemsAdapter.OnRemoveFromCartListener,
     PaymentChannelAdapter.OnPaymentTypeClickListener {
 
     private lateinit var binding: FragmentCartBinding
@@ -62,7 +59,7 @@ class CartFragment : Fragment(),
 
             binding.productPriceHeader.text = getString(R.string.price_header, user.currencySymbol)
 
-            val cartItemsAdapter = CartItemsAdapter(user.currencySymbol, this)
+            val cartItemsAdapter = CartItemsAdapter(user.currencySymbol)
             binding.cartItemsList.apply {
                 layoutManager = LinearLayoutManager(view.context)
                 adapter = cartItemsAdapter
@@ -73,7 +70,7 @@ class CartFragment : Fragment(),
             cartViewModel.cartItemsWithAddOnsAndSubItems.observe(viewLifecycleOwner) { items ->
 
                 binding.placeOrderButton.isEnabled = items.isNotEmpty()
-                cartItemsAdapter.updateItems(items)
+                cartItemsAdapter.submitList(items)
 
                 lifecycleScope.launch(Dispatchers.Default) {
                     totalPrice = 0.0
@@ -158,10 +155,6 @@ class CartFragment : Fragment(),
         }
 
         binding.clearCartButton.setOnClickListener { cartViewModel.clearAll() }
-    }
-
-    override fun onItemRemoved(cartItem: CartItemWithAddOnsAndSubItems) {
-        cartViewModel.delete(cartItem)
     }
 
     override fun onPaymentTypeClicked(paymentOption: PaymentOption) {
