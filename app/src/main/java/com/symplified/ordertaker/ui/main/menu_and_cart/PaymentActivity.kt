@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import com.symplified.ordertaker.databinding.ActivityPaymentBinding
 
@@ -34,6 +37,16 @@ class PaymentActivity : AppCompatActivity() {
             intent.getStringExtra(URL)?.let {
                 loadUrl(it)
                 Log.d("payment-activity", "Loading Url: $it")
+            }
+
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    view?.loadUrl(request?.url.toString())
+                    return false
+                }
             }
         }
     }
