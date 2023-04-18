@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:minWidth="100dp"
         android:maxWidth="150dp"
-        android:text="CASH"
         android:padding="10dp"
         android:gravity="center"
         android:maxLines="1"

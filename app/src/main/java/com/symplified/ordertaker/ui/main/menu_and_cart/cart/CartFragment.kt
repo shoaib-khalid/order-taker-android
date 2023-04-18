@@ -75,9 +75,7 @@ class CartFragment : Fragment(),
                     totalPrice = 0.0
                     items.forEach { item ->
                         var itemPrice = item.cartItem.itemPrice
-                        item.cartItemAddons.forEach { addOn ->
-                            itemPrice += addOn.price
-                        }
+                        item.cartItemAddons.forEach { addOn -> itemPrice += addOn.price }
 
                         totalPrice += (itemPrice * item.cartItem.quantity)
                     }
@@ -87,6 +85,20 @@ class CartFragment : Fragment(),
                             user.currencySymbol,
                             Utils.formatPrice(totalPrice)
                         )
+
+                    paymentChannelAdapter.setPaymentOptionEnabled(
+                        PaymentOption.PAYLATER,
+                        totalPrice >= 200
+                    )
+                    if (totalPrice < 200 && cartViewModel.selectedPaymentOption.value == PaymentOption.PAYLATER) {
+                        cartViewModel.setSelectedPaymentOption(PaymentOption.CASH)
+                    }
+                }
+
+                cartViewModel.orderResult.collect { orderResult ->
+                    if (orderResult is OrderResult.Success) {
+                        findNavController().popBackStack(R.id.nav_home, false)
+                    }
                 }
             }
 
@@ -137,15 +149,6 @@ class CartFragment : Fragment(),
 //                findNavController().popBackStack(R.id.nav_home, false)
 //            }
 //        }
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cartViewModel.orderResult.collect { orderResult ->
-                    if (orderResult is OrderResult.Success) {
-                        findNavController().popBackStack(R.id.nav_home, false)
-                    }
-                }
-            }
-        }
 
         cartViewModel.selectedPaymentOption.observe(viewLifecycleOwner) { selectedPaymentChannel ->
             paymentChannelAdapter.selectPaymentOption(selectedPaymentChannel)

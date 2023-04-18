@@ -13,8 +13,7 @@ class PaymentChannelAdapter(
     private val onPaymentTypeClickListener: OnPaymentTypeClickListener
 ) : RecyclerView.Adapter<PaymentChannelAdapter.ViewHolder>() {
 
-    private val paymentOptions: Array<PaymentOption> =
-        enumValues()
+    private val paymentOptions: Array<PaymentOption> = enumValues()
     private var selectedPosition = RecyclerView.NO_POSITION
 
     interface OnPaymentTypeClickListener {
@@ -36,7 +35,12 @@ class PaymentChannelAdapter(
 //        viewHolder.itemView.isSelected = isSelected
         viewHolder.textView.isSelected = isSelected
 
-        viewHolder.textView.setTextColor(Color.parseColor(if (isSelected) "#FFFFFFFF" else "#FF000000"))
+        viewHolder.textView.setTextColor(
+            Color.parseColor(
+                if (isSelected) "#FFFFFFFF"
+                else "#FF000000"
+            )
+        )
 
         viewHolder.textView.text = paymentOptions[position].displayName
         viewHolder.itemView.setOnClickListener {
@@ -46,6 +50,9 @@ class PaymentChannelAdapter(
             notifyItemChanged(selectedPosition)
             onPaymentTypeClickListener.onPaymentTypeClicked(paymentOptions[selectedPosition])
         }
+
+        viewHolder.itemView.isEnabled = paymentOptions[position].isEnabled
+        viewHolder.textView.isEnabled = paymentOptions[position].isEnabled
     }
 
     override fun getItemCount() = paymentOptions.size
@@ -65,5 +72,14 @@ class PaymentChannelAdapter(
         if (previouslySelected != RecyclerView.NO_POSITION) {
             notifyItemChanged(previouslySelected)
         }
+    }
+
+    fun setPaymentOptionEnabled(paymentOption: PaymentOption, isEnabled: Boolean) {
+        val index = paymentOptions.indexOfFirst { it.name == paymentOption.name }
+        paymentOptions[index].isEnabled = isEnabled
+        if (selectedPosition == index) {
+            clearSelectedPaymentOption()
+        }
+        notifyItemChanged(index)
     }
 }
