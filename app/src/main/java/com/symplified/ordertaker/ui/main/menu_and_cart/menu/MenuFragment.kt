@@ -30,6 +30,9 @@ class MenuFragment : Fragment(),
     private val dialogViewModel: ProductSelectionViewModel by activityViewModels()
     private val cartViewModel: CartViewModel by activityViewModels()
 
+    private var products: List<ProductWithDetails> = listOf()
+    private var searchTerm = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,10 +44,8 @@ class MenuFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        var searchTerm = binding.textBoxSearch.editText?.text?.toString() ?: ""
-        val productsAdapter = ProductsAdapter(this@MenuFragment)
+        searchTerm = binding.textBoxSearch.editText?.text?.toString() ?: ""
         binding.itemList.apply {
-            adapter = productsAdapter
             layoutManager = FlexboxLayoutManager(view.context).apply {
                 justifyContent = JustifyContent.CENTER
                 alignItems = AlignItems.CENTER
@@ -52,38 +53,31 @@ class MenuFragment : Fragment(),
                 flexWrap = FlexWrap.WRAP
             }
         }
-        binding.textBoxSearch.editText!!.doAfterTextChanged {
-            if (it?.isNotBlank() == true) {
-                menuViewModel.clearSelectedCategory()
-            }
-            searchTerm = it?.toString() ?: ""
-            productsAdapter.filter(searchTerm)
-        }
 
         lifecycleScope.launch {
             menuViewModel.currencySymbol.collect { currencySymbol ->
-                currencySymbol?.let {
-                    productsAdapter.setCurrencySymbol(it)
-                }
-
-                menuViewModel.productsWithDetails2.collect {
-//            productsAdapter2.submitList(it)
-                    productsAdapter.setProducts(it)
-                    productsAdapter.filter(searchTerm)
-                }
-
                 val productsAdapter2 = ProductsAdapter2({
                     dialogViewModel.setSelectedProduct(it)
                     ProductSelectionDialog()
                         .show(childFragmentManager, "MenuItemSelectionBottomSheet")
                 }, currencySymbol)
+                binding.itemList.adapter = productsAdapter2
+
+                binding.textBoxSearch.editText!!.doAfterTextChanged {
+                    if (it!!.isNotBlank()) {
+                        menuViewModel.clearSelectedCategory()
+                    }
+                    searchTerm = it.toString().trim().lowercase() ?: ""
+
+                    productsAdapter2.submitList(getFilteredProducts())
+                }
+
+                menuViewModel.productsWithDetails2.collect {
+                    products = it
+                    productsAdapter2.submitList(getFilteredProducts())
+                }
             }
         }
-
-//        menuViewModel.productsWithDetails.observe(viewLifecycleOwner) { products ->
-//            productsAdapter.setProducts(products)
-//            productsAdapter.filter(searchTerm)
-//        }
 
         if (resources.getBoolean(R.bool.isPhone)) {
             binding.checkoutButton.apply {
@@ -106,5 +100,16 @@ class MenuFragment : Fragment(),
         dialogViewModel.setSelectedProduct(item)
         ProductSelectionDialog()
             .show(childFragmentManager, "MenuItemSelectionBottomSheet")
+    }
+
+    private fun getFilteredProducts(): List<ProductWithDetails> = products.filter {
+            val skuMatches = it.productInventoriesWithItems.any { invWithItems ->
+                invWithItems.productInventory.sku.replace("-", " ")
+                    .lowercase().contains(searchTerm)
+            }
+
+            it.product.name.lowercase().contains(searchTerm)
+                    || it.product.description.lowercase().contains(searchTerm)
+                    || skuMatches
     }
 }

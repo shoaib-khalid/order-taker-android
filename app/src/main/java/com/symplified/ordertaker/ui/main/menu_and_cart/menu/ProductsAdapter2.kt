@@ -41,7 +41,8 @@ class ProductsAdapter2(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val viewHolder = ProductViewHolder(
-            GridProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            GridProductBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            currencySymbol!!
         )
         viewHolder.itemView.setOnClickListener {
             val position = viewHolder.adapterPosition
@@ -54,7 +55,7 @@ class ProductsAdapter2(
         holder.bind(getItem(position))
     }
 
-    class ProductViewHolder(private var binding: GridProductBinding) :
+    class ProductViewHolder(private var binding: GridProductBinding, private val currencySymbol: String) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(productWithDetails: ProductWithDetails) {
 
@@ -72,7 +73,7 @@ class ProductsAdapter2(
 
                     binding.root.context.getString(
                         R.string.monetary_amount,
-                        "RM",
+                        currencySymbol,
                         minimumDineInPrice
                     )
                 }

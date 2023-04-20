@@ -23,9 +23,6 @@ class MenuViewModel : ViewModel() {
 
     private val bestSellers: MutableStateFlow<List<ProductWithDetails>> = MutableStateFlow(listOf())
 
-    private val _searchTerm: MutableStateFlow<String> = MutableStateFlow("")
-    val searchTerm: StateFlow<String> = _searchTerm
-
     private val _selectedTable = MutableLiveData<Table?>().apply { value = null }
     val selectedTable: LiveData<Table?> = _selectedTable
 
@@ -49,19 +46,6 @@ class MenuViewModel : ViewModel() {
         _selectedTable.value = table
     }
 
-//    val productsWithDetails: LiveData<List<ProductWithDetails>> =
-//        _selectedCategory.switchMap { category ->
-//            if (category != null)
-//                when (category.id) {
-//                    BEST_SELLERS_CATEGORY_ID -> bestSellers
-//                    OPEN_ITEMS_CATEGORY_ID -> App.productRepository.openItems
-//                    else -> App.productRepository.getProductsWithCategory(category)
-//                }
-//            else
-//                App.productRepository.allProductsWithDetails.asLiveData()
-//        }
-
-    //        App.productRepository.allProductsWithDetails
     @OptIn(ExperimentalCoroutinesApi::class)
     val productsWithDetails2: Flow<List<ProductWithDetails>> =
         _selectedCategory.flatMapLatest { category ->
