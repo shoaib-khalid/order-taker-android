@@ -53,10 +53,9 @@
                 android:id="@+id/iv_header"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/sym_white_cloud"
+                android:src="@drawable/ic_waiter"
                 app:layout_constraintWidth_percent=".70"
-                app:layout_constraintHeight_percent=".30"
+                app:layout_constraintHeight_percent=".50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

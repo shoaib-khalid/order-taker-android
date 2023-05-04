@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.MenuAndCartFragment"
+        android:name="com.symplified.easydukanpos.ui.main.menu_and_cart.MenuAndCartFragment"
         android:label="Order For Customer"
         tools:layout="@layout/fragment_menu_and_cart">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
-        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.cart.CartFragment"
+        android:name="com.symplified.easydukanpos.ui.main.menu_and_cart.cart.CartFragment"
         android:label="Checkout"
         tools:layout="@layout/fragment_cart" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
-        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.PaymentFragment"
+        android:name="com.symplified.easydukanpos.ui.main.menu_and_cart.PaymentFragment"
         android:label="fragment_payment"
         tools:layout="@layout/fragment_payment" />
 

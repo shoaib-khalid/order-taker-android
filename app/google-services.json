@@ -127,6 +127,35 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:616735524018:android:799cefb6d56c2ebb91b5ab",
+        "android_client_info": {
+          "package_name": "com.symplified.easydukanpos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "616735524018-n5i4dorrsen6dj1655m7od07j4acbluh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyzvjNIVJ2W0Oh6sk0qf6wuxDuP4KhNKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "616735524018-n5i4dorrsen6dj1655m7od07j4acbluh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:616735524018:android:ff53a19799dff9da91b5ab",
         "android_client_info": {
           "package_name": "com.symplified.order"

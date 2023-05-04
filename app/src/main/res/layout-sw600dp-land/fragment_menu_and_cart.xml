@@ -9,7 +9,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_category"
-        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.categories.CategoryFragment"
+        android:name="com.symplified.easydukanpos.ui.main.menu_and_cart.categories.CategoryFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintWidth_percent="0.15"
@@ -19,7 +19,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_menu"
-        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.menu.MenuFragment"
+        android:name="com.symplified.easydukanpos.ui.main.menu_and_cart.menu.MenuFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintWidth_percent="0.55"
@@ -30,7 +30,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_cart"
-        android:name="com.symplified.ordertaker.ui.main.menu_and_cart.cart.CartFragment"
+        android:name="com.symplified.easydukanpos.ui.main.menu_and_cart.cart.CartFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintWidth_percent="0.30"
