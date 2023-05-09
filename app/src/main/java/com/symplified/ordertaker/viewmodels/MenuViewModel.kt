@@ -21,7 +21,7 @@ class MenuViewModel : ViewModel() {
     val zonesWithTables: LiveData<List<ZoneWithTables>> = App.zoneRepository.allZones.asLiveData()
     val categories: LiveData<List<Category>> = App.productRepository.allCategories.asLiveData()
 
-    private val bestSellers: MutableStateFlow<List<ProductWithDetails>> = MutableStateFlow(listOf())
+    private val bestSellerProducts: MutableStateFlow<List<ProductWithDetails>> = MutableStateFlow(listOf())
 
     private val _selectedTable = MutableLiveData<Table?>().apply { value = null }
     val selectedTable: LiveData<Table?> = _selectedTable
@@ -35,7 +35,7 @@ class MenuViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             App.productRepository.bestSellers.collect {
-                bestSellers.value = it
+                bestSellerProducts.value = it
                     .filter { bestSellerProduct -> bestSellerProduct.productWithDetails != null }
                     .map { bestSellerProduct -> bestSellerProduct.productWithDetails!! }
             }
@@ -51,7 +51,7 @@ class MenuViewModel : ViewModel() {
         _selectedCategory.flatMapLatest { category ->
             if (category != null)
                 when (category.id) {
-                    BEST_SELLERS_CATEGORY_ID -> bestSellers
+                    BEST_SELLERS_CATEGORY_ID -> bestSellerProducts
                     OPEN_ITEMS_CATEGORY_ID -> App.productRepository.openItems
                     else -> App.productRepository.getProductsWithCategory2(category)
                 }

@@ -3,116 +3,95 @@ package com.symplified.ordertaker.ui.main.menu_and_cart.menu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.constants.SharedPrefsKey
+import com.symplified.ordertaker.databinding.GridProductBinding
 import com.symplified.ordertaker.models.products.ProductWithDetails
+import com.symplified.ordertaker.utils.Utils
 
 class ProductsAdapter(
-    private val onMenuItemClickListener: OnMenuItemClickedListener,
-    private var items: List<ProductWithDetails> = listOf(),
-    private var currencySymbol: String? = "RM",
-) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
+    private val onItemClicked: (ProductWithDetails) -> Unit,
+    private var currencySymbol: String? = "RM"
+) : ListAdapter<ProductWithDetails, ProductsAdapter.ProductViewHolder>(DiffCallback) {
 
-    private var itemsToShow: List<ProductWithDetails> = items
+    companion object {
+        private val DiffCallback = object : DiffUtil.ItemCallback<ProductWithDetails>() {
+            override fun areItemsTheSame(
+                oldItem: ProductWithDetails,
+                newItem: ProductWithDetails
+            ): Boolean = oldItem.product.id == newItem.product.id
 
-    private val assetUrl =
-        if (App.sharedPreferences().getBoolean(SharedPrefsKey.IS_STAGING, false))
-            App.ASSET_URL_STAGING
-        else App.ASSET_URL_PRODUCTION
-
-    interface OnMenuItemClickedListener {
-        fun onItemClicked(item: ProductWithDetails)
-    }
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val itemName: TextView = view.findViewById(R.id.item_name)
-        val itemImage: ImageView = view.findViewById(R.id.item_image)
-        val itemPrice: TextView = view.findViewById(R.id.item_price)
-        val outOfStockOverlay: TextView = view.findViewById(R.id.out_of_stock_overlay)
-    }
-
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.grid_product, viewGroup, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val item = itemsToShow[position]
-
-        viewHolder.itemName.text = item.product.name
-
-        if (item.product.isCustomPrice) {
-            viewHolder.itemPrice.text =
-                viewHolder.itemView.context.getString(R.string.custom_price)
-        } else {
-            val minimumDineInPrice = String.format(
-                "%.2f",
-                item.productInventoriesWithItems.minOfOrNull {
-                    it.productInventory.dineInPrice
-                } ?: 0.0
-            )
-
-            viewHolder.itemPrice.text = viewHolder.itemView.context.getString(
-                R.string.monetary_amount,
-                currencySymbol,
-                minimumDineInPrice
-            )
+            override fun areContentsTheSame(
+                oldItem: ProductWithDetails,
+                newItem: ProductWithDetails
+            ): Boolean = oldItem == newItem
         }
 
+        val assetUrl =
+            if (App.sharedPreferences().getBoolean(SharedPrefsKey.IS_STAGING, false))
+                App.ASSET_URL_STAGING
+            else App.ASSET_URL_PRODUCTION
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+        val viewHolder = ProductViewHolder(
+            GridProductBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            currencySymbol!!
+        )
         viewHolder.itemView.setOnClickListener {
-            onMenuItemClickListener.onItemClicked(item)
+            val position = viewHolder.adapterPosition
+            onItemClicked(getItem(position))
         }
-
-        if (item.product.thumbnailUrl.isBlank()) {
-            viewHolder.itemImage.setImageResource(R.drawable.ic_fastfood)
-        } else {
-            val fullThumbnailUrl = "${assetUrl}/${item.product.thumbnailUrl}"
-            Glide.with(viewHolder.itemView.context)
-                .load(fullThumbnailUrl)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(viewHolder.itemImage)
-        }
-
-        val isOutOfStock = !item.product.allowOutOfStockPurchases
-                && item.productInventoriesWithItems[0].productInventory.quantity <= 0
-        viewHolder.itemView.isEnabled = !isOutOfStock
-        viewHolder.outOfStockOverlay.visibility = if (isOutOfStock) View.VISIBLE else View.GONE
+        return viewHolder
     }
 
-    override fun getItemCount() = itemsToShow.size
-
-    fun setProducts(products: List<ProductWithDetails>) {
-        items = products
-        itemsToShow = products
-        notifyDataSetChanged()
+    override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
-    fun filter(searchTerm: String) {
-        val normalizedSearchTerm = searchTerm.trim().lowercase()
+    class ProductViewHolder(private var binding: GridProductBinding, private val currencySymbol: String) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(productWithDetails: ProductWithDetails) {
 
-        itemsToShow =
-            items.filter {
-                val skuMatches = it.productInventoriesWithItems.any { invWithItems ->
-                    invWithItems.productInventory.sku.replace("-", " ")
-                        .lowercase().contains(normalizedSearchTerm)
+            val product = productWithDetails.product
+            binding.itemName.text = product.name
+
+            binding.itemPrice.text =
+                if (product.isCustomPrice) binding.root.context.getString(R.string.custom_price)
+                else {
+                    val minimumDineInPrice = Utils.formatPrice(
+                        productWithDetails.productInventoriesWithItems.minOfOrNull {
+                            it.productInventory.dineInPrice
+                        } ?: 0.0
+                    )
+
+                    binding.root.context.getString(
+                        R.string.monetary_amount,
+                        currencySymbol,
+                        minimumDineInPrice
+                    )
                 }
 
-                it.product.name.lowercase().contains(normalizedSearchTerm)
-                        || it.product.description.lowercase().contains(normalizedSearchTerm)
-                        || skuMatches
+            if (productWithDetails.product.thumbnailUrl.isBlank()) {
+                binding.itemImage.setImageResource(R.drawable.ic_fastfood)
+            } else {
+                val fullThumbnailUrl = "${assetUrl}/${productWithDetails.product.thumbnailUrl}"
+                Glide.with(binding.root.context)
+                    .load(fullThumbnailUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(binding.itemImage)
             }
-        notifyDataSetChanged()
-    }
 
-    fun setCurrencySymbol(currencySymbol: String) {
-        this.currencySymbol = currencySymbol
-        notifyItemRangeChanged(0, itemsToShow.size)
+            val isOutOfStock =
+                !product.allowOutOfStockPurchases && productWithDetails.productInventoriesWithItems[0].productInventory.quantity <= 0
+            binding.root.isEnabled = !isOutOfStock
+            binding.outOfStockOverlay.visibility = if (isOutOfStock) View.VISIBLE else View.GONE
+        }
     }
 }

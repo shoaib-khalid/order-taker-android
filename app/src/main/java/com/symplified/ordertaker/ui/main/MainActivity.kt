@@ -2,6 +2,7 @@ package com.symplified.ordertaker.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -16,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -112,13 +114,19 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         showSnackBar(orderResult.message)
 
-                        if (orderResult is OrderResult.Success && orderResult.paymentUrl != null) {
-                            startActivity(Intent(
-                                this@MainActivity,
-                                PaymentActivity::class.java
-                            ).apply {
-                                putExtra(PaymentActivity.URL, orderResult.paymentUrl)
-                            })
+                        if (orderResult is OrderResult.Success) {
+
+                            findNavController(R.id.nav_host_fragment_content_main)
+                                .popBackStack(R.id.nav_home, false)
+
+                            if (orderResult.paymentUrl != null) {
+                                startActivity(Intent(
+                                    this@MainActivity,
+                                    PaymentActivity::class.java
+                                ).apply {
+                                    putExtra(PaymentActivity.URL, orderResult.paymentUrl)
+                                })
+                            }
                         }
                     }
                 }

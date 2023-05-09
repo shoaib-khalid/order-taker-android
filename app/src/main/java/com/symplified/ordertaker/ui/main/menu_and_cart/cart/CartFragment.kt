@@ -69,6 +69,10 @@ class CartFragment : Fragment(),
 
             lifecycleScope.launch {
                 cartViewModel.cartItemsWithAddOnsAndSubItems.collect { items ->
+                    if (items.isEmpty() && resources.getBoolean(R.bool.isPhone)) {
+                        findNavController().popBackStack()
+                    }
+
                     binding.placeOrderButton.isEnabled = items.isNotEmpty()
                     cartItemsAdapter.submitList(items)
 
@@ -79,12 +83,11 @@ class CartFragment : Fragment(),
 
                         totalPrice += (itemPrice * item.cartItem.quantity)
                     }
-                    binding.totalPriceText.text =
-                        getString(
-                            R.string.total_price,
-                            user.currencySymbol,
-                            Utils.formatPrice(totalPrice)
-                        )
+                    binding.totalPriceText.text = getString(
+                        R.string.total_price,
+                        user.currencySymbol,
+                        Utils.formatPrice(totalPrice)
+                    )
 
                     paymentChannelAdapter.setPaymentOptionEnabled(
                         PaymentOption.PAYLATER,
@@ -95,11 +98,11 @@ class CartFragment : Fragment(),
                     }
                 }
 
-                cartViewModel.orderResult.collect { orderResult ->
-                    if (orderResult is OrderResult.Success) {
-                        findNavController().popBackStack(R.id.nav_home, false)
-                    }
-                }
+//                cartViewModel.orderResult.collect { orderResult ->
+//                    if (orderResult is OrderResult.Success) {
+//                        findNavController().popBackStack(R.id.nav_home, false)
+//                    }
+//                }
             }
 
             menuViewModel.selectedTable.observe(viewLifecycleOwner) { selectedTable ->
@@ -143,12 +146,6 @@ class CartFragment : Fragment(),
                 binding.progressBarLayout.visibility = View.GONE
             }
         }
-
-//        cartViewModel.isOrderSuccessful.observe(viewLifecycleOwner) { isOrderSuccessful ->
-//            if (isOrderSuccessful) {
-//                findNavController().popBackStack(R.id.nav_home, false)
-//            }
-//        }
 
         cartViewModel.selectedPaymentOption.observe(viewLifecycleOwner) { selectedPaymentChannel ->
             paymentChannelAdapter.selectPaymentOption(selectedPaymentChannel)

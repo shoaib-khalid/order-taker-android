@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,8 +22,7 @@ import com.symplified.ordertaker.viewmodels.MenuViewModel
 import kotlinx.coroutines.launch
 
 @ExperimentalBadgeUtils
-class MenuFragment : Fragment(),
-    ProductsAdapter.OnMenuItemClickedListener {
+class MenuFragment : Fragment() {
 
     private lateinit var binding: FragmentMenuBinding
 
@@ -48,7 +48,7 @@ class MenuFragment : Fragment(),
         binding.itemList.apply {
             layoutManager = FlexboxLayoutManager(view.context).apply {
                 justifyContent = JustifyContent.CENTER
-                alignItems = AlignItems.CENTER
+                alignItems = AlignItems.FLEX_START
                 flexDirection = FlexDirection.ROW
                 flexWrap = FlexWrap.WRAP
             }
@@ -56,12 +56,12 @@ class MenuFragment : Fragment(),
 
         lifecycleScope.launch {
             menuViewModel.currencySymbol.collect { currencySymbol ->
-                val productsAdapter2 = ProductsAdapter2({
+                val productsAdapter = ProductsAdapter({
                     dialogViewModel.setSelectedProduct(it)
                     ProductSelectionDialog()
                         .show(childFragmentManager, "MenuItemSelectionBottomSheet")
                 }, currencySymbol)
-                binding.itemList.adapter = productsAdapter2
+                binding.itemList.adapter = productsAdapter
 
                 binding.textBoxSearch.editText!!.doAfterTextChanged {
                     if (it!!.isNotBlank()) {
@@ -69,12 +69,12 @@ class MenuFragment : Fragment(),
                     }
                     searchTerm = it.toString().trim().lowercase() ?: ""
 
-                    productsAdapter2.submitList(getFilteredProducts())
+                    productsAdapter.submitList(getFilteredProducts())
                 }
 
                 menuViewModel.productsWithDetails2.collect {
                     products = it
-                    productsAdapter2.submitList(getFilteredProducts())
+                    productsAdapter.submitList(getFilteredProducts())
                 }
             }
         }
@@ -94,12 +94,11 @@ class MenuFragment : Fragment(),
                 }
             }
         }
-    }
 
-    override fun onItemClicked(item: ProductWithDetails) {
-        dialogViewModel.setSelectedProduct(item)
-        ProductSelectionDialog()
-            .show(childFragmentManager, "MenuItemSelectionBottomSheet")
+        binding.itemList.viewTreeObserver.addOnGlobalLayoutListener {
+            Log.d("menu-width", "Width: ${binding.itemList.width}")
+//            if (binding.itemList.width)
+        }
     }
 
     private fun getFilteredProducts(): List<ProductWithDetails> = products.filter {
