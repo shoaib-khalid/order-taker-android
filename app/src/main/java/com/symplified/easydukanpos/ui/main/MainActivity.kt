@@ -75,12 +75,12 @@ class MainActivity : AppCompatActivity() {
         val navHeaderTitle: TextView = headerView.findViewById(R.id.nav_header_title)
         val navHeaderSubtitle: TextView = headerView.findViewById(R.id.nav_header_subtitle)
         val navHeaderImage: ImageView = headerView.findViewById(R.id.imageView)
-        (headerView.findViewById(R.id.app_version_text) as TextView)
-            .text = getString(
-            R.string.version_indicator,
-            Calendar.getInstance().get(Calendar.YEAR),
-            BuildConfig.VERSION_NAME
-        )
+        (headerView.findViewById(R.id.app_version_text) as TextView).text =
+            getString(
+                R.string.version_indicator,
+                Calendar.getInstance().get(Calendar.YEAR),
+                BuildConfig.VERSION_NAME
+            )
 
         mainViewModel.user.observe(this) { user ->
             if (user != null) {
@@ -165,6 +165,7 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
         R.id.action_logout -> {
             AlertDialog.Builder(this)
                 .setMessage(getString(R.string.action_logout_confirmation))
@@ -173,6 +174,7 @@ class MainActivity : AppCompatActivity() {
                 .show()
             true
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 
