@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.symplified.ordertaker.App
 import com.symplified.ordertaker.BuildConfig
 import com.symplified.ordertaker.R
@@ -53,6 +58,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Firebase.remoteConfig.apply {
+            setConfigSettingsAsync(remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 3600
+            })
+            setDefaultsAsync(R.xml.remote_config_defaults)
+            fetchAndActivate()
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -135,7 +148,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -173,6 +185,7 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
         R.id.action_logout -> {
             AlertDialog.Builder(this)
                 .setMessage(getString(R.string.action_logout_confirmation))
@@ -181,6 +194,7 @@ class MainActivity : AppCompatActivity() {
                 .show()
             true
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 

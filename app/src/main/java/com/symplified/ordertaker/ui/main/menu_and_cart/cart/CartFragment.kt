@@ -11,6 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.symplified.ordertaker.R
 import com.symplified.ordertaker.databinding.FragmentCartBinding
 import com.symplified.ordertaker.models.paymentchannel.PaymentOption
@@ -127,12 +130,17 @@ class CartFragment : Fragment(),
                     }
                 }
                 binding.placeOrderButton.setOnClickListener {
-                    if (cartViewModel.selectedPaymentOption.value!! == PaymentOption.CASH) {
+                    it.isEnabled = false
+                    val shouldConfirmCashPayment =
+                        FirebaseRemoteConfig.getInstance().getBoolean("should_confirm_cash_payment")
+                    if (cartViewModel.selectedPaymentOption.value!! == PaymentOption.CASH
+                        && shouldConfirmCashPayment) {
                         CashPaymentDialog(user.currencySymbol, totalPrice)
                             .show(childFragmentManager, CashPaymentDialog.TAG)
                     } else {
                         cartViewModel.placeOrder(selectedZoneWithTables?.zone, selectedTable)
                     }
+                    it.isEnabled = true
                 }
             }
         }
