@@ -1,5 +1,6 @@
 package com.symplified.easydukanpos.ui.main.menu_and_cart.menu
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,7 +74,9 @@ class ProductsAdapter(
         if (item.product.thumbnailUrl.isBlank()) {
             viewHolder.itemImage.setImageResource(R.drawable.ic_fastfood)
         } else {
-            val fullThumbnailUrl = "${assetUrl}/${item.product.thumbnailUrl}"
+//            val fullThumbnailUrl = "${assetUrl}/${item.product.thumbnailUrl}"
+            val fullThumbnailUrl = item.product.thumbnailUrl
+            Log.d("thumbnail-url", "Loading $fullThumbnailUrl")
             Glide.with(viewHolder.itemView.context)
                 .load(fullThumbnailUrl)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)

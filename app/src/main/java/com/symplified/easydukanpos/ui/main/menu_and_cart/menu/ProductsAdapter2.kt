@@ -17,7 +17,7 @@ import com.symplified.easydukanpos.utils.Utils
 
 class ProductsAdapter2(
     private val onItemClicked: (ProductWithDetails) -> Unit,
-    private var currencySymbol: String? = "RM"
+    private var currencySymbol: String? = "Rs."
 ) : ListAdapter<ProductWithDetails, ProductsAdapter2.ProductViewHolder>(DiffCallback) {
 
     companion object {
@@ -32,11 +32,6 @@ class ProductsAdapter2(
                 newItem: ProductWithDetails
             ): Boolean = oldItem == newItem
         }
-
-        val assetUrl =
-            if (App.sharedPreferences().getBoolean(SharedPrefsKey.IS_STAGING, false))
-                App.ASSET_URL_STAGING
-            else App.ASSET_URL_PRODUCTION
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -81,9 +76,8 @@ class ProductsAdapter2(
             if (productWithDetails.product.thumbnailUrl.isBlank()) {
                 binding.itemImage.setImageResource(R.drawable.ic_fastfood)
             } else {
-                val fullThumbnailUrl = "${assetUrl}/${productWithDetails.product.thumbnailUrl}"
                 Glide.with(binding.root.context)
-                    .load(fullThumbnailUrl)
+                    .load(product.thumbnailUrl)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(binding.itemImage)
             }
